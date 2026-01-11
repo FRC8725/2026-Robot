@@ -1,0 +1,6 @@
+v0.0.1
+1. Optimized gradle
+2. Installed AdvantageKit 26.0.0
+3. Installed CTRE-Phoenix 26.1.0
+4. Built SuperStructure Base
+5. Built Joysticks Base
