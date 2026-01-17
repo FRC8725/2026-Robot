@@ -59,7 +59,7 @@ public final class Constants {
     }
 
     public final class Shooter {
-    
+        public static final double TOLERANCE = 5.0;
     }
 
     public final class Vision {

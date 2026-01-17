@@ -13,7 +13,7 @@ public class SuperStructure extends SubsystemBase {
     private static SuperStructure SUPERSTRUCTURE;
 
     @AutoLogOutput(key = "SuperStructure/State")
-    private State state = State.Start;
+    public State state = State.Start;
     public StructureInput input = new StructureInput();
     private final Timer stateTime = new Timer();
 
@@ -35,7 +35,10 @@ public class SuperStructure extends SubsystemBase {
         GroundIntake(
             Intake.State.In,
             Shooter.State.Idle),
-        WantScore(
+        PreShoot(
+            Intake.State.Off,
+            Shooter.State.Shooting),
+        Shoot(
             Intake.State.SlowIn,
             Shooter.State.Shooting);
 
@@ -59,8 +62,11 @@ public class SuperStructure extends SubsystemBase {
         new Transition(State.Rest, State.GroundIntake, () -> this.input.wantIntake),
         new Transition(State.GroundIntake, State.Rest, () -> !this.input.wantIntake),
 
-        new Transition(State.Rest, State.WantScore, () -> this.input.wantScore),
-        new Transition(State.WantScore, State.Rest, () -> !this.input.wantScore)
+        new Transition(State.Rest, State.PreShoot, () -> this.input.wantScore),
+        new Transition(State.PreShoot, State.Shoot, () -> Shooter.getInstance().atSetpoint()),
+        new Transition(State.PreShoot, State.Rest, () -> !this.input.wantScore),
+
+        new Transition(State.Shoot, State.Rest, () -> !this.input.wantScore)
     ).toList();
 
     public class Transition {

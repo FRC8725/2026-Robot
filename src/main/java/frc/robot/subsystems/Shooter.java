@@ -62,6 +62,11 @@ public class Shooter extends SubsystemBase {
         return this.shooter.getVelocity().getValueAsDouble();
     }
 
+    @AutoLogOutput(key = "Shooter/AtSetpoint")
+    public boolean atSetpoint() {
+        return Math.abs(this.getVelocity() - this.state.speed) < 5.0;
+    }
+
     @Override
     public void periodic() {
         this.shooter.setControl(this.request.withVelocity(this.state.speed));

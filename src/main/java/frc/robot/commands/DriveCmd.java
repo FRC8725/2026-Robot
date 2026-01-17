@@ -3,6 +3,7 @@ package frc.robot.commands;
 
 import java.util.function.Supplier;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -10,6 +11,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants;
 import frc.robot.Joysticks;
 import frc.robot.Robot;
+import frc.robot.lib.MathHelper;
+import frc.robot.subsystems.SuperStructure;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Vision;
 
@@ -22,6 +25,8 @@ public class DriveCmd extends Command {
 	private final SlewRateLimiter xLimiter = new SlewRateLimiter(4.5);
 	private final SlewRateLimiter yLimiter = new SlewRateLimiter(4.5);
 	private final SlewRateLimiter rLimiter = new SlewRateLimiter(4.5);
+
+	private final PIDController facingHubPid = new PIDController(0, 0, 0);
 
 	public DriveCmd(Swerve swerve, Vision vision, Supplier<Joysticks.DriveInputs> driveInputs) {
 		this.swerve = swerve;
@@ -48,6 +53,14 @@ public class DriveCmd extends Command {
 			if (this.isTraking) {
 				this.fuelTracking.end(true);
 				this.isTraking = false;
+			}
+			if (SuperStructure.getInstance().input.wantScore && !inputs.isNonZero()) {
+				// Facing hub
+				ChassisSpeeds speeds = this.getSpeeds();
+				double measurement = this.swerve.getPose().getRotation().getRadians();
+				double setpoint = MathHelper.getAngleFromHub(this.swerve.getPose()).getRadians();
+				speeds.omegaRadiansPerSecond =
+						this.facingHubPid.calculate(measurement, setpoint);
 			}
 			this.swerve.driveRobotRelative(this.getSpeeds(), !inputs.oriented);
 		}
