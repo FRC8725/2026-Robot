@@ -6,22 +6,27 @@ import java.util.function.Supplier;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants;
 import frc.robot.Joysticks;
 import frc.robot.Robot;
 import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.Vision;
 
 public class DriveCmd extends Command {
 	private final Swerve swerve;
 	private final Supplier<Joysticks.DriveInputs> driveInputs;
+	private final FuelTracking fuelTracking;
+	private boolean isTraking = false;
 	
 	private final SlewRateLimiter xLimiter = new SlewRateLimiter(4.5);
 	private final SlewRateLimiter yLimiter = new SlewRateLimiter(4.5);
 	private final SlewRateLimiter rLimiter = new SlewRateLimiter(4.5);
 
-	public DriveCmd(Swerve swerve, Supplier<Joysticks.DriveInputs> driveInputs) {
+	public DriveCmd(Swerve swerve, Vision vision, Supplier<Joysticks.DriveInputs> driveInputs) {
 		this.swerve = swerve;
 		this.driveInputs = driveInputs;
+		this.fuelTracking = new FuelTracking(swerve, vision);
 		this.addRequirements(this.swerve);
 	}
 
@@ -32,13 +37,25 @@ public class DriveCmd extends Command {
 	public void execute() {
 		Joysticks.DriveInputs inputs = this.driveInputs.get();
 		if (Robot.isRedAlliance.get()) inputs = inputs.getRedFlipped();
-		
-		this.swerve.driveRobotRelative(this.getSpeeds(), !inputs.oriented);
+
+		if (inputs.wantTrack) {
+			if (!this.isTraking) {
+				this.fuelTracking.initialize();
+				this.isTraking = true;
+			}
+			this.fuelTracking.execute();
+		} else {
+			if (this.isTraking) {
+				this.fuelTracking.end(true);
+				this.isTraking = false;
+			}
+			this.swerve.driveRobotRelative(this.getSpeeds(), !inputs.oriented);
+		}
 	}
 
 	@Override
 	public void end(boolean interrupted) {
-		this.swerve.stopModules();
+		// this.swerve.stopModules();
 	}
 
 	@Override

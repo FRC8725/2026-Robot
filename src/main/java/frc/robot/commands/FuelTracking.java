@@ -23,6 +23,8 @@ public class FuelTracking extends Command {
 	private final Swerve swerve;
 	private final Vision vision;
 
+	private Command currentRunningPath = null;
+
 	private final PathConstraints constraints = new PathConstraints(
 			3.0,
 			2.0,
@@ -37,38 +39,53 @@ public class FuelTracking extends Command {
 
 	@Override
 	public void initialize() {
+		this.currentRunningPath = null;
 	}
 
 	@Override
 	public void execute() {
-		List<Pose2d> sortedPath = this.sortPath();
+		if (this.currentRunningPath != null || this.currentRunningPath.isFinished()) {
+			if (currentRunningPath != null)
+				this.currentRunningPath.end(false);
+			
+			List<Pose2d> sortedPath = this.sortPath();
 
-		if (sortedPath.size() < 2 || sortedPath == null) return;
+			if (sortedPath.size() < 2 || sortedPath == null) {
+				this.currentRunningPath = null;
+				return;
+			}
 
-		List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(sortedPath);
+			List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(sortedPath);
+			ChassisSpeeds robotSpeeds = this.swerve.getSpeeds();
+			Pose2d finalPose = sortedPath.get(sortedPath.size() - 1);
+			IdealStartingState startState = new IdealStartingState(
+					Math.hypot(robotSpeeds.vxMetersPerSecond, robotSpeeds.vyMetersPerSecond),
+					sortedPath.get(0).getRotation());
+			GoalEndState endState = new GoalEndState(
+					2.0,
+					finalPose.getRotation());
 
-		ChassisSpeeds robotSpeeds = this.swerve.getSpeeds();
-		Pose2d finalPose = sortedPath.get(sortedPath.size() - 1);
-		IdealStartingState startState = new IdealStartingState(
-				Math.hypot(robotSpeeds.vxMetersPerSecond, robotSpeeds.vyMetersPerSecond),
-				sortedPath.get(0).getRotation());
-		GoalEndState endState = new GoalEndState(
-				2.0,
-				finalPose.getRotation());
+			PathPlannerPath path = new PathPlannerPath(
+					waypoints,
+					this.constraints,
+					startState,
+					endState);
+			path.preventFlipping = true;
 
-		PathPlannerPath path = new PathPlannerPath(
-				waypoints,
-				this.constraints,
-				startState,
-				endState);
-		path.preventFlipping = true;
+			this.currentRunningPath = AutoBuilder.followPath(path);
+			this.currentRunningPath.initialize();
+		}
 
-		AutoBuilder.followPath(path);
+		if (this.currentRunningPath != null) {
+			this.currentRunningPath.execute();
+		}
 	}
 
 	@Override
 	public void end(boolean interrupted) {
-		this.swerve.stopModules();
+		if (this.currentRunningPath != null) {
+			this.currentRunningPath.end(interrupted);
+		}
 	}
 
 	@Override

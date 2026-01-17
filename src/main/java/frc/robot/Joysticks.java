@@ -14,6 +14,7 @@ public class Joysticks {
         public double rightX;
         public double deadZone;
         public boolean oriented;
+        public boolean wantTrack;
 
         public boolean isNonZero() {
             return Math.abs(leftX) > deadZone ||
@@ -28,6 +29,7 @@ public class Joysticks {
             flipped.rightX = this.rightX;
             flipped.deadZone = deadZone;
             flipped.oriented = oriented;
+            flipped.wantTrack = wantTrack;
             return flipped;
         }
     }
@@ -39,6 +41,7 @@ public class Joysticks {
         input.rightX = this.driver.getRightX();
         input.oriented = this.driver.getLeftBumperButton();
         input.deadZone = 0.05;
+        input.wantTrack = this.driver.getAButton();
         
         return input;
     }
