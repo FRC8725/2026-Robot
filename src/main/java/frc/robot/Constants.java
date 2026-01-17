@@ -8,6 +8,16 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 
 public final class Constants {
+    public static final class RobotMode {
+        public static final boolean isReplay = false;
+
+        public enum Mode {
+            REAL,
+            SIM,
+            REPLAY
+        }
+    }
+    
     public final class Intake {
     
     }

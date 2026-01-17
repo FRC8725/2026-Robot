@@ -9,3 +9,9 @@ v0.0.2
 1. Installed Choreo 2026.0.0
 2. Initial path
 3. Add Field constants
+
+v0.0.3
+1. Update ChoreoLib to 2026.0.1
+2. Upload some field png
+3. Ignore BuildConstants.java file
+4. Modify Robot extend class to AdvantageKit robot
