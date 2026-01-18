@@ -4,10 +4,22 @@
 
 package frc.robot;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.RobotBase;
+import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
+import frc.robot.subsystems.drive.SimTunerConstants;
+import frc.robot.subsystems.drive.TunerConstants;
 
 public final class Constants {
+    public static final boolean useMapleSim = true;
+    public static final AprilTagFieldLayout kAprilTagLayoutReefsOnly = 
+            AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark);
+
     public static final class RobotMode {
         public static final boolean isReplay = false;
 
@@ -16,6 +28,19 @@ public final class Constants {
             SIM,
             REPLAY
         }
+    }
+
+    public final class Drive {
+        public static final double ROBOT_WEIGHT_POUNDS = 150.0;
+        public static final double BUMPER_LENGTH_INCHES = 34.417;
+        public static final double MAX_SPEED = 3.0; // m/s
+        public static final double MAX_ANGULAR_RATE = Math.PI * 2; // 1 rotation per second
+        public static final double STEER_JOYSTICK_DEADBAND = 0.05;
+        public static final CommandSwerveDrivetrain drivetrain =
+                RobotBase.isSimulation()
+                        ? SimTunerConstants.createTrain()
+                        : TunerConstants.createDrivetrain();
+        
     }
     
     public final class Intake {
@@ -27,7 +52,50 @@ public final class Constants {
     }
 
     public final class Vision {
-        
+        public static final double LARGE_VARIANCE = 1e6;
+
+        // Standard deviation constants
+        public static final int kMegatag1XStdDevIndex = 0;
+        public static final int kMegatag1YStdDevIndex = 1;
+        public static final int kMegatag1YawStdDevIndex = 5;
+
+        // Standard deviation array indices for Megatag2
+        public static final int kMegatag2XStdDevIndex = 6;
+        public static final int kMegatag2YStdDevIndex = 7;
+        public static final int kMegatag2YawStdDevIndex = 11;
+
+        // Validation constants
+        public static final int kExpectedStdDevArrayLength = 12;
+
+        // Vision processing constants
+        public static final double kDefaultAmbiguityThreshold = 0.19;
+        public static final double kDefaultYawDiffThreshold = 5.0;
+        public static final double kTagAreaThresholdForYawCheck = 2.0;
+        public static final double kTagMinAreaForSingleTagMegatag = 1.0;
+        public static final double kDefaultZThreshold = 0.2;
+        public static final double kDefaultNormThreshold = 1.0;
+        public static final double kMinAmbiguityToFlip = 0.08;
+
+        // Camera pose on the robot
+        public static final double CAMERA_LEFT_DEGS = 30.0;
+        public static final double CAMERA_LEFT_PITCH_RADS = Units.degreesToRadians(CAMERA_LEFT_DEGS);
+        public static final String CAMERA_LEFT_NAME = "limelight-left";
+        public static final Transform3d CAMERA_LEFT_TRANSFORM = new Transform3d(
+                0.133287, -0.1524, 0.194627,
+                new Rotation3d(0.0, CAMERA_LEFT_PITCH_RADS, 0.0));
+        public static final double CAMERA_RIGHT_DEGS = 30.0;
+        public static final double CAMERA_RIGHT_PITCH_RADS = Units.degreesToRadians(CAMERA_RIGHT_DEGS);
+        public static final String CAMERA_RIGHT_NAME = "limelight-right";
+        public static final Transform3d CAMERA_RIGHT_TRANSFORM = new Transform3d(
+                0.133287, 0.165098, 0.194627,
+                new Rotation3d(0.0, CAMERA_RIGHT_PITCH_RADS, 0.0));
+
+        public static final Transform3d CAMERA_POSE =
+                new Transform3d(
+                        0.290808,
+                        0.0,
+                        0.138397,
+                        new Rotation3d(0.0, Units.degreesToRadians(-60.0), 0.0));
     }
 
 	public final class Field {

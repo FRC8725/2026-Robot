@@ -15,3 +15,9 @@ v0.0.3
 2. Upload some field png
 3. Ignore BuildConstants.java file
 4. Modify Robot extend class to AdvantageKit robot
+
+v0.0.4
+1. Update WPILib to 2026.2.1
+2. Add drivetrain subsystem
+3. Add vision subsystem
+4. Install maple-sim beta Lib
