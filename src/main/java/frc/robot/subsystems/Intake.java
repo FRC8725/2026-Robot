@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Intake extends SubsystemBase {
     private static Intake INTAKE;
-    private final TalonFX intake = new TalonFX(0);
+    private final TalonFX intake = new TalonFX(14);
     @AutoLogOutput(key = "Intake/state")
     private State state = State.Off;
     

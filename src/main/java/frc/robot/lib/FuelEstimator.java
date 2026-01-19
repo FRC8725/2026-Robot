@@ -11,7 +11,7 @@ import edu.wpi.first.math.util.Units;
 
 public class FuelEstimator {
     private static final double TOLERANCE = 0.001;
-    private static final Vector3D CAMERA_VEC = new Vector3D(0.0, 0.0, 0.0);
+    private static final Vector3D CAMERA_VEC = new Vector3D(0.143019, -0.346677, 0.341093);
     private static final Vector3D CENTRAL_SIGHT = new Vector3D(
             0.8137976813494, 0.296198132726, -0.50);
     private static final Vector3D X_AXIS = new Vector3D(
@@ -24,7 +24,7 @@ public class FuelEstimator {
             TOLERANCE);
 
     public static Translation2d getFuelTranslation(double tx, double ty) {
-        Rotation xRot = new Rotation(Y_AXIS, tx, RotationConvention.VECTOR_OPERATOR);
+        Rotation xRot = new Rotation(Y_AXIS, -tx, RotationConvention.VECTOR_OPERATOR);
         Rotation yRot = new Rotation(X_AXIS, ty, RotationConvention.VECTOR_OPERATOR);
 
         Vector3D xVec = xRot.applyTo(CENTRAL_SIGHT);

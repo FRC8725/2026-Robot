@@ -5,6 +5,8 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.studica.frc.AHRS;
+import com.studica.frc.AHRS.NavXComType;
 
 import choreo.trajectory.SwerveSample;
 import edu.wpi.first.math.MathUtil;
@@ -46,7 +48,7 @@ public class Swerve extends SubsystemBase {
         true, true,
         -0.3212890625);
 
-    private final Pigeon2 pigeon = new Pigeon2(13);
+    private final AHRS pigeon = new AHRS(NavXComType.kMXP_SPI);
     public final SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(
         Constants.Swerve.KINEMATICS,
         new Rotation2d(this.getGyroAngle()),
@@ -111,7 +113,7 @@ public class Swerve extends SubsystemBase {
     }
 
     public double getGyroAngle() {
-        return MathUtil.angleModulus(Units.degreesToRadians(-this.pigeon.getYaw().getValueAsDouble()));
+        return MathUtil.angleModulus(Units.degreesToRadians(-this.pigeon.getAngle()));
     }
 
     public double score(Pose2d pose) {
@@ -193,7 +195,7 @@ public class Swerve extends SubsystemBase {
     }
 
     public void resetYaw(double angle) {
-        this.pigeon.setYaw(Units.radiansToDegrees(MathUtil.angleModulus(angle)));
+        this.pigeon.setAngleAdjustment(Units.radiansToDegrees(MathUtil.angleModulus(angle)));
     }
 
     public void stopModules() {

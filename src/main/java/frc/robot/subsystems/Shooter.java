@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Shooter extends SubsystemBase {
     private static Shooter SHOOTER;
-    private final TalonFX shooter = new TalonFX(0);
+    private final TalonFX shooter = new TalonFX(13);
     private final VelocityVoltage request = new VelocityVoltage(0.0);
     @AutoLogOutput(key = "Shooter/state")
     private State state = State.Idle;

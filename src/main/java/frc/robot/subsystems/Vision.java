@@ -9,24 +9,27 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.lib.FuelEstimator;
 import frc.robot.lib.LimelightHelpers;
 import frc.robot.lib.LimelightHelpers.LimelightResults;
 import frc.robot.lib.LimelightHelpers.LimelightTarget_Detector;
+import frc.robot.lib.LimelightHelpers.RawDetection;
 
 public class Vision extends SubsystemBase {
     
     public List<Translation2d> getFuelsEstimator() {
         List<Translation2d> list = new ArrayList<>();
-        LimelightResults results = LimelightHelpers.getLatestResults("obejct");
+        RawDetection[] results = LimelightHelpers.getRawDetections("limelight-object");
 
-        if (results.targets_Detector.length > 0) {
-            for (LimelightTarget_Detector detector : results.targets_Detector) {
-                list.add(FuelEstimator.getFuelTranslation(detector.tx, detector.ty));
+        if (results.length > 0) {
+            for (RawDetection detector : results) {
+                list.add(FuelEstimator.getFuelTranslation(Units.degreesToRadians(detector.txnc), Units.degreesToRadians(detector.tync)));
             }
         }
 
@@ -57,8 +60,9 @@ public class Vision extends SubsystemBase {
 
         for (Translation2d translation : fuelTranslations) {
             Pose2d fuelField = robotPose.plus(new Transform2d(translation, Rotation2d.kZero));
+            Pose3d pose3d = new Pose3d(fuelField.getX(), fuelField.getY(), Units.inchesToMeters(5.91 / 2.0), Rotation3d.kZero);
 
-            poses.add(new Pose3d(fuelField));
+            poses.add(pose3d);
         }
 
         return poses.toArray(Pose3d[]::new);
