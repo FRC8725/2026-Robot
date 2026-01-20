@@ -27,3 +27,7 @@ v0.0.5
 2. Add advantage scope base model
 3. Simulate vision system
 4. Test real vision system
+
+v0.0.6
+1. Add Roller interface and system (NO TEST)
+2. Add Intkae system (NO TEST)
