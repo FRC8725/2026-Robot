@@ -21,3 +21,9 @@ v0.0.4
 2. Add drivetrain subsystem
 3. Add vision subsystem
 4. Install maple-sim beta Lib
+
+v0.0.5
+1. Install photonlib v2026.1.1-rc-4
+2. Add advantage scope base model
+3. Simulate vision system
+4. Test real vision system

@@ -39,9 +39,7 @@ import edu.wpi.first.units.measure.Voltage;
 public class SimTunerConstants {
     // Constants
     private static final double driveGearRatio = 7.03;
-	// private static final double driveGearRatio = 1.0 / ((10.0 / 54.0) * (38.0 / 18.0) * (15.0 / 45.0));
     private static final double steerGearRatio = 287.0 / 11.0;
-	// private static final double steerGearRatio = 1.0 / ((10.0 / 22.0) * (16.0 / 88.0));
     private static final double coupleGearRatio = 0.0;
     private static final Distance wheelRadius = Inches.of(1.897);
     private static final int pigeonId = 13;
@@ -85,7 +83,7 @@ public class SimTunerConstants {
     private static final Voltage driveFrictionVoltage = Volts.of(0.2);
     private static final Voltage steerFrictionVoltage = Volts.of(0.2);
 
-    public static final CANBus CANBus = new CANBus("drivebase-climber", "./logs/example.hoot");
+    public static final CANBus CANBus = new CANBus("drivetrain", "./logs/example.hoot");
 
     public static final SwerveDrivetrainConstants drivetrainConstants =
             new SwerveDrivetrainConstants()

@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -17,7 +18,7 @@ import frc.robot.subsystems.drive.TunerConstants;
 
 public final class Constants {
     public static final boolean useMapleSim = true;
-    public static final AprilTagFieldLayout kAprilTagLayoutReefsOnly = 
+    public static final AprilTagFieldLayout kAprilTagLayout = 
             AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark);
 
     public static final class RobotMode {
@@ -77,25 +78,20 @@ public final class Constants {
         public static final double kMinAmbiguityToFlip = 0.08;
 
         // Camera pose on the robot
-        public static final double CAMERA_LEFT_DEGS = 30.0;
+        public static final double CAMERA_LEFT_DEGS = 45.0;
         public static final double CAMERA_LEFT_PITCH_RADS = Units.degreesToRadians(CAMERA_LEFT_DEGS);
+        public static final Rotation2d CAMERA_LEFT_YAW = Rotation2d.kZero;
         public static final String CAMERA_LEFT_NAME = "limelight-left";
         public static final Transform3d CAMERA_LEFT_TRANSFORM = new Transform3d(
-                0.133287, -0.1524, 0.194627,
-                new Rotation3d(0.0, CAMERA_LEFT_PITCH_RADS, 0.0));
-        public static final double CAMERA_RIGHT_DEGS = 30.0;
+                0.306542, 0.076121, 0.120064,
+                new Rotation3d(0.0, CAMERA_LEFT_PITCH_RADS, CAMERA_LEFT_YAW.getRadians()));
+        public static final double CAMERA_RIGHT_DEGS = 45.0;
         public static final double CAMERA_RIGHT_PITCH_RADS = Units.degreesToRadians(CAMERA_RIGHT_DEGS);
+        public static final Rotation2d CAMERA_RIGHT_YAW = Rotation2d.kZero;
         public static final String CAMERA_RIGHT_NAME = "limelight-right";
         public static final Transform3d CAMERA_RIGHT_TRANSFORM = new Transform3d(
-                0.133287, 0.165098, 0.194627,
-                new Rotation3d(0.0, CAMERA_RIGHT_PITCH_RADS, 0.0));
-
-        public static final Transform3d CAMERA_POSE =
-                new Transform3d(
-                        0.290808,
-                        0.0,
-                        0.138397,
-                        new Rotation3d(0.0, Units.degreesToRadians(-60.0), 0.0));
+                0.306542, -0.076121, 0.120064,
+                new Rotation3d(0.0, CAMERA_RIGHT_PITCH_RADS, CAMERA_LEFT_YAW.getRadians()));
     }
 
 	public final class Field {

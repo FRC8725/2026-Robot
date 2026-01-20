@@ -5,6 +5,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.interpolation.TimeInterpolatableBuffer;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.lib.limelight.VisionFieldPoseEstimate;
 import frc.robot.lib.math.MathHelpers;
@@ -20,6 +22,9 @@ public class RobotState extends SubsystemBase {
     private final AtomicReference<Optional<Integer>> exclusiveTag = 
             new AtomicReference<>(Optional.empty());
 
+    private final TimeInterpolatableBuffer<Pose2d> fieldToRobotSimulatedTruth = 
+            TimeInterpolatableBuffer.createBuffer(1.0);
+
     private final Consumer<VisionFieldPoseEstimate> visionEstimatorConsumer;
 
     public RobotState(Consumer<VisionFieldPoseEstimate> visionEstimatorConsumer) {
@@ -34,6 +39,17 @@ public class RobotState extends SubsystemBase {
 
     public Optional<Pose2d> getFieldToRobot(double timestamp) {
         return this.fieldToRobot.getSample(timestamp);
+    }
+
+    public synchronized void addFieldToRobot(Pose2d pose) {
+        this.fieldToRobotSimulatedTruth.addSample(Timer.getFPGATimestamp(), pose);
+    }
+
+    public synchronized Pose2d getLastestFieldToRobot() {
+        var entry = this.fieldToRobotSimulatedTruth.getInternalBuffer().lastEntry();
+        if (entry == null) return null;
+
+        return entry.getValue();
     }
 
     private Optional<Double> getMaxAbsValueInRange(

@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
+import frc.robot.RobotState;
 import frc.robot.lib.simulation.MapleSimDrivetrain;
 import java.util.function.Consumer;
 import org.littletonrobotics.junction.Logger;
@@ -21,6 +22,7 @@ public class DriveIOSim extends DriveIOHardware {
     private double lastSimTime;
     private Notifier simNotifier = null;
     public MapleSimDrivetrain mapleSimDrivetrain = null;
+    private RobotState robotState = null;
 
     private final Consumer<SwerveDriveState> simTelemetryConsumer =
             swerveDriveState -> {
@@ -29,12 +31,15 @@ public class DriveIOSim extends DriveIOHardware {
                             this.mapleSimDrivetrain.mapleSimDrive.getSimulatedDriveTrainPose();
                 }
                 this.telemetryConsumer.accept(swerveDriveState);
+                this.robotState.addFieldToRobot(swerveDriveState.Pose);
             };
 
     public DriveIOSim(
+            RobotState robotState,
             SwerveDrivetrainConstants drivetrainConstants,
             SwerveModuleConstants<?, ?, ?>... modules) {
         super(drivetrainConstants, modules);
+        this.robotState = robotState;
 
         this.registerTelemetry(this.simTelemetryConsumer);
         this.startSimThread();
@@ -86,6 +91,8 @@ public class DriveIOSim extends DriveIOHardware {
     public void readInput(DriveIOInputs inputs) {
         super.readInput(inputs);
 
+        var pose = this.robotState.getLastestFieldToRobot();
+        if (pose == null) return;
         Logger.recordOutput("Drive/Vi/SimPose", inputs.Pose);
     }
 

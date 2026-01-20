@@ -16,6 +16,8 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 import com.ctre.phoenix6.SignalLogger;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobotBase;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -88,6 +90,11 @@ public class Robot extends LoggedRobot {
 
         DriverStation.silenceJoystickConnectionWarning(true);
         RobotController.setBrownoutVoltage(6.0);
+
+		if (RobotBase.isSimulation()) {
+			this.robotContainer.getDriveSubsystem().resetOdometry(
+					new Pose2d(2.0, 2.0, Rotation2d.kZero));
+		}
 	}
 
 	@Override

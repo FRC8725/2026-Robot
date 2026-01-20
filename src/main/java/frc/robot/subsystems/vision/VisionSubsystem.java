@@ -14,19 +14,21 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotState;
 import frc.robot.Constants.Vision;
 import frc.robot.lib.limelight.MegatagPoseEstimate;
 import frc.robot.lib.limelight.VisionFieldPoseEstimate;
-import frc.robot.subsystems.vision.VisionIO.VisionIOInputs;
+import frc.robot.lib.math.MathHelpers;
 
 public class VisionSubsystem extends SubsystemBase {
     private final VisionIO io;
     private final RobotState state;
-    private final VisionIO.VisionIOInputs inputs = new VisionIOInputs();
+    private final VisionIO.VisionIOInputs inputs = new VisionIO.VisionIOInputs();
 
     public VisionSubsystem(VisionIO io, RobotState robotState) {
         this.io = io;
@@ -119,7 +121,7 @@ public class VisionSubsystem extends SubsystemBase {
         }
 
         var maybeFieldToTag =
-                Constants.kAprilTagLayoutReefsOnly.getTagPose(poseEstimate.fiducialIds()[0]);
+                Constants.kAprilTagLayout.getTagPose(poseEstimate.fiducialIds()[0]);
         if (maybeFieldToTag.isEmpty()) {
             return Optional.empty();
         }
@@ -239,7 +241,7 @@ public class VisionSubsystem extends SubsystemBase {
 
         String logPrefix = "Vision/" + label;
 
-        if (!cam.hasTarget) {
+        if (!cam.seesTarget) {
             return Optional.empty();
         }
 
@@ -282,23 +284,47 @@ public class VisionSubsystem extends SubsystemBase {
         return estimate;
     }
 
+    private void logCameraInputs(String prefix, VisionIO.VisionIOInputs.CameraInputs cam) {
+        Logger.recordOutput(prefix + "/SeesTarget", cam.seesTarget);
+        Logger.recordOutput(prefix + "/MegatagCount", cam.megatagCount);
+
+        if (DriverStation.isDisabled()) {
+            SmartDashboard.putBoolean(prefix + "/SeesTarget", cam.seesTarget);
+            SmartDashboard.putNumber(prefix + "/MegatagCount", cam.megatagCount);
+        }
+
+        if (cam.pose3d != null) {
+            Logger.recordOutput(prefix + "/Pose3d", cam.pose3d);
+        }
+
+        if (cam.megatagPoseEstimate != null) {
+            Logger.recordOutput(
+                    prefix + "/MegatagPoseEstimate", cam.megatagPoseEstimate.fieldToRobot());
+            Logger.recordOutput(prefix + "/Quality", cam.megatagPoseEstimate.quality());
+            Logger.recordOutput(prefix + "/AvgTagArea", cam.megatagPoseEstimate.avgTagArea());
+        }
+
+        if (cam.fiducialObservations != null) {
+            Logger.recordOutput(prefix + "/FiducialCount", cam.fiducialObservations.length);
+        }
+    }
+
     @Override
     public void periodic() {
         double startTime = Timer.getFPGATimestamp();
         this.io.updateInputs(this.inputs);
 
+        this.logCameraInputs("Vision/CameraA", this.inputs.cameraA);
+        this.logCameraInputs("Vision/CameraB", this.inputs.cameraB);
+
         var maybeMTA = this.processCamera(
 				this.inputs.cameraA,
 				"CameraA",
-				new Transform2d(
-						Vision.CAMERA_LEFT_TRANSFORM.getTranslation().toTranslation2d(),
-						Vision.CAMERA_LEFT_TRANSFORM.getRotation().toRotation2d()));
+				MathHelpers.toTransform2d(Vision.CAMERA_LEFT_TRANSFORM));
 		var maybeMTB = this.processCamera(
 				this.inputs.cameraB,
 				"CameraB",
-				new Transform2d(
-						Vision.CAMERA_RIGHT_TRANSFORM.getTranslation().toTranslation2d(),
-						Vision.CAMERA_RIGHT_TRANSFORM.getRotation().toRotation2d()));
+				MathHelpers.toTransform2d(Vision.CAMERA_RIGHT_TRANSFORM));
 
 		Optional<VisionFieldPoseEstimate> accepted = Optional.empty();
 
@@ -314,7 +340,7 @@ public class VisionSubsystem extends SubsystemBase {
                     this.state.updateMegatagPoseEstimate(est);
                 });
 
-        Logger.recordOutput("Vision/exclusiveTagId", state.getExclusiveTag().orElse(-1));
+        Logger.recordOutput("Vision/exclusiveTagId", this.state.getExclusiveTag().orElse(-1));
         Logger.recordOutput(
                 "Vision/latencyPeriodicSec", Timer.getFPGATimestamp() - startTime);
     }

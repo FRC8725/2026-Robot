@@ -7,7 +7,7 @@ import frc.robot.lib.limelight.MegatagPoseEstimate;
 public interface VisionIO {
     public class VisionIOInputs {
         public class CameraInputs {
-            public boolean hasTarget;
+            public boolean seesTarget;
             public FiducialObservation[] fiducialObservations;
             public MegatagPoseEstimate megatagPoseEstimate;
             public MegatagPoseEstimate megatag2PoseEstimate;
