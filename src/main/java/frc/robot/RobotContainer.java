@@ -14,7 +14,11 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.subsystems.rollers.RollerIOHardware;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.Shooter.FeederState;
+import frc.robot.subsystems.shooter.Shooter.FlywheelState;
+import frc.robot.subsystems.shooter.Shooter.HoodState;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIOHardware;
 import frc.robot.subsystems.shooter.hood.HoodIOHardware;
 
@@ -24,8 +28,9 @@ public class RobotContainer {
 
 	public Shooter buildShooterSubsystem() {
 		return new Shooter(
-				new FlywheelIOHardware(0),
-				new HoodIOHardware(0));
+				new FlywheelIOHardware(0, 0),
+				new HoodIOHardware(0),
+				new RollerIOHardware(0, false));
 	}
 
 	private final SysIdRoutine sysIdRoutine = new SysIdRoutine(
@@ -70,6 +75,15 @@ public class RobotContainer {
 				.onTrue(Commands.runOnce(SignalLogger::start));
 		new Trigger(this.controller::getRightBumperButton)
 				.onTrue(Commands.runOnce(SignalLogger::stop));
+		// new Trigger(this.controller::getLeftBumperButton)
+		// 		.onTrue(Commands.runOnce(() -> this.shooter.offset++));
+		// new Trigger(this.controller::getRightBumperButton)
+		// 		.onTrue(Commands.runOnce(() -> this.shooter.offset--));
+		new Trigger(this.controller::getBButton)
+				.onTrue(Commands.runOnce(() ->
+						this.shooter.setStates(FlywheelState.Shoot,	HoodState.Default, FeederState.Push)))
+				.onFalse(Commands.runOnce(() ->
+						this.shooter.setStates(FlywheelState.Off, HoodState.Default, FeederState.Off)));
 	}
 
 	public Command getAutonomousCommand() {
