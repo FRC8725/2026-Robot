@@ -7,6 +7,7 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.rollers.RollerIO;
 import frc.robot.subsystems.rollers.RollerSystem;
 
@@ -82,5 +83,13 @@ public class Intake extends SubsystemBase {
         return Math.abs(
                 this.lifter.getPosition() - Units.degreesToRotations(this.lifterState.angle))
                         < Constants.Intake.LIFTER_ANGLE_TOLERANCE;
+    }
+
+    @AutoLogOutput(key = "Intake/isUnsafe")
+    public boolean isUnsafe() {
+        double robotSide = DriveSubsystem.getInstance().getPose().getY();
+        double distance = Math.min(Constants.Field.FIELD_Y_SIZE - robotSide, robotSide);
+
+        return distance < Constants.Intake.LIFTER_LIMIT_DISTANCE;
     }
 }

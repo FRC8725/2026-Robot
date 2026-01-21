@@ -17,6 +17,7 @@ import frc.robot.lib.simulation.MapleSimDrivetrain;
 import org.littletonrobotics.junction.Logger;
 
 public class DriveSubsystem extends SubsystemBase {
+    private static DriveSubsystem DRIVE;
     private final DriveIO io;
     private final DriveIOInputsAutoLogged inputs = new DriveIOInputsAutoLogged();
 
@@ -27,8 +28,13 @@ public class DriveSubsystem extends SubsystemBase {
     private final PIDController headingController = new PIDController(7.0, 0.0, 0.0);
 
     public DriveSubsystem(DriveIO io) {
+        DRIVE = this;
         this.io = io;
         this.headingController.enableContinuousInput(-Math.PI, Math.PI);
+    }
+
+    public static DriveSubsystem getInstance() {
+        return DRIVE;
     }
 
     public void resetOdometry(Pose2d pose) {
@@ -95,6 +101,10 @@ public class DriveSubsystem extends SubsystemBase {
 
     public ChassisSpeeds getRobotChassisSpeeds() {
         return this.inputs.Speeds;
+    }
+
+    public Pose2d getPose() {
+        return this.inputs.Pose;
     }
 
     public MapleSimDrivetrain getMapleSimDrivetrain() {

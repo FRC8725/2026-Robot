@@ -2,7 +2,6 @@ package frc.robot;
 
 import java.util.function.Consumer;
 
-import edu.wpi.first.wpilibj.PS5Controller;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -58,7 +57,7 @@ public class RobotContainer {
 		return this.driveSubsystem;
 	}
 
-	private final PS5Controller controller = new PS5Controller(0);
+	private final XboxController controller = new XboxController(0);
 	public RobotContainer() {
 		this.driveSubsystem.setDefaultCommand(
 				new DriveCommand(this.driveSubsystem, 

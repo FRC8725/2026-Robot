@@ -47,6 +47,8 @@ public final class Constants {
     public final class Intake {
         public static final double LIFTER_GEAR_RATIO = 1.0;
         public static final double LIFTER_ANGLE_TOLERANCE = 0.01;
+
+        public static final double LIFTER_LIMIT_DISTANCE = 0.0;
     }
 
     public final class Shooter {

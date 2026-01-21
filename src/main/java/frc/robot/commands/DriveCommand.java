@@ -4,19 +4,19 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.lib.math.MathHelpers;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import java.util.function.Supplier;
 
+import org.littletonrobotics.junction.Logger;
+
 public class DriveCommand extends Command {
     private final DriveSubsystem driveSubsystem;
     private final Supplier<Double> xSpeed, ySpeed, rSpeed;
-    private double joystickLastTouched = -1.0;
 
     private final SwerveRequest.FieldCentric driveRequest =
             new SwerveRequest.FieldCentric()
@@ -24,6 +24,10 @@ public class DriveCommand extends Command {
                     .withRotationalDeadband(
                             8.2
                                     * 0.05)
+                    .withDriveRequestType(DriveRequestType.Velocity);
+    private final SwerveRequest.FieldCentricFacingAngle driveWithHeading =
+            new SwerveRequest.FieldCentricFacingAngle()
+                    .withDeadband(0.05)
                     .withDriveRequestType(DriveRequestType.Velocity);
 
     public DriveCommand(
@@ -37,8 +41,11 @@ public class DriveCommand extends Command {
         this.rSpeed = rSpeed;
         this.addRequirements(this.driveSubsystem);
 
+        this.driveWithHeading.HeadingController.setPID(12.0, 0.0, 0.0);
+
         if (RobotBase.isSimulation()) {
             this.driveRequest.DriveRequestType = DriveRequestType.OpenLoopVoltage;
+            this.driveWithHeading.DriveRequestType = DriveRequestType.OpenLoopVoltage;
         }
     }
 
@@ -58,29 +65,22 @@ public class DriveCommand extends Command {
         ySpeed = MathUtil.applyDeadband(ySpeed, 0.05);
         rSpeed = MathUtil.applyDeadband(rSpeed, 0.05);
 
-        if (Math.abs(rSpeed) > 0.05) {
-            this.joystickLastTouched = Timer.getFPGATimestamp();
-        }
-        // if (Math.abs(rSpeed) > Constants.DriveConstants.STEER_JOYSTICK_DEADBAND
-        //         || (MathHelpers.epsilonEqal(
-        //                         this.joystickLastTouched, Timer.getFPGATimestamp(), 0.25)
-        //                 && Math.abs(
-        //                                 this.driveSubsystem.getRobotChassisSpeeds()
-        //                                         .omegaRadiansPerSecond)
-        //                         > Math.toRadians(10.0))) {
-        //     this.driveSubsystem.setControl(
-        //             this.driveRequest
-        //                     .withVelocityX(xSpeed)
-        //                     .withVelocityY(ySpeed)
-        //                     .withRotationalRate(
-        //                             rSpeed * Constants.DriveConstants.MAX_ANGULAR_RATE));
-        // }
+        Rotation2d targetAngle = MathHelpers.getAngleFromHub(this.driveSubsystem.getPose());
+
+        Logger.recordOutput("target", targetAngle.getRadians());
+        Logger.recordOutput("measure", this.driveSubsystem.getPose().getRotation().getRadians());
+        // this.driveSubsystem.setControl(
+        //         this.driveWithHeading
+        //                 .withVelocityX(xSpeed)
+        //                 .withVelocityY(ySpeed)
+        //                 .withTargetDirection(targetAngle));
+
         this.driveSubsystem.setControl(
-                    this.driveRequest
-                            .withVelocityX(xSpeed)
-                            .withVelocityY(ySpeed)
-                            .withRotationalRate(
-                                    rSpeed * 8.2));
+                this.driveRequest
+                        .withVelocityX(xSpeed)
+                        .withVelocityY(ySpeed)
+                        .withRotationalRate(
+                                rSpeed * 8.2));
     }
 
     @Override

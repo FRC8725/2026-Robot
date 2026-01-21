@@ -1,15 +1,23 @@
 package frc.robot.lib.math;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
+import frc.robot.Constants;
 
 public class MathHelpers {
     public static final Pose2d POSE2D_ZERO = new Pose2d();
 
     public static boolean epsilonEqal(double a, double b, double epsilon) {
         return Math.abs(a - b) < epsilon;
+    }
+
+    public static Rotation2d getAngleFromHub(Pose2d pose) {
+        Translation2d hub = Constants.Field.HUB_CENTER;
+        return new Rotation2d(pose.getX() - hub.getX(), pose.getY() - hub.getY());
     }
 
     public static Transform3d reversePitch(Transform3d t) {
