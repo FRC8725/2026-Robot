@@ -1,5 +1,6 @@
 package frc.robot.subsystems.shooter.flywheel;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
@@ -57,6 +58,12 @@ public class FlywheelIOHardware implements FlywheelIO {
         inputs.appliedVolts = this.volts.getValueAsDouble();
         inputs.supplyCurrent = this.supplyCurrent.getValueAsDouble();
         inputs.connected = this.flywheelMain.isConnected();
+
+        BaseStatusSignal.refreshAll(
+                this.position,
+                this.velocity,
+                this.volts,
+                this.supplyCurrent);
     }
 
     @Override

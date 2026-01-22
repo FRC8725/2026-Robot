@@ -8,7 +8,8 @@ public class Flywheel {
     private final FlywheelIO io;
     private final FlywheelIOInputsAutoLogged inputs = new FlywheelIOInputsAutoLogged();
 
-    private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0, 0, 0);
+    private final SimpleMotorFeedforward feedforward =
+            new SimpleMotorFeedforward(0.097838, 0.11561, 0.0039729);
 
     public Flywheel(FlywheelIO io) {
         this.io = io;
@@ -25,5 +26,9 @@ public class Flywheel {
 
     public void setVelocity(double rpm) {
         this.io.runVelocity(rpm, this.feedforward.calculate(rpm));
+    }
+
+    public double getVelocity() {
+        return this.inputs.velocityRPS;
     }
 }

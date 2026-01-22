@@ -8,7 +8,6 @@ import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.SignalLogger;
 
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -16,21 +15,20 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.rollers.RollerIOHardware;
 import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.subsystems.shooter.Shooter.FeederState;
-import frc.robot.subsystems.shooter.Shooter.FlywheelState;
-import frc.robot.subsystems.shooter.Shooter.HoodState;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIOHardware;
 import frc.robot.subsystems.shooter.hood.HoodIOHardware;
 
 public class RobotContainer {
-	private final XboxController controller = new XboxController(0);
+	private final Joysticks joysticks = new Joysticks();
 	private final Shooter shooter = this.buildShooterSubsystem();
 
 	public Shooter buildShooterSubsystem() {
 		return new Shooter(
-				new FlywheelIOHardware(0, 0),
-				new HoodIOHardware(0),
-				new RollerIOHardware(0, false));
+				new FlywheelIOHardware(20, 21),
+				new HoodIOHardware(22),
+				new RollerIOHardware(23, false),
+				this.joysticks.wantOffsetArmPositive,
+				this.joysticks.wantOffsetArmNegative);
 	}
 
 	private final SysIdRoutine sysIdRoutine = new SysIdRoutine(
@@ -69,21 +67,16 @@ public class RobotContainer {
 	}
 
 	public RobotContainer() {
-		new Trigger(this.controller::getAButton)
+		new Trigger(this.joysticks.driver::getAButton)
 				.whileTrue(this.getTester());
-		new Trigger(this.controller::getLeftBumperButton)
+		new Trigger(this.joysticks.driver::getLeftBumperButton)
 				.onTrue(Commands.runOnce(SignalLogger::start));
-		new Trigger(this.controller::getRightBumperButton)
+		new Trigger(this.joysticks.driver::getRightBumperButton)
 				.onTrue(Commands.runOnce(SignalLogger::stop));
 		// new Trigger(this.controller::getLeftBumperButton)
 		// 		.onTrue(Commands.runOnce(() -> this.shooter.offset++));
 		// new Trigger(this.controller::getRightBumperButton)
 		// 		.onTrue(Commands.runOnce(() -> this.shooter.offset--));
-		new Trigger(this.controller::getBButton)
-				.onTrue(Commands.runOnce(() ->
-						this.shooter.setStates(FlywheelState.Shoot,	HoodState.Default, FeederState.Push)))
-				.onFalse(Commands.runOnce(() ->
-						this.shooter.setStates(FlywheelState.Off, HoodState.Default, FeederState.Off)));
 	}
 
 	public Command getAutonomousCommand() {

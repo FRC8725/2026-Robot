@@ -1,8 +1,12 @@
 package frc.robot.subsystems.shooter;
 
+import java.util.function.Supplier;
+
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.rollers.RollerIO;
 import frc.robot.subsystems.shooter.feeder.Feeder;
 import frc.robot.subsystems.shooter.flywheel.Flywheel;
@@ -21,10 +25,12 @@ public class Shooter extends SubsystemBase {
     private FlywheelState flywheelState = FlywheelState.Off;
     private HoodState hoodState = HoodState.Default;
     private FeederState feederState = FeederState.Off;
+    private final Supplier<Boolean> wantOffsetPositive;
+    private final Supplier<Boolean> wantOffsetNegative;
 
     public enum FlywheelState {
         Off(0.0),
-        Shoot(0.0),
+        Shoot(5000.0),
         SlowShoot(0.0);
 
         // RPM
@@ -60,11 +66,15 @@ public class Shooter extends SubsystemBase {
         }
     }
 
-    public Shooter(FlywheelIO flywheelIO, HoodIO hoodIO, RollerIO rollerIO) {
+    public Shooter(
+            FlywheelIO flywheelIO, HoodIO hoodIO, RollerIO rollerIO,
+            Supplier<Boolean> wantOffsetPositive, Supplier<Boolean> wantOffsetNegative) {
         SHOOTER = this;
         this.flywheel = new Flywheel(flywheelIO);
         this.hood = new Hood(hoodIO);
         this.feeder = new Feeder(rollerIO);
+        this.wantOffsetPositive = wantOffsetPositive;
+        this.wantOffsetNegative = wantOffsetNegative;
     }
 
     public static Shooter getInstance() {
@@ -82,14 +92,20 @@ public class Shooter extends SubsystemBase {
         this.flywheel.setVolts(volts);
     }
 
+    public boolean atSetpoint() {
+        return Math.abs(this.flywheel.getVelocity() - this.flywheelState.speed / 60.0) < Constants.Shooter.TOLERANCE;
+    }
+
     @Override
     public void periodic() {
+        if (this.wantOffsetPositive.get()) this.offset += 0.1;
+        if (this.wantOffsetNegative.get()) this.offset -= 0.1;
         this.flywheel.periodic();
         this.hood.periodic();
         this.feeder.periodic();
 
         this.flywheel.setVelocity(this.flywheelState.speed);
-        this.hood.setControl(this.request.withPosition(this.hoodState.angle + this.offset));
+        this.hood.setControl(this.request.withPosition(Units.degreesToRotations(this.offset)));
         this.feeder.setVolts(this.feederState.volts);
     }
 }

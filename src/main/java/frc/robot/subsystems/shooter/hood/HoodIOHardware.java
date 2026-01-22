@@ -1,12 +1,15 @@
 package frc.robot.subsystems.shooter.hood;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -32,23 +35,39 @@ public class HoodIOHardware implements HoodIO {
         TalonFXConfiguration config = new TalonFXConfiguration();
         config.CurrentLimits
                 .withStatorCurrentLimitEnable(true)
-                .withStatorCurrentLimit(40.0);
+                .withStatorCurrentLimit(70.0)
+                .withSupplyCurrentLimitEnable(true)
+                .withSupplyCurrentLimit(50.0);
         config.MotionMagic
-                .withMotionMagicCruiseVelocity(1.0)
+                .withMotionMagicCruiseVelocity(0.5)
                 .withMotionMagicAcceleration(2000.0)
                 .withMotionMagicJerk(2000.0);
         config.MotorOutput
-                .withInverted(InvertedValue.Clockwise_Positive)
+                .withInverted(InvertedValue.CounterClockwise_Positive)
                 .withNeutralMode(NeutralModeValue.Brake);
-        config.DifferentialSensors
-                .withSensorToDifferentialRatio(Constants.Shooter.GEAR_RATIO);
+        config.Feedback
+                .withSensorToMechanismRatio(Constants.Shooter.GEAR_RATIO);
+        
+        Slot0Configs slot0 = new Slot0Configs();
+        slot0.kS = 0.1;
+        slot0.kV = 0.1;
+        slot0.kA = 0.0;
+        slot0.kG = 0.0;
+        slot0.kP = 10.0;
+        config.Slot0 = slot0;
 
         this.lifter.getConfigurator().apply(config);
     }
 
     @Override
     public void updateInputs(HoodIOInputs inputs) {
-        inputs.positionRads = this.position.getValueAsDouble();
+        BaseStatusSignal.refreshAll(
+                this.position,
+                this.velocity,
+                this.volts,
+                this.supplyCurrent);
+
+        inputs.positionRads = Units.rotationsToRadians(this.position.getValueAsDouble());
         inputs.velocityRPS = this.velocity.getValueAsDouble();
         inputs.appliedVolts = this.volts.getValueAsDouble();
         inputs.supplyCurrent = this.supplyCurrent.getValueAsDouble();

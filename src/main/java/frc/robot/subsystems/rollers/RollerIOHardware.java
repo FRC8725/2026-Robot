@@ -1,5 +1,6 @@
 package frc.robot.subsystems.rollers;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -50,6 +51,11 @@ public class RollerIOHardware implements RollerIO {
         inputs.appliedVolts = this.appliedVolts.getValueAsDouble();
         inputs.supplyCurrent = this.supplyCurrent.getValueAsDouble();
         inputs.connected = this.roller.isConnected();
+
+        BaseStatusSignal.refreshAll(
+                this.position,
+                this.velocity,
+                this.supplyCurrent);
     }
 
     @Override

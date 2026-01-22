@@ -10,6 +10,7 @@ public class Hood {
 
     public Hood(HoodIO io) {
         this.io = io;
+        this.io.setZeroPosition();
     }
 
     public void periodic() {

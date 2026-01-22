@@ -56,12 +56,14 @@ public class SuperStructure extends SubsystemBase {
     }
 
     public static class StructureInput {
-        public boolean wantIntake = false;
-        public boolean wantScore = false;
+        public boolean wantShoot = false;
     }
 
     private final List<Transition> transitions = Stream.of(
-
+        new Transition(State.Start, State.PreShoot, () -> this.input.wantShoot),
+        new Transition(State.PreShoot, State.Start, () -> !this.input.wantShoot),
+        new Transition(State.PreShoot, State.Shoot, () -> this.input.wantShoot && Shooter.getInstance().atSetpoint()),
+        new Transition(State.Shoot, State.Shoot, () -> !this.input.wantShoot)
     ).toList();
 
     public class Transition {
