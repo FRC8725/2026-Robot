@@ -2,12 +2,12 @@ package frc.robot.subsystems.rollers;
 
 import org.littletonrobotics.junction.Logger;
 
-public class RollerSystem {
+public class RollerIOSystem {
     private final RollerIO io;
     private final RollerIOInputsAutoLogged inputs = new RollerIOInputsAutoLogged();
     private final String name;
 
-    public RollerSystem(RollerIO io, String name) {
+    public RollerIOSystem(RollerIO io, String name) {
         this.io = io;
         this.name = name;
     }
@@ -19,5 +19,9 @@ public class RollerSystem {
 
     public void setVolts(double volts) {
         this.io.setVolts(volts);
+    }
+
+    public void stop() {
+        this.io.stop();
     }
 }

@@ -35,3 +35,7 @@ v0.0.6
 v0.0.7
 1. Simulate drive with heading
 2. Add intake unsafe function
+
+v0.0.8
+1. Add & Test Shooter (include feeder, hood, flywheeel) system
+2. Update photonlib to v2026.1.1

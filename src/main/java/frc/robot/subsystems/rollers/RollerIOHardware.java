@@ -1,5 +1,6 @@
 package frc.robot.subsystems.rollers;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -11,7 +12,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 
-public class RollerHardware implements RollerIO {
+public class RollerIOHardware implements RollerIO {
     private final TalonFX roller;
 
     private final StatusSignal<Angle> position;
@@ -19,7 +20,7 @@ public class RollerHardware implements RollerIO {
     private final StatusSignal<Voltage> appliedVolts;
     private final StatusSignal<Current> supplyCurrent;
 
-    public RollerHardware(int id, boolean reverse) {
+    public RollerIOHardware(int id, boolean reverse) {
         this.roller = new TalonFX(id);
 
         this.position = this.roller.getPosition();
@@ -45,6 +46,12 @@ public class RollerHardware implements RollerIO {
 
     @Override
     public void updateInputs(RollerIOInputs inputs) {
+        BaseStatusSignal.refreshAll(
+                this.position,
+                this.velocity,
+                this.appliedVolts,
+                this.supplyCurrent);
+                
         inputs.positionRads = this.position.getValueAsDouble();
         inputs.velocityRPS = this.velocity.getValueAsDouble();
         inputs.appliedVolts = this.appliedVolts.getValueAsDouble();

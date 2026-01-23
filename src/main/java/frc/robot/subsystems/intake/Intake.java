@@ -9,12 +9,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.rollers.RollerIO;
-import frc.robot.subsystems.rollers.RollerSystem;
+import frc.robot.subsystems.rollers.RollerIOSystem;
 
 public class Intake extends SubsystemBase {
     private static Intake INTAKE;
     private final LifterSubsystem lifter;
-    private final RollerSystem roller;
+    private final RollerIOSystem roller;
     private final MotionMagicVoltage request = new MotionMagicVoltage(0.0);
     private boolean isZeroed = false;
 
@@ -48,7 +48,7 @@ public class Intake extends SubsystemBase {
     public Intake(LifterIO lifterIO, RollerIO rollerIO) {
         INTAKE = this;
         this.lifter = new LifterSubsystem(lifterIO);
-        this.roller = new RollerSystem(rollerIO, "Intake/Roller");
+        this.roller = new RollerIOSystem(rollerIO, "Intake/Roller");
     }
 
     public static Intake getInstance() {
