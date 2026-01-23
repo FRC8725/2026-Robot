@@ -27,36 +27,36 @@ public class HoodIOHardware implements HoodIO {
     public HoodIOHardware(int id) {
         this.lifter = new TalonFX(id);
 
-        this.position = this.lifter.getPosition();
-        this.velocity = this.lifter.getVelocity();
-        this.volts = this.lifter.getMotorVoltage();
-        this.supplyCurrent = this.lifter.getSupplyCurrent();
-
         TalonFXConfiguration config = new TalonFXConfiguration();
+        Slot0Configs slot0 = new Slot0Configs();
+        slot0.kS = 0.25;
+        slot0.kV = 13.0;
+        slot0.kA = 0.0;
+        slot0.kG = 0.0;
+        slot0.kP = 250.0;
+        slot0.kD = 0.0;
         config.CurrentLimits
                 .withStatorCurrentLimitEnable(true)
                 .withStatorCurrentLimit(70.0)
                 .withSupplyCurrentLimitEnable(true)
                 .withSupplyCurrentLimit(50.0);
         config.MotionMagic
-                .withMotionMagicCruiseVelocity(0.5)
-                .withMotionMagicAcceleration(2000.0)
+                .withMotionMagicCruiseVelocity(1.0)
+                .withMotionMagicAcceleration(200.0)
                 .withMotionMagicJerk(2000.0);
         config.MotorOutput
                 .withInverted(InvertedValue.CounterClockwise_Positive)
                 .withNeutralMode(NeutralModeValue.Brake);
         config.Feedback
                 .withSensorToMechanismRatio(Constants.Shooter.GEAR_RATIO);
-        
-        Slot0Configs slot0 = new Slot0Configs();
-        slot0.kS = 0.1;
-        slot0.kV = 0.1;
-        slot0.kA = 0.0;
-        slot0.kG = 0.0;
-        slot0.kP = 10.0;
         config.Slot0 = slot0;
 
         this.lifter.getConfigurator().apply(config);
+
+        this.position = this.lifter.getPosition();
+        this.velocity = this.lifter.getVelocity();
+        this.volts = this.lifter.getMotorVoltage();
+        this.supplyCurrent = this.lifter.getSupplyCurrent();
     }
 
     @Override
@@ -85,7 +85,17 @@ public class HoodIOHardware implements HoodIO {
     }
 
     @Override
+    public void setVolts(double volts) {
+        this.lifter.setVoltage(volts);
+    }
+
+    @Override
     public void stop() {
         this.lifter.stopMotor();
+    }
+
+    @Override
+    public double getPosition() {
+        return this.lifter.getPosition().getValueAsDouble();
     }
 }

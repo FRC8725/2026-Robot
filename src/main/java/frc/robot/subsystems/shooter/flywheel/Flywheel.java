@@ -25,7 +25,7 @@ public class Flywheel {
     }
 
     public void setVelocity(double rpm) {
-        this.io.runVelocity(rpm, this.feedforward.calculate(rpm));
+        this.io.runVelocity(rpm, this.feedforward.calculate(rpm / 60.0));
     }
 
     public double getVelocity() {

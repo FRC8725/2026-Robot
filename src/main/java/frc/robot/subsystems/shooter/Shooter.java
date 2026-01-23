@@ -2,6 +2,9 @@ package frc.robot.subsystems.shooter;
 
 import java.util.function.Supplier;
 
+import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
+
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 
 import edu.wpi.first.math.util.Units;
@@ -20,10 +23,13 @@ public class Shooter extends SubsystemBase {
     private final Hood hood;
     private final Feeder feeder;
     private final MotionMagicVoltage request = new MotionMagicVoltage(0.0);
-    public double offset = 0.0;
+    public double offset = 5.0;
 
+    @AutoLogOutput(key = "Shooter/Flywheel State")
     private FlywheelState flywheelState = FlywheelState.Off;
+    @AutoLogOutput(key = "Shooter/Hood State")    
     private HoodState hoodState = HoodState.Default;
+    @AutoLogOutput(key = "Shooter/Feeder State")
     private FeederState feederState = FeederState.Off;
     private final Supplier<Boolean> wantOffsetPositive;
     private final Supplier<Boolean> wantOffsetNegative;
@@ -56,7 +62,7 @@ public class Shooter extends SubsystemBase {
 
     public enum FeederState {
         Off(0.0),
-        Push(0.0),
+        Push(5.0),
         SlowPush(0.0);
 
         public final double volts;
@@ -92,6 +98,7 @@ public class Shooter extends SubsystemBase {
         this.flywheel.setVolts(volts);
     }
 
+    @AutoLogOutput(key = "Shooter/atSetpoint")
     public boolean atSetpoint() {
         return Math.abs(this.flywheel.getVelocity() - this.flywheelState.speed / 60.0) < Constants.Shooter.TOLERANCE;
     }
@@ -105,7 +112,10 @@ public class Shooter extends SubsystemBase {
         this.feeder.periodic();
 
         this.flywheel.setVelocity(this.flywheelState.speed);
-        this.hood.setControl(this.request.withPosition(Units.degreesToRotations(this.offset)));
+        this.hood.setControl(new MotionMagicVoltage(Units.degreesToRotations(this.offset)));
         this.feeder.setVolts(this.feederState.volts);
+
+        Logger.recordOutput("Shooter Measure Deg", Units.rotationsToDegrees(this.hood.getPosition()));
+        Logger.recordOutput("Shooter Setpoint Deg", this.offset);
     }
 }

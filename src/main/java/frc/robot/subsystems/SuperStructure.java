@@ -63,7 +63,7 @@ public class SuperStructure extends SubsystemBase {
         new Transition(State.Start, State.PreShoot, () -> this.input.wantShoot),
         new Transition(State.PreShoot, State.Start, () -> !this.input.wantShoot),
         new Transition(State.PreShoot, State.Shoot, () -> this.input.wantShoot && Shooter.getInstance().atSetpoint()),
-        new Transition(State.Shoot, State.Shoot, () -> !this.input.wantShoot)
+        new Transition(State.Shoot, State.Start, () -> !this.input.wantShoot)
     ).toList();
 
     public class Transition {
@@ -85,6 +85,8 @@ public class SuperStructure extends SubsystemBase {
     }
 
     public void setStates() {
+        Shooter.getInstance().setStates(
+                this.state.flywheelState, this.state.hoodState, this.state.feederState);
     }
 
     public void emptyInputs() {

@@ -21,4 +21,12 @@ public class Hood {
     public void setControl(MotionMagicVoltage request) {
         this.io.setControl(request);
     }
+
+    public void setVolts(double volts) {
+        this.io.setVolts(volts);
+    }
+
+    public double getPosition() {
+        return this.io.getPosition();
+    }
 }

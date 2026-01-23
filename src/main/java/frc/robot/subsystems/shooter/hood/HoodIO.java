@@ -18,7 +18,11 @@ public interface HoodIO {
 
     void setControl(MotionMagicVoltage requst);
 
+    void setVolts(double volts);
+
     void setZeroPosition();
     
     void stop();
+
+    double getPosition();
 }

@@ -44,8 +44,10 @@ public class FlywheelIOHardware implements FlywheelIO {
                 .withStatorCurrentLimitEnable(true)
                 .withStatorCurrentLimit(60.0);
         config.MotorOutput
-                .withInverted(InvertedValue.Clockwise_Positive)
+                .withInverted(InvertedValue.CounterClockwise_Positive)
                 .withNeutralMode(NeutralModeValue.Brake);
+        config.Slot0
+                .withKP(0.1);
         
         this.flywheelMain.getConfigurator().apply(config);
         this.flywheelFollow.getConfigurator().apply(config);

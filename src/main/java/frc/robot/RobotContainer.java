@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.commands.SuperStructureCmd;
+import frc.robot.subsystems.SuperStructure;
 import frc.robot.subsystems.rollers.RollerIOHardware;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.flywheel.FlywheelIOHardware;
@@ -21,12 +23,13 @@ import frc.robot.subsystems.shooter.hood.HoodIOHardware;
 public class RobotContainer {
 	private final Joysticks joysticks = new Joysticks();
 	private final Shooter shooter = this.buildShooterSubsystem();
+	private final SuperStructure superStructure = new SuperStructure();
 
 	public Shooter buildShooterSubsystem() {
 		return new Shooter(
 				new FlywheelIOHardware(20, 21),
 				new HoodIOHardware(22),
-				new RollerIOHardware(23, false),
+				new RollerIOHardware(23, true),
 				this.joysticks.wantOffsetArmPositive,
 				this.joysticks.wantOffsetArmNegative);
 	}
@@ -67,12 +70,13 @@ public class RobotContainer {
 	}
 
 	public RobotContainer() {
-		new Trigger(this.joysticks.driver::getAButton)
-				.whileTrue(this.getTester());
-		new Trigger(this.joysticks.driver::getLeftBumperButton)
-				.onTrue(Commands.runOnce(SignalLogger::start));
-		new Trigger(this.joysticks.driver::getRightBumperButton)
-				.onTrue(Commands.runOnce(SignalLogger::stop));
+		this.superStructure.setDefaultCommand(new SuperStructureCmd(this.joysticks));
+		// new Trigger(this.joysticks.driver::getAButton)
+		// 		.whileTrue(this.getTester());
+		// new Trigger(this.joysticks.driver::getLeftBumperButton)
+		// 		.onTrue(Commands.runOnce(SignalLogger::start));
+		// new Trigger(this.joysticks.driver::getRightBumperButton)
+		// 		.onTrue(Commands.runOnce(SignalLogger::stop));
 		// new Trigger(this.controller::getLeftBumperButton)
 		// 		.onTrue(Commands.runOnce(() -> this.shooter.offset++));
 		// new Trigger(this.controller::getRightBumperButton)
