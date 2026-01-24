@@ -9,6 +9,9 @@ import frc.robot.commands.DriveCommand;
 import frc.robot.lib.limelight.VisionFieldPoseEstimate;
 import frc.robot.subsystems.drive.DriveIOHardware;
 import frc.robot.subsystems.drive.DriveIOSim;
+import frc.robot.subsystems.hopper.Hopper;
+import frc.robot.subsystems.hopper.HopperIOHardware;
+import frc.robot.subsystems.hopper.HopperIOSim;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.lifter.LifterIOHardware;
@@ -39,6 +42,7 @@ public class RobotContainer {
 	private final Drive drive = this.buildDriveSubsystem();
 	private final Intake intake = this.buildIntakeSubsystem();
 	private final Shooter shooter = this.buildShooterSubsystem();
+	private final Hopper hopper = this.buildHopperSubsystem();
 	private final Vision vision = this.buildVisionSubsystem();
 
 	public Drive buildDriveSubsystem() {
@@ -59,13 +63,13 @@ public class RobotContainer {
 	public Shooter buildShooterSubsystem() {
 		if (RobotBase.isSimulation()) {
 			return new Shooter(
-					new FlywheelIOSim(0),
-					new HoodIOSim(0),
+					new FlywheelIOSim(),
+					new HoodIOSim(),
 					new FeederIOSim());
 		} else {
 			return new Shooter(
-					new FlywheelIOHardware(0, 0),
-					new HoodIOHardware(0), 
+					new FlywheelIOHardware(),
+					new HoodIOHardware(), 
 					new FeederIOHardware());
 		}
 	}
@@ -73,12 +77,22 @@ public class RobotContainer {
 	public Intake buildIntakeSubsystem() {
 		if (RobotBase.isSimulation()) {
 			return new Intake(
-					new LifterIOSim(0),
+					new LifterIOSim(),
 					new IntakeRollerSim());
 		} else {
 			return new Intake(
-					new LifterIOHardware(0),
+					new LifterIOHardware(),
 					new IntakeRollerHardware());
+		}
+	}
+
+	public Hopper buildHopperSubsystem() {
+		if (RobotBase.isSimulation()) {
+			return new Hopper(
+					new HopperIOSim());
+		} else {
+			return new Hopper(
+					new HopperIOHardware());
 		}
 	}
 
@@ -89,7 +103,8 @@ public class RobotContainer {
 					this.robotState);
 		} else {
 			return new Vision(
-					new VisionIOHardware(), this.robotState);
+					new VisionIOHardware(),
+					this.robotState);
 		}
 	}
 

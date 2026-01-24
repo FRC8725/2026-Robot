@@ -15,6 +15,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants;
+import frc.robot.Constants.Shooter;
 
 public class HoodIOHardware implements HoodIO {
     private final TalonFX lifter;
@@ -24,8 +25,8 @@ public class HoodIOHardware implements HoodIO {
     private final StatusSignal<Voltage> volts;
     private final StatusSignal<Current> supplyCurrent;
     
-    public HoodIOHardware(int id) {
-        this.lifter = new TalonFX(id);
+    public HoodIOHardware() {
+        this.lifter = new TalonFX(Shooter.HOOD_ID);
 
         TalonFXConfiguration config = new TalonFXConfiguration();
         Slot0Configs slot0 = new Slot0Configs();

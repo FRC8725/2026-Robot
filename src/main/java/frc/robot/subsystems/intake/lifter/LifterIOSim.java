@@ -7,14 +7,14 @@ import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
-import frc.robot.Constants;
+import frc.robot.Constants.Intake;
 
 public class LifterIOSim implements LifterIO {
     private final TalonFX lifter;
     private final TalonFXSimState simState;
     private final SingleJointedArmSim sim = new SingleJointedArmSim(
             DCMotor.getKrakenX60(1),
-            Constants.Intake.LIFTER_GEAR_RATIO,
+            Intake.LIFTER_GEAR_RATIO,
             SingleJointedArmSim.estimateMOI(0.1, 3.0),
             0.1,
             0.0,
@@ -22,10 +22,10 @@ public class LifterIOSim implements LifterIO {
             true,
             0);
 
-    public LifterIOSim(int id) {
-        this.lifter = new TalonFX(id);
+    public LifterIOSim() {
+        this.lifter = new TalonFX(Intake.LIFTER_ID);
 
-        this.lifter.getConfigurator().apply(Constants.Intake.LIFTER_CONFIG);
+        this.lifter.getConfigurator().apply(Intake.LIFTER_CONFIG);
         this.simState = this.lifter.getSimState();
     }
 
@@ -42,10 +42,10 @@ public class LifterIOSim implements LifterIO {
 
         this.simState.setRawRotorPosition(
                 Units.radiansToRotations(this.sim.getAngleRads())
-                        * Constants.Intake.LIFTER_GEAR_RATIO);
+                        * Intake.LIFTER_GEAR_RATIO);
         this.simState.setRotorVelocity(
                 Units.radiansToRotations(this.sim.getVelocityRadPerSec())
-                        * Constants.Intake.LIFTER_GEAR_RATIO);
+                        * Intake.LIFTER_GEAR_RATIO);
     }
 
     @Override

@@ -9,7 +9,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
-import frc.robot.Constants;
+import frc.robot.Constants.Shooter;
 
 public class FlywheelIOSim implements FlywheelIO {
     private final TalonFX flywheel;
@@ -18,17 +18,17 @@ public class FlywheelIOSim implements FlywheelIO {
             LinearSystemId.createFlywheelSystem(
                     DCMotor.getKrakenX60(2),
                     0.02,
-                    Constants.Shooter.FLYWHEEL_GEAR_RATIO),
+                    Shooter.FLYWHEEL_GEAR_RATIO),
             DCMotor.getKrakenX60(2));
 
     private final VoltageOut voltageOut = new VoltageOut(0.0);
     private final VelocityVoltage velocityControl =
             new VelocityVoltage(0.0).withUpdateFreqHz(0.0);
 
-    public FlywheelIOSim(int mainId) {
-        this.flywheel = new TalonFX(mainId);
+    public FlywheelIOSim() {
+        this.flywheel = new TalonFX(Shooter.FLYWHEEL_MAIN_ID);
 
-        this.flywheel.getConfigurator().apply(Constants.Shooter.FLYWHEEL_CONFIG);
+        this.flywheel.getConfigurator().apply(Shooter.FLYWHEEL_CONFIG);
         this.simState = this.flywheel.getSimState();
     }
 
@@ -44,7 +44,7 @@ public class FlywheelIOSim implements FlywheelIO {
         inputs.connected = true;
 
         double velocity = Units.radiansToRotations(this.sim.getAngularVelocityRadPerSec())
-                * Constants.Shooter.FLYWHEEL_GEAR_RATIO;
+                * Shooter.FLYWHEEL_GEAR_RATIO;
         this.simState.setRotorVelocity(velocity);
         this.simState.addRotorPosition(velocity * 0.02);
     }

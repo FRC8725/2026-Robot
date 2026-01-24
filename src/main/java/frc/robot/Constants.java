@@ -90,8 +90,14 @@ public final class Constants {
     }
 
     public final class Shooter {
+		public static final int HOOD_ID = 0;
+		public static final int FLYWHEEL_MAIN_ID = 0;
+		public static final int FLYWHEEL_FOLLOW_ID = 0;
+		public static final int FEEDER_ID = 0;
+
         public static final double HOOD_GEAR_RATIO = 17.5 * 75.0 / 8.0;
 		public static final double FLYWHEEL_GEAR_RATIO = 1.0;
+		
 		public static final double TOLERANCE = 3.0;
 
         public static final TalonFXConfiguration FLYWHEEL_CONFIG = new TalonFXConfiguration()
@@ -135,6 +141,12 @@ public final class Constants {
 								.withKD(0.0));
     }
 
+	public final class Hopper {
+		public static final int ID = 0;
+		public static final double GEAR_RATIO = 1.0;
+		
+	}
+
     public final class Vision {
         public static final double LARGE_VARIANCE = 1e6;
 
@@ -176,8 +188,8 @@ public final class Constants {
                 0.306542, -0.076121, 0.120064,
                 new Rotation3d(0.0, CAMERA_RIGHT_PITCH_RADS, CAMERA_LEFT_YAW.getRadians()));
     }
-
-	public final class Field {
+        
+    public final class Field {
         // Field Size
         public static final double FIELD_X_SIZE = Units.inchesToMeters(651.22);
         public static final double FIELD_Y_SIZE = Units.inchesToMeters(317.69);

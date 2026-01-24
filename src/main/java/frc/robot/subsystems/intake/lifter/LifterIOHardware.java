@@ -11,7 +11,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
-import frc.robot.Constants;
+import frc.robot.Constants.Intake;
 
 public class LifterIOHardware implements LifterIO {
     private final TalonFX lifter;
@@ -21,14 +21,14 @@ public class LifterIOHardware implements LifterIO {
     private final StatusSignal<Voltage> appliedVolts;
     private final StatusSignal<Current> supplyCurrent;
 
-    public LifterIOHardware(int id) {
-        this.lifter = new TalonFX(id);
+    public LifterIOHardware() {
+        this.lifter = new TalonFX(Intake.LIFTER_ID);
         this.position = this.lifter.getPosition();
         this.velocity = this.lifter.getVelocity();
         this.appliedVolts = this.lifter.getMotorVoltage();
         this.supplyCurrent = this.lifter.getSupplyCurrent();
 
-        this.lifter.getConfigurator().apply(Constants.Intake.LIFTER_CONFIG);
+        this.lifter.getConfigurator().apply(Intake.LIFTER_CONFIG);
     }
 
     @Override

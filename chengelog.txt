@@ -52,3 +52,7 @@ v0.1.1
 1. Rename DriveSubsystem to Drive
 2. Rename VisionSubsystem to Vision
 3. Optimized roller io implentment method 
+
+v0.1.2
+1. Optimized RobotContainer create io input
+2. Add mechnism roller io to solve some problem

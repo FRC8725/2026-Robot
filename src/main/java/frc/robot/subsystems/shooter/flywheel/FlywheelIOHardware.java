@@ -12,7 +12,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
-import frc.robot.Constants;
+import frc.robot.Constants.Shooter;
 
 public class FlywheelIOHardware implements FlywheelIO {
     private final TalonFX flywheelMain;
@@ -27,9 +27,9 @@ public class FlywheelIOHardware implements FlywheelIO {
     private final StatusSignal<Voltage> volts;
     private final StatusSignal<Current> supplyCurrent;
 
-    public FlywheelIOHardware(int main, int follow) {
-        this.flywheelMain = new TalonFX(main);
-        this.flywheelFollow = new TalonFX(follow);
+    public FlywheelIOHardware() {
+        this.flywheelMain = new TalonFX(Shooter.FLYWHEEL_MAIN_ID);
+        this.flywheelFollow = new TalonFX(Shooter.FLYWHEEL_FOLLOW_ID);
         this.follower = new Follower(this.flywheelMain.getDeviceID(), MotorAlignmentValue.Opposed);
 
         this.position = this.flywheelMain.getPosition();
@@ -37,8 +37,8 @@ public class FlywheelIOHardware implements FlywheelIO {
         this.volts = this.flywheelMain.getMotorVoltage();
         this.supplyCurrent = this.flywheelMain.getSupplyCurrent();
         
-        this.flywheelMain.getConfigurator().apply(Constants.Shooter.FLYWHEEL_CONFIG);
-        this.flywheelFollow.getConfigurator().apply(Constants.Shooter.FLYWHEEL_CONFIG);
+        this.flywheelMain.getConfigurator().apply(Shooter.FLYWHEEL_CONFIG);
+        this.flywheelFollow.getConfigurator().apply(Shooter.FLYWHEEL_CONFIG);
     }
 
     @Override

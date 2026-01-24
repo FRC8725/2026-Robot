@@ -8,6 +8,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import frc.robot.Constants;
+import frc.robot.Constants.Shooter;
 
 public class HoodIOSim implements HoodIO {
     private final TalonFX hood;
@@ -22,8 +23,8 @@ public class HoodIOSim implements HoodIO {
             true,
             0.0);
 
-    public HoodIOSim(int id) {
-        this.hood = new TalonFX(id);
+    public HoodIOSim() {
+        this.hood = new TalonFX(Shooter.HOOD_ID);
 
         this.hood.getConfigurator().apply(Constants.Shooter.HOOD_CONFIG);
         this.simState = this.hood.getSimState();
