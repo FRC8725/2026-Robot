@@ -6,6 +6,8 @@ import org.littletonrobotics.junction.AutoLogOutput;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.hopper.Hopper;
+import frc.robot.subsystems.shooter.Shooter;
 
 public class SuperStructure extends SubsystemBase {
     private static SuperStructure SUPERSTRUCTURE;
@@ -24,7 +26,27 @@ public class SuperStructure extends SubsystemBase {
     }
 
     public enum State {
-        Start
+        Start(
+            Shooter.FlywheelState.Off,
+            Shooter.HoodState.Default,
+            Shooter.FeederState.Off,
+            Hopper.HopperState.Off);
+
+        private final Shooter.FlywheelState flywheelState;
+        private final Shooter.HoodState hoodState;
+        private final Shooter.FeederState feederState;
+        private final Hopper.HopperState hopperState;
+
+        State(
+                Shooter.FlywheelState flywheelState,
+                Shooter.HoodState hoodState,
+                Shooter.FeederState feederState,
+                Hopper.HopperState hopperState) {
+            this.flywheelState = flywheelState;
+            this.hoodState = hoodState;
+            this.feederState = feederState;
+            this.hopperState = hopperState;
+        }
     }
 
     public static class StructureInput {
@@ -51,7 +73,10 @@ public class SuperStructure extends SubsystemBase {
     }
 
     public void setStates() {
-
+        Shooter.getInstance().setStates(
+                this.state.flywheelState, this.state.hoodState, this.state.feederState);
+        Hopper.getInstance().setState(
+                this.state.hopperState);
     }
 
     public void emptyInput() {
@@ -60,6 +85,16 @@ public class SuperStructure extends SubsystemBase {
 
     @Override
     public void periodic() {
-        
+        this.stateTime.start();
+
+        for (Transition translate : this.transitions) {
+            if (translate.currentState == state && translate.booleanSupplier.get()) {
+                state = translate.nextState;
+                this.stateTime.restart();
+                translate.enterFunction.run();
+                this.setStates();
+                return;
+            }
+        }
     }
 }

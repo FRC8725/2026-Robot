@@ -3,7 +3,6 @@ package frc.robot.subsystems.shooter;
 import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.AutoLogOutput;
-import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 
@@ -31,6 +30,7 @@ public class Shooter extends SubsystemBase {
     private HoodState hoodState = HoodState.Default;
     @AutoLogOutput(key = "Shooter/Feeder State")
     private FeederState feederState = FeederState.Off;
+
     private final Supplier<Boolean> wantOffsetPositive;
     private final Supplier<Boolean> wantOffsetNegative;
 
@@ -115,8 +115,5 @@ public class Shooter extends SubsystemBase {
         this.flywheel.setVelocity(this.flywheelState.speed);
         this.hood.setControl(new MotionMagicVoltage(Units.degreesToRotations(this.offset)));
         this.feeder.setVolts(this.feederState.volts);
-
-        Logger.recordOutput("Shooter Measure Deg", Units.rotationsToDegrees(this.hood.getPosition()));
-        Logger.recordOutput("Shooter Setpoint Deg", this.offset);
     }
 }

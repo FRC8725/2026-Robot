@@ -39,3 +39,7 @@ v0.0.7
 v0.0.8
 1. Add & Test Shooter (include feeder, hood, flywheeel) system
 2. Update photonlib to v2026.1.1
+
+v0.0.9
+1. Add Hopper roller system
+2. Remove controller joystick
