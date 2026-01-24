@@ -47,3 +47,8 @@ v0.0.9
 v0.1
 1. Adjust some io refresh varable seqence
 2. Add intake lifter simulation
+
+v0.1.1
+1. Rename DriveSubsystem to Drive
+2. Rename VisionSubsystem to Vision
+3. Optimized roller io implentment method 

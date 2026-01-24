@@ -2,19 +2,17 @@ package frc.robot.subsystems.shooter.flywheel;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
-import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
+import frc.robot.Constants;
 
 public class FlywheelIOHardware implements FlywheelIO {
     private final TalonFX flywheelMain;
@@ -38,19 +36,9 @@ public class FlywheelIOHardware implements FlywheelIO {
         this.velocity = this.flywheelMain.getVelocity();
         this.volts = this.flywheelMain.getMotorVoltage();
         this.supplyCurrent = this.flywheelMain.getSupplyCurrent();
-
-        TalonFXConfiguration config = new TalonFXConfiguration();
-        config.CurrentLimits
-                .withStatorCurrentLimitEnable(true)
-                .withStatorCurrentLimit(60.0);
-        config.MotorOutput
-                .withInverted(InvertedValue.CounterClockwise_Positive)
-                .withNeutralMode(NeutralModeValue.Brake);
-        config.Slot0
-                .withKP(0.1);
         
-        this.flywheelMain.getConfigurator().apply(config);
-        this.flywheelFollow.getConfigurator().apply(config);
+        this.flywheelMain.getConfigurator().apply(Constants.Shooter.FLYWHEEL_CONFIG);
+        this.flywheelFollow.getConfigurator().apply(Constants.Shooter.FLYWHEEL_CONFIG);
     }
 
     @Override

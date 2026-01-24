@@ -1,4 +1,4 @@
-package frc.robot.subsystems.intake;
+package frc.robot.subsystems.shooter.hood;
 
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -9,28 +9,28 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import frc.robot.Constants;
 
-public class LifterIOSim implements LifterIO {
-    private final TalonFX lifter;
+public class HoodIOSim implements HoodIO {
+    private final TalonFX hood;
     private final TalonFXSimState simState;
     private final SingleJointedArmSim sim = new SingleJointedArmSim(
-            DCMotor.getKrakenX60(1),
-            Constants.Intake.LIFTER_GEAR_RATIO,
-            SingleJointedArmSim.estimateMOI(0.1, 3.0),
+            DCMotor.getKrakenX44(1),
+            Constants.Shooter.HOOD_GEAR_RATIO,
+            SingleJointedArmSim.estimateMOI(0.1, 0.5),
             0.1,
             0.0,
-            Units.degreesToRadians(90.0),
+            0.0,
             true,
-            0);
+            0.0);
 
-    public LifterIOSim(int id) {
-        this.lifter = new TalonFX(id);
+    public HoodIOSim(int id) {
+        this.hood = new TalonFX(id);
 
-        this.lifter.getConfigurator().apply(Constants.Intake.LIFTER_CONFIG);
-        this.simState = this.lifter.getSimState();
+        this.hood.getConfigurator().apply(Constants.Shooter.HOOD_CONFIG);
+        this.simState = this.hood.getSimState();
     }
 
     @Override
-    public void updateInputs(LifterIOInputs inputs) {
+    public void updateInputs(HoodIOInputs inputs) {
         inputs.positionRads = this.sim.getAngleRads();
         inputs.velocityRPS = Units.radiansToRotations(this.sim.getVelocityRadPerSec());
         inputs.appliedVolts = this.simState.getMotorVoltage();
@@ -42,24 +42,35 @@ public class LifterIOSim implements LifterIO {
 
         this.simState.setRawRotorPosition(
                 Units.radiansToRotations(this.sim.getAngleRads())
-                        * Constants.Intake.LIFTER_GEAR_RATIO);
+                        * Constants.Shooter.HOOD_GEAR_RATIO);
         this.simState.setRotorVelocity(
                 Units.radiansToRotations(this.sim.getVelocityRadPerSec())
-                        * Constants.Intake.LIFTER_GEAR_RATIO);
+                        * Constants.Shooter.HOOD_GEAR_RATIO);
     }
 
     @Override
-    public void setControl(MotionMagicVoltage request) {
-        this.lifter.setControl(request);
+    public void setControl(MotionMagicVoltage requst) {
+        this.hood.setControl(requst);
+    }
+
+    @Override
+    public void setVolts(double volts) {
+        this.hood.setVoltage(volts);
     }
 
     @Override
     public void setZeroPosition() {
-        this.lifter.setPosition(0.0);
+        this.hood.setPosition(0.0);
     }
 
     @Override
     public void stop() {
-        this.lifter.stopMotor();
+        this.hood.stopMotor();
     }
+
+    @Override
+    public double getPosition() {
+        return this.hood.getPosition().getValueAsDouble();
+    }
+    
 }

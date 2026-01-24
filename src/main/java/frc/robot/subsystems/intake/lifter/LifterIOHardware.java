@@ -1,4 +1,4 @@
-package frc.robot.subsystems.intake;
+package frc.robot.subsystems.intake.lifter;
 
 import org.littletonrobotics.junction.Logger;
 

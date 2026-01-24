@@ -8,13 +8,11 @@ import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
 public class RollerIOSim implements RollerIO {
     private final DCMotorSim sim;
-    private final DCMotor gearbox;
     private double appliedVolts = 0.0;
 
     public RollerIOSim(DCMotor motor, double reduction, double moi) {
-        this.gearbox = motor;
         this.sim = new DCMotorSim(
-                LinearSystemId.createDCMotorSystem(motor, reduction, moi), motor);
+                LinearSystemId.createDCMotorSystem(motor, moi, reduction), motor);
     }
 
     @Override

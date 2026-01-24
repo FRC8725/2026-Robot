@@ -54,7 +54,11 @@ public final class Constants {
     }
     
     public final class Intake {
+        public static final int LIFTER_ID = 0;
+        public static final int ROLLER_ID = 0;
+        
         public static final double LIFTER_GEAR_RATIO = 1.0;
+        public static final double ROLLER_GEAR_RATIO = 1.0;
         public static final double LIFTER_ANGLE_TOLERANCE = 0.01;
 
         public static final double LIFTER_LIMIT_DISTANCE = 0.0;
@@ -86,8 +90,49 @@ public final class Constants {
     }
 
     public final class Shooter {
-        public static final double GEAR_RATIO = 17.5 * 75.0 / 8.0;
+        public static final double HOOD_GEAR_RATIO = 17.5 * 75.0 / 8.0;
+		public static final double FLYWHEEL_GEAR_RATIO = 1.0;
 		public static final double TOLERANCE = 3.0;
+
+        public static final TalonFXConfiguration FLYWHEEL_CONFIG = new TalonFXConfiguration()
+                .withCurrentLimits(
+						new CurrentLimitsConfigs()
+								.withStatorCurrentLimitEnable(true)
+								.withStatorCurrentLimit(60.0))
+				.withMotorOutput(
+						new MotorOutputConfigs()
+								.withInverted(InvertedValue.CounterClockwise_Positive)
+								.withNeutralMode(NeutralModeValue.Coast))
+				.withSlot0(
+						new Slot0Configs()
+								.withKP(0.1));
+		public static final TalonFXConfiguration HOOD_CONFIG = new TalonFXConfiguration()
+				.withCurrentLimits(
+						new CurrentLimitsConfigs()
+								.withStatorCurrentLimitEnable(true)
+                				.withStatorCurrentLimit(70.0)
+                				.withSupplyCurrentLimitEnable(true)
+                				.withSupplyCurrentLimit(50.0))
+				.withMotorOutput(
+						new MotorOutputConfigs()
+								.withInverted(InvertedValue.CounterClockwise_Positive)
+								.withNeutralMode(NeutralModeValue.Brake))
+				.withFeedback(
+						new FeedbackConfigs()
+								.withSensorToMechanismRatio(HOOD_GEAR_RATIO))
+				.withMotionMagic(
+						new MotionMagicConfigs()
+								.withMotionMagicCruiseVelocity(1.0)
+                				.withMotionMagicAcceleration(200.0)
+                				.withMotionMagicJerk(2000.0))
+				.withSlot0(
+						new Slot0Configs()
+								.withKS(0.25)
+								.withKV(13.0)
+								.withKA(0.0)
+								.withKG(0.0)
+								.withKP(250.0)
+								.withKD(0.0));
     }
 
     public final class Vision {

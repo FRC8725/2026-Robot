@@ -20,17 +20,16 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotState;
-import frc.robot.Constants.Vision;
 import frc.robot.lib.limelight.MegatagPoseEstimate;
 import frc.robot.lib.limelight.VisionFieldPoseEstimate;
 import frc.robot.lib.math.MathHelpers;
 
-public class VisionSubsystem extends SubsystemBase {
+public class Vision extends SubsystemBase {
     private final VisionIO io;
     private final RobotState state;
     private final VisionIO.VisionIOInputs inputs = new VisionIO.VisionIOInputs();
 
-    public VisionSubsystem(VisionIO io, RobotState robotState) {
+    public Vision(VisionIO io, RobotState robotState) {
         this.io = io;
         this.state = robotState;
     }
@@ -56,8 +55,8 @@ public class VisionSubsystem extends SubsystemBase {
         var varianceB = b.getVisionMeasurementStdDevs().elementTimes(b.getVisionMeasurementStdDevs());
 
         Rotation2d fusedHeading = poseB.getRotation();
-        if (varianceA.get(2, 0) < Vision.LARGE_VARIANCE
-                && varianceB.get(2, 0) < Vision.LARGE_VARIANCE) {
+        if (varianceA.get(2, 0) < Constants.Vision.LARGE_VARIANCE
+                && varianceB.get(2, 0) < Constants.Vision.LARGE_VARIANCE) {
             fusedHeading = new Rotation2d(
                     poseA.getRotation().getCos() / varianceA.get(2, 0)
                             + poseB.getRotation().getCos() / varianceB.get(2, 0),
@@ -141,15 +140,15 @@ public class VisionSubsystem extends SubsystemBase {
                                                 .rotateBy(priorPose.get().getRotation())),
                         priorPose.get().getRotation());
 
-        double xStd = cam.standardDeviations[Vision.kMegatag1XStdDevIndex];
-        double yStd = cam.standardDeviations[Vision.kMegatag1YStdDevIndex];
+        double xStd = cam.standardDeviations[Constants.Vision.kMegatag1XStdDevIndex];
+        double yStd = cam.standardDeviations[Constants.Vision.kMegatag1YStdDevIndex];
         double xyStd = Math.max(xStd, yStd);
 
         return Optional.of(
                 new VisionFieldPoseEstimate(
                         posteriorPose,
                         poseEstimate.timestampSeconds(),
-                        VecBuilder.fill(xyStd, xyStd, Vision.LARGE_VARIANCE),
+                        VecBuilder.fill(xyStd, xyStd, Constants.Vision.LARGE_VARIANCE),
                         poseEstimate.fiducialIds().length));
     }
 
@@ -165,17 +164,17 @@ public class VisionSubsystem extends SubsystemBase {
         // Single‑tag extra checks
         if (poseEstimate.fiducialIds().length < 2) {
             for (var fiducial : cam.fiducialObservations) {
-                if (fiducial.ambiguity() > Vision.kDefaultAmbiguityThreshold) {
+                if (fiducial.ambiguity() > Constants.Vision.kDefaultAmbiguityThreshold) {
                     return Optional.empty();
                 }
             }
 
-            if (poseEstimate.avgTagArea() < Vision.kTagMinAreaForSingleTagMegatag) {
+            if (poseEstimate.avgTagArea() < Constants.Vision.kTagMinAreaForSingleTagMegatag) {
                 return Optional.empty();
             }
 
             var priorPose = this.state.getFieldToRobot(poseEstimate.timestampSeconds());
-            if (poseEstimate.avgTagArea() < Vision.kTagAreaThresholdForYawCheck
+            if (poseEstimate.avgTagArea() < Constants.Vision.kTagAreaThresholdForYawCheck
                     && priorPose.isPresent()) {
                 double yawDiff =
                         Math.abs(
@@ -186,18 +185,18 @@ public class VisionSubsystem extends SubsystemBase {
                                                         .getRotation()
                                                         .getRadians()));
 
-                if (yawDiff > Units.degreesToRadians(Vision.kDefaultYawDiffThreshold)) {
+                if (yawDiff > Units.degreesToRadians(Constants.Vision.kDefaultYawDiffThreshold)) {
                     return Optional.empty();
                 }
             }
         }
 
         if (poseEstimate.fieldToRobot().getTranslation().getNorm()
-                < Vision.kDefaultNormThreshold) {
+                < Constants.Vision.kDefaultNormThreshold) {
             return Optional.empty();
         }
 
-        if (Math.abs(cam.pose3d.getZ()) > Vision.kDefaultZThreshold) {
+        if (Math.abs(cam.pose3d.getZ()) > Constants.Vision.kDefaultZThreshold) {
             return Optional.empty();
         }
 
@@ -220,10 +219,10 @@ public class VisionSubsystem extends SubsystemBase {
         Pose2d estimatePose = poseEstimate.fieldToRobot();
 
         double scaleFactor = 1.0 / poseEstimate.quality();
-        double xStd = cam.standardDeviations[Vision.kMegatag1XStdDevIndex] * scaleFactor;
-        double yStd = cam.standardDeviations[Vision.kMegatag1YStdDevIndex] * scaleFactor;
+        double xStd = cam.standardDeviations[Constants.Vision.kMegatag1XStdDevIndex] * scaleFactor;
+        double yStd = cam.standardDeviations[Constants.Vision.kMegatag1YStdDevIndex] * scaleFactor;
         double rotStd =
-                cam.standardDeviations[Vision.kMegatag1YawStdDevIndex] * scaleFactor;
+                cam.standardDeviations[Constants.Vision.kMegatag1YawStdDevIndex] * scaleFactor;
 
         double xyStd = Math.max(xStd, yStd);
         Matrix<N3, N1> visionStdDevs = VecBuilder.fill(xyStd, xyStd, rotStd);
@@ -320,11 +319,11 @@ public class VisionSubsystem extends SubsystemBase {
         var maybeMTA = this.processCamera(
 				this.inputs.cameraA,
 				"CameraA",
-				MathHelpers.toTransform2d(Vision.CAMERA_LEFT_TRANSFORM));
+				MathHelpers.toTransform2d(Constants.Vision.CAMERA_LEFT_TRANSFORM));
 		var maybeMTB = this.processCamera(
 				this.inputs.cameraB,
 				"CameraB",
-				MathHelpers.toTransform2d(Vision.CAMERA_RIGHT_TRANSFORM));
+				MathHelpers.toTransform2d(Constants.Vision.CAMERA_RIGHT_TRANSFORM));
 
 		Optional<VisionFieldPoseEstimate> accepted = Optional.empty();
 

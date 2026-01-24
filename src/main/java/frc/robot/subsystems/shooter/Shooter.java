@@ -1,7 +1,5 @@
 package frc.robot.subsystems.shooter;
 
-import java.util.function.Supplier;
-
 import org.littletonrobotics.junction.AutoLogOutput;
 
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
@@ -30,9 +28,6 @@ public class Shooter extends SubsystemBase {
     private HoodState hoodState = HoodState.Default;
     @AutoLogOutput(key = "Shooter/Feeder State")
     private FeederState feederState = FeederState.Off;
-
-    private final Supplier<Boolean> wantOffsetPositive;
-    private final Supplier<Boolean> wantOffsetNegative;
 
     public enum FlywheelState {
         Off(0.0),
@@ -73,14 +68,11 @@ public class Shooter extends SubsystemBase {
     }
 
     public Shooter(
-            FlywheelIO flywheelIO, HoodIO hoodIO, RollerIO rollerIO,
-            Supplier<Boolean> wantOffsetPositive, Supplier<Boolean> wantOffsetNegative) {
+            FlywheelIO flywheelIO, HoodIO hoodIO, RollerIO rollerIO) {
         SHOOTER = this;
         this.flywheel = new Flywheel(flywheelIO);
         this.hood = new Hood(hoodIO);
         this.feeder = new Feeder(rollerIO);
-        this.wantOffsetPositive = wantOffsetPositive;
-        this.wantOffsetNegative = wantOffsetNegative;
     }
 
     public static Shooter getInstance() {
@@ -106,8 +98,6 @@ public class Shooter extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (this.wantOffsetPositive.get()) this.offset += 0.1;
-        if (this.wantOffsetNegative.get()) this.offset -= 0.1;
         this.flywheel.periodic();
         this.hood.periodic();
         this.feeder.periodic();

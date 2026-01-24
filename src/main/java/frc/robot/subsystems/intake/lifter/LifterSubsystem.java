@@ -1,8 +1,10 @@
-package frc.robot.subsystems.intake;
+package frc.robot.subsystems.intake.lifter;
 
 import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+
+import frc.robot.subsystems.intake.LifterIOInputsAutoLogged;
 
 public class LifterSubsystem {
     private final LifterIO io;

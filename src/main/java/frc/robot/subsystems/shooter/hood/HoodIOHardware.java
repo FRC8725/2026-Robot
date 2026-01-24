@@ -48,7 +48,7 @@ public class HoodIOHardware implements HoodIO {
                 .withInverted(InvertedValue.CounterClockwise_Positive)
                 .withNeutralMode(NeutralModeValue.Brake);
         config.Feedback
-                .withSensorToMechanismRatio(Constants.Shooter.GEAR_RATIO);
+                .withSensorToMechanismRatio(Constants.Shooter.HOOD_GEAR_RATIO);
         config.Slot0 = slot0;
 
         this.lifter.getConfigurator().apply(config);

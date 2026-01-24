@@ -16,8 +16,8 @@ import frc.robot.lib.limelight.VisionFieldPoseEstimate;
 import frc.robot.lib.simulation.MapleSimDrivetrain;
 import org.littletonrobotics.junction.Logger;
 
-public class DriveSubsystem extends SubsystemBase {
-    private static DriveSubsystem DRIVE;
+public class Drive extends SubsystemBase {
+    private static Drive DRIVE;
     private final DriveIO io;
     private final DriveIOInputsAutoLogged inputs = new DriveIOInputsAutoLogged();
 
@@ -27,13 +27,13 @@ public class DriveSubsystem extends SubsystemBase {
     private final PIDController yController = new PIDController(10.0, 0, 0.0);
     private final PIDController headingController = new PIDController(7.0, 0.0, 0.0);
 
-    public DriveSubsystem(DriveIO io) {
+    public Drive(DriveIO io) {
         DRIVE = this;
         this.io = io;
         this.headingController.enableContinuousInput(-Math.PI, Math.PI);
     }
 
-    public static DriveSubsystem getInstance() {
+    public static Drive getInstance() {
         return DRIVE;
     }
 

@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Watchdog;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.drive.Drive;
 
 public class Robot extends LoggedRobot {
 	private static final double loopOverrunWarningTimeout = 0.2;
@@ -92,8 +93,8 @@ public class Robot extends LoggedRobot {
         RobotController.setBrownoutVoltage(6.0);
 
 		if (RobotBase.isSimulation()) {
-			this.robotContainer.getDriveSubsystem().resetOdometry(
-					new Pose2d(2.0, 2.0, Rotation2d.kZero));
+			Drive.getInstance().resetOdometry(
+					new Pose2d(2.0, 2.0, Rotation2d.kZero));					
 		}
 	}
 

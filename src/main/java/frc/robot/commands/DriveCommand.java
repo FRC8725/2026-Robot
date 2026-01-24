@@ -9,13 +9,13 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.lib.math.MathHelpers;
-import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.subsystems.drive.Drive;
 import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
 
 public class DriveCommand extends Command {
-    private final DriveSubsystem driveSubsystem;
+    private final Drive driveSubsystem;
     private final Supplier<Double> xSpeed, ySpeed, rSpeed;
 
     private final SwerveRequest.FieldCentric driveRequest =
@@ -31,7 +31,7 @@ public class DriveCommand extends Command {
                     .withDriveRequestType(DriveRequestType.Velocity);
 
     public DriveCommand(
-            DriveSubsystem driveSubsystem,
+            Drive driveSubsystem,
             Supplier<Double> xSpeed,
             Supplier<Double> ySpeed,
             Supplier<Double> rSpeed) {
