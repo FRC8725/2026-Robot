@@ -4,6 +4,15 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -49,6 +58,31 @@ public final class Constants {
         public static final double LIFTER_ANGLE_TOLERANCE = 0.01;
 
         public static final double LIFTER_LIMIT_DISTANCE = 0.0;
+
+        public static final TalonFXConfiguration LIFTER_CONFIG = new TalonFXConfiguration()
+                .withCurrentLimits(
+                        new CurrentLimitsConfigs()
+                                .withSupplyCurrentLimitEnable(true)
+                                .withSupplyCurrentLimit(40.0))
+                .withMotionMagic(
+                        new MotionMagicConfigs()
+                                .withMotionMagicCruiseVelocity(1.0)
+                                .withMotionMagicAcceleration(10.0)
+                                .withMotionMagicJerk(2000.0))
+                .withMotorOutput(
+                        new MotorOutputConfigs()
+                                .withInverted(InvertedValue.Clockwise_Positive)
+                                .withNeutralMode(NeutralModeValue.Brake))
+                .withFeedback(
+                        new FeedbackConfigs()
+                                .withSensorToMechanismRatio(LIFTER_GEAR_RATIO))
+                .withSlot0(
+                        new Slot0Configs()
+                                .withKP(0.0)
+                                .withKS(0.0)
+                                .withKV(0.0)
+                                .withKG(0.0)
+                                .withKA(0.0));
     }
 
     public final class Shooter {

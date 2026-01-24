@@ -4,11 +4,8 @@ import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -31,42 +28,22 @@ public class LifterIOHardware implements LifterIO {
         this.appliedVolts = this.lifter.getMotorVoltage();
         this.supplyCurrent = this.lifter.getSupplyCurrent();
 
-        TalonFXConfiguration config = new TalonFXConfiguration();
-        config.CurrentLimits
-                .withSupplyCurrentLimitEnable(true)
-                .withSupplyCurrentLimit(40.0);
-        config.MotionMagic
-                .withMotionMagicCruiseVelocity(1.0)
-                .withMotionMagicAcceleration(10.0)
-                .withMotionMagicJerk(2000.0);
-        config.MotorOutput
-                .withInverted(InvertedValue.Clockwise_Positive)
-                .withNeutralMode(NeutralModeValue.Brake);
-        config.DifferentialSensors
-                .withSensorToDifferentialRatio(Constants.Intake.LIFTER_GEAR_RATIO);
-        config.Slot0
-                .withKP(0.0)
-                .withKS(0.0)
-                .withKV(0.0)
-                .withKG(0.0)
-                .withKA(0.0);
-
-        this.lifter.getConfigurator().apply(config);
+        this.lifter.getConfigurator().apply(Constants.Intake.LIFTER_CONFIG);
     }
 
     @Override
     public void updateInputs(LifterIOInputs inputs) {
-        inputs.positionRads = this.position.getValueAsDouble();
-        inputs.velocityRPS = this.velocity.getValueAsDouble();
-        inputs.appliedVolts = this.appliedVolts.getValueAsDouble();
-        inputs.supplyCurrent = this.supplyCurrent.getValueAsDouble();
-        inputs.connected = this.lifter.isConnected();
-
         BaseStatusSignal.refreshAll(
                 this.position,
                 this.velocity,
                 this.appliedVolts,
                 this.supplyCurrent);
+
+        inputs.positionRads = this.position.getValueAsDouble();
+        inputs.velocityRPS = this.velocity.getValueAsDouble();
+        inputs.appliedVolts = this.appliedVolts.getValueAsDouble();
+        inputs.supplyCurrent = this.supplyCurrent.getValueAsDouble();
+        inputs.connected = this.lifter.isConnected();
                 
         Logger.recordOutput("Intake/Lifter/PositionRads", this.position.getValueAsDouble());
         Logger.recordOutput("Intake/Lifter/VelocityRPS", this.velocity.getValueAsDouble());

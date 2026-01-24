@@ -14,7 +14,7 @@ public class SuperStructure extends SubsystemBase {
 
     @AutoLogOutput(key = "SuperStructure/State")
     private State state = State.Start;
-    private StructureInput input = new StructureInput();
+    private StructureInput inputs = new StructureInput();
     private final Timer stateTime = new Timer();
 
     public SuperStructure() {
@@ -80,21 +80,21 @@ public class SuperStructure extends SubsystemBase {
     }
 
     public void emptyInput() {
-        this.input = new StructureInput();
+        this.inputs = new StructureInput();
     }
 
     @Override
     public void periodic() {
         this.stateTime.start();
 
-        for (Transition translate : this.transitions) {
-            if (translate.currentState == state && translate.booleanSupplier.get()) {
-                state = translate.nextState;
-                this.stateTime.restart();
-                translate.enterFunction.run();
-                this.setStates();
-                return;
-            }
-        }
+        // for (Transition translate : this.transitions) {
+        //     if (translate.currentState == state && translate.booleanSupplier.get()) {
+        //         state = translate.nextState;
+        //         this.stateTime.restart();
+        //         translate.enterFunction.run();
+        //         this.setStates();
+        //         return;
+        //     }
+        // }
     }
 }

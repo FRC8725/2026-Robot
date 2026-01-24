@@ -55,17 +55,17 @@ public class FlywheelIOHardware implements FlywheelIO {
 
     @Override
     public void updateInputs(FlywheelIOInputs inputs) {
-        inputs.positionRads = this.position.getValueAsDouble();
-        inputs.velocityRPS = this.velocity.getValueAsDouble();
-        inputs.appliedVolts = this.volts.getValueAsDouble();
-        inputs.supplyCurrent = this.supplyCurrent.getValueAsDouble();
-        inputs.connected = this.flywheelMain.isConnected();
-
         BaseStatusSignal.refreshAll(
                 this.position,
                 this.velocity,
                 this.volts,
                 this.supplyCurrent);
+                
+        inputs.positionRads = this.position.getValueAsDouble();
+        inputs.velocityRPS = this.velocity.getValueAsDouble();
+        inputs.appliedVolts = this.volts.getValueAsDouble();
+        inputs.supplyCurrent = this.supplyCurrent.getValueAsDouble();
+        inputs.connected = this.flywheelMain.isConnected();
     }
 
     @Override

@@ -1,0 +1,65 @@
+package frc.robot.subsystems.intake;
+
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.sim.TalonFXSimState;
+
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
+import frc.robot.Constants;
+
+public class LifterIOSim implements LifterIO {
+    private final TalonFX lifter;
+    private final TalonFXSimState simState;
+    private final SingleJointedArmSim sim = new SingleJointedArmSim(
+            DCMotor.getKrakenX60(1),
+            Constants.Intake.LIFTER_GEAR_RATIO,
+            SingleJointedArmSim.estimateMOI(0.1, 3.0),
+            0.1,
+            0.0,
+            Units.degreesToRadians(90.0),
+            true,
+            0);
+
+    public LifterIOSim(int id) {
+        this.lifter = new TalonFX(id);
+
+        this.lifter.getConfigurator().apply(Constants.Intake.LIFTER_CONFIG);
+        this.simState = this.lifter.getSimState();
+    }
+
+    @Override
+    public void updateInputs(LifterIOInputs inputs) {
+        inputs.positionRads = this.sim.getAngleRads();
+        inputs.velocityRPS = Units.radiansToRotations(this.sim.getVelocityRadPerSec());
+        inputs.appliedVolts = this.simState.getMotorVoltage();
+        inputs.supplyCurrent = this.sim.getCurrentDrawAmps();
+        inputs.connected = true;
+
+        this.sim.update(0.020);
+        this.sim.setInputVoltage(this.simState.getMotorVoltage());
+
+        this.simState.setRawRotorPosition(
+                Units.radiansToRotations(this.sim.getAngleRads())
+                        * Constants.Intake.LIFTER_GEAR_RATIO);
+        this.simState.setRotorVelocity(
+                Units.radiansToRotations(this.sim.getVelocityRadPerSec())
+                        * Constants.Intake.LIFTER_GEAR_RATIO);
+    }
+
+    @Override
+    public void setControl(MotionMagicVoltage request) {
+        this.lifter.setControl(request);
+    }
+
+    @Override
+    public void setZeroPosition() {
+        this.lifter.setPosition(0.0);
+    }
+
+    @Override
+    public void stop() {
+        this.lifter.stopMotor();
+    }
+}
