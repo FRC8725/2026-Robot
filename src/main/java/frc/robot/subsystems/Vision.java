@@ -18,6 +18,7 @@ import frc.robot.Constants;
 import frc.robot.lib.FuelEstimator;
 import frc.robot.lib.LimelightHelpers;
 import frc.robot.lib.LimelightHelpers.RawDetection;
+import frc.robot.subsystems.drive.Drive;
 
 public class Vision extends SubsystemBase {
     
@@ -43,18 +44,18 @@ public class Vision extends SubsystemBase {
     }
 
     public double caculateWeight(Translation2d pose) {
-        Pose2d swervePose = Swerve.getInstance().getPose();
+        Pose2d swervePose = Drive.getInstance().getPose();
         return pose.getAngle().minus(swervePose.getRotation()).getRadians()
-                * Constants.Swerve.ALIGN_ANGLE_WEIGHT
+                * Constants.Drive.ALIGN_ANGLE_WEIGHT
                 + pose.getDistance(swervePose.getTranslation())
-                * Constants.Swerve.ALIGN_TRANSLATION_WEIGHT;
+                * Constants.Drive.ALIGN_TRANSLATION_WEIGHT;
     }
 
     @AutoLogOutput(key = "Vision/FuelPoses")
     public Pose3d[] getFuelsPose() {
         ArrayList<Pose3d> poses = new ArrayList<>();
         List<Translation2d> fuelTranslations = getFuelsEstimator();
-        Pose2d robotPose = Swerve.getInstance().getPose();
+        Pose2d robotPose = Drive.getInstance().getPose();
 
         for (Translation2d translation : fuelTranslations) {
             Pose2d fuelField = robotPose.plus(new Transform2d(translation, Rotation2d.kZero));

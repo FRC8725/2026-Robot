@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.IdealStartingState;
@@ -16,11 +18,11 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.drive.Drive;
 
 public class FuelTracking extends Command {
-	private final Swerve swerve;
+	private final Drive drive;
 	private final Vision vision;
 
 	private Command currentRunningPath = null;
@@ -31,10 +33,10 @@ public class FuelTracking extends Command {
 			3 * Math.PI,
 			2 * Math.PI);
 
-	public FuelTracking(Swerve swerve, Vision vision) {
-		this.swerve = swerve;
+	public FuelTracking(Drive drive, Vision vision) {
+		this.drive = drive;
 		this.vision = vision;
-		this.addRequirements(this.swerve);
+		this.addRequirements(this.drive);
 	}
 
 	@Override
@@ -56,7 +58,7 @@ public class FuelTracking extends Command {
 			}
 
 			List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(sortedPath);
-			ChassisSpeeds robotSpeeds = this.swerve.getSpeeds();
+			ChassisSpeeds robotSpeeds = this.drive.getRobotChassisSpeeds();
 			Pose2d finalPose = sortedPath.get(sortedPath.size() - 1);
 			IdealStartingState startState = new IdealStartingState(
 					Math.hypot(robotSpeeds.vxMetersPerSecond, robotSpeeds.vyMetersPerSecond),
@@ -71,6 +73,8 @@ public class FuelTracking extends Command {
 					startState,
 					endState);
 			path.preventFlipping = true;
+			
+			Logger.recordOutput("Fuel Tracking Path", path.getPathPoses().toArray(Pose2d[]::new));
 
 			this.currentRunningPath = AutoBuilder.followPath(path);
 			this.currentRunningPath.initialize();
@@ -95,7 +99,7 @@ public class FuelTracking extends Command {
 
 	public List<Pose2d> sortPath() {
 		List<Pose2d> sortedPath = new ArrayList<>();
-		Pose2d simulatePose = this.swerve.getPose();
+		Pose2d simulatePose = this.drive.getPose();
 		List<Translation2d> fules = this.vision.getFuelsEstimator();
 
 		while (!fules.isEmpty()) {

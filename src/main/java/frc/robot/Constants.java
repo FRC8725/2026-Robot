@@ -4,12 +4,23 @@
 
 package frc.robot;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.RobotBase;
+import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
+import frc.robot.subsystems.drive.SimTunerConstants;
+import frc.robot.subsystems.drive.TunerConstants;
 
 public final class Constants {
+    public static final boolean useMapleSim = true;
+    public static final AprilTagFieldLayout kAprilTagLayout = 
+            AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark);
+ 
     public static final class RobotMode {
         public static final boolean isReplay = false;
 
@@ -20,51 +31,69 @@ public final class Constants {
         }
     }
     
-    public final class Swerve {
-        // Module
-        public static final double TRACK_WIDTH = Units.inchesToMeters(12.75);
-        public static final double TRACK_LENGTH = Units.inchesToMeters(12.75);
-        public static final double WHEEL_RADIUS = Units.inchesToMeters(3.935 / 2.0);
-        public static final double DRIVE_GEAR_RATIO = 57.0 / 7.0;
-        public static final double TURN_GEAR_RATIO = 150.0 / 7.0;
+    public final class Drive {
+        public static final double ROBOT_WEIGHT_POUNDS = 150.0;
+        public static final double BUMPER_LENGTH_INCHES = 34.417;
+        public static final double MAX_SPEED = 3.0; // m/s
+        public static final double MAX_ANGULAR_RATE = Math.PI * 2; // 1 rotation per second
+        public static final double STEER_JOYSTICK_DEADBAND = 0.05;
+        public static final CommandSwerveDrivetrain drivetrain =
+                RobotBase.isSimulation()
+                        ? SimTunerConstants.createTrain()
+                        : TunerConstants.createDrivetrain();
 
         // Phycical Limit
         public static final double MAX_MOTOR_RPM = 4675.0;
-        public static final double MAX_VELOCITY = (MAX_MOTOR_RPM / 60.0) / DRIVE_GEAR_RATIO * 2.0 * WHEEL_RADIUS * Math.PI;
-        public static final double MAX_ANGULAR_VELOCITY = MAX_VELOCITY / (TRACK_WIDTH * Math.sqrt(2.0)); // TODO: Research HOW
-
-        // Align Limit
-        public static final double MAX_BARGE_ALIGN_TRANSLATION_SPEED = 1.5;
-        public static final double MAX_BARGE_ALIGN_ROTAITON_SPEED = 1.5;
-        public static final double MAX_ALIGN_TRANSLATION_SPEED = 1.5;
-
-        // Tolerance
-        public static final double DEAD_BAND = 0.05;
-        public static final double STRATING_TOLERANCE = 0.15;
-        public static final double ALIGNMENT_TOLERANCE = 0.02;
+        public static final double MAX_VELOCITY = (MAX_MOTOR_RPM / 60.0) / TunerConstants.kDriveGearRatio * 2.0 * Units.inchesToMeters(1.897) * Math.PI;
+        public static final double MAX_ANGULAR_VELOCITY = MAX_VELOCITY / (Units.inchesToMeters(12.75) * Math.sqrt(2.0)); // TODO: Research HOW
 
         // Align weight
         public static final double ALIGN_TRANSLATION_WEIGHT = 5.0;
         public static final double ALIGN_ANGLE_WEIGHT = 2.7;
-
-        public static final SwerveDriveKinematics KINEMATICS = new SwerveDriveKinematics(
-            new Translation2d(TRACK_LENGTH / 2.0, TRACK_WIDTH / 2.0),
-            new Translation2d(TRACK_LENGTH / 2.0, -TRACK_WIDTH / 2.0),
-            new Translation2d(-TRACK_LENGTH / 2.0, TRACK_WIDTH / 2.0),
-            new Translation2d(-TRACK_LENGTH / 2.0, -TRACK_LENGTH / 2.0));
-    }
-    
-    public final class Intake {
-    
-    }
-
-    public final class Shooter {
-        public static final double TOLERANCE = 5.0;
     }
 
     public final class Vision {
-    }
+        public static final double LARGE_VARIANCE = 1e6;
 
+        // Standard deviation constants
+        public static final int kMegatag1XStdDevIndex = 0;
+        public static final int kMegatag1YStdDevIndex = 1;
+        public static final int kMegatag1YawStdDevIndex = 5;
+
+        // Standard deviation array indices for Megatag2
+        public static final int kMegatag2XStdDevIndex = 6;
+        public static final int kMegatag2YStdDevIndex = 7;
+        public static final int kMegatag2YawStdDevIndex = 11;
+
+        // Validation constants
+        public static final int kExpectedStdDevArrayLength = 12;
+
+        // Vision processing constants
+        public static final double kDefaultAmbiguityThreshold = 0.19;
+        public static final double kDefaultYawDiffThreshold = 5.0;
+        public static final double kTagAreaThresholdForYawCheck = 2.0;
+        public static final double kTagMinAreaForSingleTagMegatag = 1.0;
+        public static final double kDefaultZThreshold = 0.2;
+        public static final double kDefaultNormThreshold = 1.0;
+        public static final double kMinAmbiguityToFlip = 0.08;
+
+        // Camera pose on the robot
+        public static final double CAMERA_LEFT_DEGS = 45.0;
+        public static final double CAMERA_LEFT_PITCH_RADS = Units.degreesToRadians(CAMERA_LEFT_DEGS);
+        public static final Rotation2d CAMERA_LEFT_YAW = Rotation2d.kZero;
+        public static final String CAMERA_LEFT_NAME = "limelight-left";
+        public static final Transform3d CAMERA_LEFT_TRANSFORM = new Transform3d(
+                0.306542, 0.076121, 0.120064,
+                new Rotation3d(0.0, CAMERA_LEFT_PITCH_RADS, CAMERA_LEFT_YAW.getRadians()));
+        public static final double CAMERA_RIGHT_DEGS = 45.0;
+        public static final double CAMERA_RIGHT_PITCH_RADS = Units.degreesToRadians(CAMERA_RIGHT_DEGS);
+        public static final Rotation2d CAMERA_RIGHT_YAW = Rotation2d.kZero;
+        public static final String CAMERA_RIGHT_NAME = "limelight-right";
+        public static final Transform3d CAMERA_RIGHT_TRANSFORM = new Transform3d(
+                0.306542, -0.076121, 0.120064,
+                new Rotation3d(0.0, CAMERA_RIGHT_PITCH_RADS, CAMERA_LEFT_YAW.getRadians()));
+    }
+    
 	public final class Field {
         // Field Size
         public static final double FIELD_X_SIZE = Units.inchesToMeters(651.22);

@@ -22,6 +22,10 @@ public class Joysticks {
                 Math.abs(rightX) > deadZone;
         }
 
+        public boolean isRotateZero() {
+            return Math.abs(rightX) < deadZone;
+        }
+
         public DriveInputs getRedFlipped() {
             DriveInputs flipped = new DriveInputs();
             flipped.leftX = this.leftX;

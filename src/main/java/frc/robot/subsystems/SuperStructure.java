@@ -13,7 +13,7 @@
 //     private static SuperStructure SUPERSTRUCTURE;
 
 //     @AutoLogOutput(key = "SuperStructure/State")
-//     public State state = State.Start;
+//     // public State state = State.Start;
 //     public StructureInput input = new StructureInput();
 //     private final Timer stateTime = new Timer();
 
@@ -26,28 +26,10 @@
 //     }
 
 //     public enum State {
-//         Start(
-//             Intake.State.Off,
-//             Shooter.State.Idle),
-//         Rest(
-//             Intake.State.SlowIn,
-//             Shooter.State.Idle),
-//         GroundIntake(
-//             Intake.State.In,
-//             Shooter.State.Idle),
-//         PreShoot(
-//             Intake.State.Off,
-//             Shooter.State.Shooting),
-//         Shoot(
-//             Intake.State.SlowIn,
-//             Shooter.State.Shooting);
+//         ;
 
-//         public final Intake.State intake;
-//         public final Shooter.State shooter;
+//         State() {
 
-//         State(Intake.State intake, Shooter.State shooter) {
-//             this.intake = intake;
-//             this.shooter = shooter;
 //         }
 //     }
 
@@ -56,18 +38,9 @@
 //         public boolean wantScore = false;
 //     }
 
-//     private final List<Transition> transitions = Stream.of(
-//         new Transition(State.Start, State.Rest, () -> this.input.wantIntake),
-
-//         new Transition(State.Rest, State.GroundIntake, () -> this.input.wantIntake),
-//         new Transition(State.GroundIntake, State.Rest, () -> !this.input.wantIntake),
-
-//         new Transition(State.Rest, State.PreShoot, () -> this.input.wantScore),
-//         new Transition(State.PreShoot, State.Shoot, () -> Shooter.getInstance().atSetpoint()),
-//         new Transition(State.PreShoot, State.Rest, () -> !this.input.wantScore),
-
-//         new Transition(State.Shoot, State.Rest, () -> !this.input.wantScore)
-//     ).toList();
+//     // private final List<Transition> transitions = Stream.of(
+//     //     )
+//     // ).toList();
 
 //     public class Transition {
 //         public State currentState;
@@ -88,8 +61,6 @@
 //     }
 
 //     public void setStates() {
-//         Intake.getInstance().setState(this.state.intake);
-//         Shooter.getInstance().setState(this.state.shooter);
 //     }
 
 //     public void emptyInputs() {
@@ -98,16 +69,16 @@
 
 //     @Override
 //     public void periodic() {
-//         this.stateTime.start();
+//         // this.stateTime.start();
 
-//         for (Transition transition : this.transitions) {
-//             if (this.state == transition.currentState && transition.booleanSupplier.get()) {
-//                 this.state = transition.nextState;
-//                 this.stateTime.reset();
-//                 transition.enterFunction.run();
-//                 this.setStates();
-//                 return;
-//             }
-//         }
+//         // for (Transition transition : this.transitions) {
+//         //     if (this.state == transition.currentState && transition.booleanSupplier.get()) {
+//         //         this.state = transition.nextState;
+//         //         this.stateTime.reset();
+//         //         transition.enterFunction.run();
+//         //         this.setStates();
+//         //         return;
+//         //     }
+//         // }
 //     }
 // }

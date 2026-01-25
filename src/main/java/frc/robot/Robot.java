@@ -24,7 +24,6 @@ import edu.wpi.first.wpilibj.Watchdog;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 // import frc.robot.subsystems.SuperStructure;
-import frc.robot.subsystems.Swerve;
 
 public class Robot extends LoggedRobot {
 	private static final double loopOverrunWarningTimeout = 0.2;
@@ -122,12 +121,11 @@ public class Robot extends LoggedRobot {
 
 	@Override
 	public void teleopInit() {
-		this.robotContainer.teleInit();	
 	}
 
 	@Override
 	public void teleopExit() {
-		Swerve.getInstance().removeDefaultCommand();
+		// Swerve.getInstance().removeDefaultCommand();
 		// SuperStructure.getInstance().removeDefaultCommand();
 	}
 
