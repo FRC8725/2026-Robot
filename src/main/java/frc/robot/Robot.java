@@ -23,7 +23,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Watchdog;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.SuperStructure;
+// import frc.robot.subsystems.SuperStructure;
 import frc.robot.subsystems.Swerve;
 
 public class Robot extends LoggedRobot {
@@ -128,7 +128,7 @@ public class Robot extends LoggedRobot {
 	@Override
 	public void teleopExit() {
 		Swerve.getInstance().removeDefaultCommand();
-		SuperStructure.getInstance().removeDefaultCommand();
+		// SuperStructure.getInstance().removeDefaultCommand();
 	}
 
 	@Override

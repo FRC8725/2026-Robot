@@ -2,7 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.PS5Controller;
 import edu.wpi.first.wpilibj.XboxController;
-import frc.robot.subsystems.SuperStructure;
+// import frc.robot.subsystems.SuperStructure;
 
 public class Joysticks {
     private final XboxController driver = new XboxController(0);
@@ -46,12 +46,12 @@ public class Joysticks {
         return input;
     }
 
-    public SuperStructure.StructureInput getInput() {
-        SuperStructure.StructureInput input = new SuperStructure.StructureInput();
+    // public SuperStructure.StructureInput getInput() {
+    //     SuperStructure.StructureInput input = new SuperStructure.StructureInput();
 
-        input.wantIntake = this.driver.getRightTriggerAxis() > 0.3;
-        input.wantScore = this.driver.getRightBumperButton();
+    //     input.wantIntake = this.driver.getRightTriggerAxis() > 0.3;
+    //     input.wantScore = this.driver.getRightBumperButton();
         
-        return input;
-    }
+    //     return input;
+    // }
 }

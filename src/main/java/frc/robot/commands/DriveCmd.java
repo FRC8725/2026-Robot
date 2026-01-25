@@ -12,7 +12,7 @@ import frc.robot.Constants;
 import frc.robot.Joysticks;
 import frc.robot.Robot;
 import frc.robot.lib.MathHelper;
-import frc.robot.subsystems.SuperStructure;
+// import frc.robot.subsystems.SuperStructure;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Vision;
 
@@ -54,7 +54,7 @@ public class DriveCmd extends Command {
 				this.fuelTracking.end(true);
 				this.isTraking = false;
 			}
-			if (SuperStructure.getInstance().input.wantScore && !inputs.isNonZero()) {
+			if (!inputs.isNonZero()) {
 				// Facing hub
 				ChassisSpeeds speeds = this.getSpeeds();
 				double measurement = this.swerve.getPose().getRotation().getRadians();

@@ -17,8 +17,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.lib.FuelEstimator;
 import frc.robot.lib.LimelightHelpers;
-import frc.robot.lib.LimelightHelpers.LimelightResults;
-import frc.robot.lib.LimelightHelpers.LimelightTarget_Detector;
 import frc.robot.lib.LimelightHelpers.RawDetection;
 
 public class Vision extends SubsystemBase {

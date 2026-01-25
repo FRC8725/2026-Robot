@@ -63,7 +63,6 @@ public final class Constants {
     }
 
     public final class Vision {
-        private final Transform3d object_camera = new Transform3d();
     }
 
 	public final class Field {
