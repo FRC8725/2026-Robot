@@ -1,6 +1,7 @@
 plugins {
     id "java"
     id "edu.wpi.first.GradleRIO" version "2026.2.1"
+    id "com.peterabeles.gversion" version "1.10"
 }
 
 java {
@@ -12,6 +13,9 @@ def ROBOT_MAIN_CLASS = "frc.robot.Main"
 
 // Define my targets (RoboRIO) and artifacts (deployable files)
 // This is added by GradleRIO's backing project DeployUtils.
+
+final MAX_JAVA_HEAP_SIZE_MB = 100
+
 deploy {
     targets {
         roborio(getTargetTypeClass('RoboRIO')) {
@@ -27,6 +31,31 @@ deploy {
                 // getTargetTypeClass is a shortcut to get the class type using a string
 
                 frcJava(getArtifactTypeClass('FRCJavaArtifact')) {
+                    // Run: ./gradlew deploy -PprofileMode
+                    // -- do not do this unless you want profiling mode, it can slow the robot down.
+                    project.logger.lifecycle('Checking if profile mode...')
+                    //Enter profile mode with ./gradlew deploy -PprofileMode
+                    if (frc.project.hasProperty("profileMode")) {
+                        // jvm remote monitor
+                        project.logger.lifecycle('Debug mode enabled!')
+                        project.logger.lifecycle("Connect JMX client to roborio-" + team + "-frc.local:1099 or " + "10." + (team / 100) + ".2" + ":1099 for RoboRIO profiling with visualvm.")
+                        jvmArgs.add("-Dcom.sun.management.jmxremote=true")
+                        jvmArgs.add("-Dcom.sun.management.jmxremote.port=1099")
+                        jvmArgs.add("-Dcom.sun.management.jmxremote.local.only=false")
+                        jvmArgs.add("-Dcom.sun.management.jmxremote.ssl=false")
+                        jvmArgs.add("-Dcom.sun.management.jmxremote.authenticate=false")
+                        jvmArgs.add("-Djava.rmi.server.hostname=" + "10." + (team / 100) + ".2")
+                    }
+
+                    gcType = 'other' // 覆蓋 GradleRIO 的預設 GC 設定
+                    jvmArgs.add("-XX:+UnlockExperimentalVMOptions") // 啟用實驗性 JVM 參數
+                    jvmArgs.add("-Xmx" + MAX_JAVA_HEAP_SIZE_MB + "M") // 最大堆記憶體
+                    jvmArgs.add("-Xms" + MAX_JAVA_HEAP_SIZE_MB + "M") // 初始堆記憶體
+                    jvmArgs.add("-XX:GCTimeRatio=5")                 // GC 時間與應用時間比例
+                    jvmArgs.add("-XX:+UseSerialGC")                  // 使用串行垃圾回收器
+                    jvmArgs.add("-XX:MaxGCPauseMillis=50")           // 最大 GC 暫停時間
+                    jvmArgs.add("-XX:+AlwaysPreTouch")               // 預先分配記憶體
+
                 }
 
                 // Static files artifact
@@ -49,6 +78,11 @@ wpi.java.debugJni = false
 
 // Set this to true to enable desktop support.
 def includeDesktopSupport = false
+
+task(replayWatch, type: JavaExec) {
+    mainClass = "org.littletonrobotics.junction.ReplayWatch"
+    classpath = sourceSets.main.runtimeClasspath
+}
 
 // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
 // Also defines JUnit 5.
@@ -73,11 +107,22 @@ dependencies {
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.1'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    def akitJson = new groovy.json.JsonSlurper().parseText(new File(projectDir.getAbsolutePath() + "/vendordeps/AdvantageKit.json").text)
+    annotationProcessor "org.littletonrobotics.akit:akit-autolog:$akitJson.version"
 }
 
 test {
     useJUnitPlatform()
     systemProperty 'junit.jupiter.extensions.autodetection.enabled', 'true'
+}
+
+simulateJavaRelease {
+    project.logger.lifecycle('Checking if replay mode...')
+    if (frc.project.hasProperty("replay")) {
+        project.logger.lifecycle('Replay mode activated!')
+        args '--replay'
+    }
 }
 
 // Simulation configuration (e.g. environment variables).
@@ -104,4 +149,14 @@ wpi.java.configureTestTasks(test)
 // Configure string concat to always inline compile
 tasks.withType(JavaCompile) {
     options.compilerArgs.add '-XDstringConcat=inline'
+}
+
+project.compileJava.dependsOn(createVersionFile)
+gversion {
+    srcDir       = "src/main/java/"
+    classPackage = "frc.robot"
+    className    = "BuildConstants"
+    dateFormat   = "yyyy-MM-dd HH:mm:ss z"
+    timeZone     = "Asia/Taipei"
+    indent       = "  "
 }

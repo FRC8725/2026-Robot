@@ -5,10 +5,15 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Hopper;
+import frc.robot.subsystems.hopper.Hopper;
+import frc.robot.subsystems.hopper.HopperIOHardware;
 
 public class RobotContainer {
-	private final Hopper hopper = new Hopper();
+	private final Hopper hopper = this.buildHopperSubsystem();
+
+	public Hopper buildHopperSubsystem() {
+		return new Hopper(new HopperIOHardware());
+	}
 	
 	public RobotContainer() {
 		configureBindings();
