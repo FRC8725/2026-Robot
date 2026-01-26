@@ -7,6 +7,7 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -39,7 +40,7 @@ public class LifterIOHardware implements LifterIO {
                 this.appliedVolts,
                 this.supplyCurrent);
 
-        inputs.positionRads = this.position.getValueAsDouble();
+        inputs.positionRads = Units.rotationsToRadians(this.position.getValueAsDouble());
         inputs.velocityRPS = this.velocity.getValueAsDouble();
         inputs.appliedVolts = this.appliedVolts.getValueAsDouble();
         inputs.supplyCurrent = this.supplyCurrent.getValueAsDouble();

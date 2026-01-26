@@ -1,6 +1,7 @@
 package frc.robot.subsystems.intake;
 
 import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 
@@ -24,7 +25,7 @@ public class Intake extends SubsystemBase {
 
     public enum LifterState {
         Up(0.0),
-        Down(0.0);
+        Down(3.0);
 
         // Units: degree
         public final double angle;
@@ -50,6 +51,7 @@ public class Intake extends SubsystemBase {
         INTAKE = this;
         this.lifter = new LifterSubsystem(lifterIO);
         this.roller = new RollerIOSystem(rollerIO, "Intake/Roller");
+        this.setZeroPosition();
     }
 
     public static Intake getInstance() {
@@ -73,9 +75,11 @@ public class Intake extends SubsystemBase {
         this.lifter.periodic();
         this.roller.periodic();
 
+        Logger.recordOutput("Intake measure", Units.radiansToRotations(this.lifter.getPosition()));
+        Logger.recordOutput("Intake setpoint", this.lifterState.angle);
         this.lifter.setControl(
                 this.request
-                        .withPosition(Units.degreesToRotations(this.lifterState.angle)));
+                        .withPosition((this.lifterState.angle)));
         this.roller.setVolts(this.rollerState.volts);
     }
 

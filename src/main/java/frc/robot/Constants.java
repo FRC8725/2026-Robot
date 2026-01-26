@@ -23,10 +23,10 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
  */
 public final class Constants {
   	public final class Intake {
-        public static final int LIFTER_ID = 0;
-        public static final int ROLLER_ID = 0;
+        public static final int LIFTER_ID = 25;
+        public static final int ROLLER_ID = 26;
         
-        public static final double LIFTER_GEAR_RATIO = 1.0;
+        public static final double LIFTER_GEAR_RATIO = 40.0 / 14.0 * 8.0 / 5.0;
         public static final double ROLLER_GEAR_RATIO = 1.0;
         public static final double LIFTER_ANGLE_TOLERANCE = 0.01;
 
@@ -39,19 +39,19 @@ public final class Constants {
                                 .withSupplyCurrentLimit(40.0))
                 .withMotionMagic(
                         new MotionMagicConfigs()
-                                .withMotionMagicCruiseVelocity(1.0)
+                                .withMotionMagicCruiseVelocity(0.8)
                                 .withMotionMagicAcceleration(10.0)
                                 .withMotionMagicJerk(2000.0))
                 .withMotorOutput(
                         new MotorOutputConfigs()
-                                .withInverted(InvertedValue.Clockwise_Positive)
+                                .withInverted(InvertedValue.CounterClockwise_Positive)
                                 .withNeutralMode(NeutralModeValue.Brake))
                 .withFeedback(
                         new FeedbackConfigs()
                                 .withSensorToMechanismRatio(LIFTER_GEAR_RATIO))
                 .withSlot0(
                         new Slot0Configs()
-                                .withKP(0.0)
+                                .withKP(10.0)
                                 .withKS(0.0)
                                 .withKV(0.0)
                                 .withKG(0.0)

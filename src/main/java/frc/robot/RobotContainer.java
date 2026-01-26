@@ -5,12 +5,16 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.commands.SuperStructureCmd;
+import frc.robot.subsystems.SuperStructure;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.lifter.LifterIOHardware;
 import frc.robot.subsystems.intake.roller.IntakeRollerHardware;
 
 public class RobotContainer {
+	private final Joysticks joysticks = new Joysticks();
 	private final Intake intake = this.buildHopperSubsystem();
+	private final SuperStructure superStructure = new SuperStructure();
 
 	public Intake buildHopperSubsystem() {
 		return new Intake(
@@ -19,6 +23,7 @@ public class RobotContainer {
 	}
 	
 	public RobotContainer() {
+		this.superStructure.setDefaultCommand(new SuperStructureCmd(this.joysticks));
 		configureBindings();
 	}
 
