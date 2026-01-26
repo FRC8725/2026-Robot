@@ -71,6 +71,7 @@ public class DriveCommand extends Command {
 			}
 			this.fuelTracking.execute();
 		} else {
+			ChassisSpeeds speeds = this.getSpeeds();
 			if (this.isTraking) {
 				this.fuelTracking.end(true);
 				this.isTraking = false;
@@ -79,16 +80,16 @@ public class DriveCommand extends Command {
 				// Facing hub
 				Rotation2d targetAngle = MathHelpers.getAngleFromHub(this.driveSubsystem.getPose());
 				this.driveSubsystem.setControl(
-						this.driveWithHeading
-								.withVelocityX(inputs.leftX)
-								.withVelocityY(inputs.leftY)
-								.withTargetDirection(targetAngle));
+						this.driveNoHeading
+								.withVelocityX(speeds.vxMetersPerSecond)
+								.withVelocityY(speeds.vyMetersPerSecond)
+								.withRotationalRate(speeds.omegaRadiansPerSecond));
 			} else {
 				this.driveSubsystem.setControl(
 						this.driveNoHeading
-								.withVelocityX(inputs.leftX)
-								.withVelocityY(inputs.leftY)
-								.withRotationalRate(inputs.rightX));
+								.withVelocityX(speeds.vxMetersPerSecond)
+								.withVelocityY(speeds.vyMetersPerSecond)
+								.withRotationalRate(speeds.omegaRadiansPerSecond));
 			}
 		}
     }

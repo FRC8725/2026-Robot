@@ -16,6 +16,8 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 import com.ctre.phoenix6.SignalLogger;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobotBase;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -24,6 +26,7 @@ import edu.wpi.first.wpilibj.Watchdog;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 // import frc.robot.subsystems.SuperStructure;
+import frc.robot.subsystems.drive.Drive;
 
 public class Robot extends LoggedRobot {
 	private static final double loopOverrunWarningTimeout = 0.2;
@@ -89,6 +92,11 @@ public class Robot extends LoggedRobot {
 
         DriverStation.silenceJoystickConnectionWarning(true);
         RobotController.setBrownoutVoltage(6.0);
+
+		if (RobotBase.isSimulation()) {
+			Drive.getInstance().resetOdometry(
+					new Pose2d(2.0, 2.0, Rotation2d.kZero));
+		}
 	}
 
 	@Override

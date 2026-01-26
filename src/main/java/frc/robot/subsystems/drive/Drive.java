@@ -1,6 +1,10 @@
 package frc.robot.subsystems.drive;
 
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import choreo.Choreo.TrajectoryLogger;
 import choreo.auto.AutoFactory;
@@ -10,10 +14,13 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.lib.limelight.VisionFieldPoseEstimate;
 import frc.robot.lib.simulation.MapleSimDrivetrain;
+
 import org.littletonrobotics.junction.Logger;
 
 public class Drive extends SubsystemBase {
@@ -21,6 +28,7 @@ public class Drive extends SubsystemBase {
     private final DriveIO io;
     private final DriveIOInputsAutoLogged inputs = new DriveIOInputsAutoLogged();
 
+    private final SwerveRequest.ApplyRobotSpeeds pathRequest = new SwerveRequest.ApplyRobotSpeeds();
     private final SwerveRequest.ApplyFieldSpeeds choreoAutoRequest = new SwerveRequest.ApplyFieldSpeeds();
 
     private final PIDController xController = new PIDController(10.0, 0, 0.0);
@@ -31,10 +39,40 @@ public class Drive extends SubsystemBase {
         DRIVE = this;
         this.io = io;
         this.headingController.enableContinuousInput(-Math.PI, Math.PI);
+        this.configureAutoBuilder();
     }
 
     public static Drive getInstance() {
         return DRIVE;
+    }
+
+    private void configureAutoBuilder() {
+        try {
+            var config = RobotConfig.fromGUISettings();
+            AutoBuilder.configure(
+                () -> this.inputs.Pose,   // Supplier of current robot pose
+                this::resetPose,         // Consumer for seeding pose against auto
+                () -> this.getRobotChassisSpeeds(), // Supplier of current robot speeds
+                // Consumer of ChassisSpeeds and feedforwards to drive the robot
+                (speeds, feedforwards) -> setControl(
+                    this.pathRequest.withSpeeds(ChassisSpeeds.discretize(speeds, 0.020))
+                        .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
+                        .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())
+                ),
+                new PPHolonomicDriveController(
+                    // PID constants for translation
+                    new PIDConstants(10.0, 0.0, 0.0),
+                    // PID constants for rotation
+                    new PIDConstants(7.0, 0.0, 0.0)
+                ),
+                config,
+                // Assume the path needs to be flipped for Red vs Blue, this is normally the case
+                () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
+                this // Subsystem for requirements
+            );
+        } catch (Exception ex) {
+            DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", ex.getStackTrace());
+        }
     }
 
     public void resetOdometry(Pose2d pose) {
@@ -51,6 +89,10 @@ public class Drive extends SubsystemBase {
 
     public void setStateStdDevs(double xStd, double yStd, double rStd) {
         this.io.setStateStdDevs(xStd, yStd, rStd);
+    }
+
+    public void resetPose(Pose2d pose) {
+        this.io.resetOdometry(pose);
     }
 
     public void followSample(SwerveSample sample) {

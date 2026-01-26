@@ -20,6 +20,10 @@ public final class Constants {
     public static final boolean useMapleSim = true;
     public static final AprilTagFieldLayout kAprilTagLayout = 
             AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark);
+
+    public static final double kRobotMassKg = Units.lbsToKilograms(150.0);
+    public static final double kRobotMomentOfInertia = 2 * 9.38;
+    public static final double kCOGHeightMeters = Units.inchesToMeters(0.0);
  
     public static final class RobotMode {
         public static final boolean isReplay = false;
@@ -37,6 +41,7 @@ public final class Constants {
         public static final double MAX_SPEED = 3.0; // m/s
         public static final double MAX_ANGULAR_RATE = Math.PI * 2; // 1 rotation per second
         public static final double STEER_JOYSTICK_DEADBAND = 0.05;
+        public static final double kWheelCoefficientOfFriction = 1.0;
         public static final CommandSwerveDrivetrain drivetrain =
                 RobotBase.isSimulation()
                         ? SimTunerConstants.createTrain()
@@ -50,6 +55,7 @@ public final class Constants {
         // Align weight
         public static final double ALIGN_TRANSLATION_WEIGHT = 5.0;
         public static final double ALIGN_ANGLE_WEIGHT = 2.7;
+        public static final double MAX_TURN_ANGLE = 100.0;
     }
 
     public final class Vision {

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import org.ironmaple.simulation.SimulatedArena;
 import org.littletonrobotics.junction.Logger;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -46,13 +47,16 @@ public class FuelTracking extends Command {
 
 	@Override
 	public void execute() {
-		if (this.currentRunningPath != null || this.currentRunningPath.isFinished()) {
-			if (currentRunningPath != null)
+		boolean needNewPath = (this.currentRunningPath == null) || this.currentRunningPath.isFinished();
+
+		if (needNewPath) {
+			if (this.currentRunningPath != null) {
 				this.currentRunningPath.end(false);
-			
+			}
+
 			List<Pose2d> sortedPath = this.sortPath();
 
-			if (sortedPath.size() < 2 || sortedPath == null) {
+			if (sortedPath == null || sortedPath.size() < 2) {
 				this.currentRunningPath = null;
 				return;
 			}
@@ -73,13 +77,13 @@ public class FuelTracking extends Command {
 					startState,
 					endState);
 			path.preventFlipping = true;
-			
+
+			currentRunningPath = AutoBuilder.followPath(path);
+        	currentRunningPath.initialize();
+
 			Logger.recordOutput("Fuel Tracking Path", path.getPathPoses().toArray(Pose2d[]::new));
-
-			this.currentRunningPath = AutoBuilder.followPath(path);
-			this.currentRunningPath.initialize();
 		}
-
+		
 		if (this.currentRunningPath != null) {
 			this.currentRunningPath.execute();
 		}
@@ -99,25 +103,41 @@ public class FuelTracking extends Command {
 
 	public List<Pose2d> sortPath() {
 		List<Pose2d> sortedPath = new ArrayList<>();
-		Pose2d simulatePose = this.drive.getPose();
-		List<Translation2d> fules = this.vision.getFuelsEstimator();
+		Pose2d currentSimPose = this.drive.getPose();
+		sortedPath.add(currentSimPose);
+
+		List<Translation2d> fules = new ArrayList<>(this.vision.getFuelsEstimator());
 
 		while (!fules.isEmpty()) {
+			final Pose2d searchStartPose = currentSimPose;
+
 			Translation2d bestFuel = fules.stream()
-                .min(Comparator.comparingDouble(this.vision::caculateWeight))
-                .orElse(null);
+                	.min(Comparator.comparingDouble(
+							f -> this.vision.caculateWeight(f, searchStartPose)))
+					.filter(
+							f -> this.vision.caculateWeight(f, searchStartPose) < Double.MAX_VALUE)
+                	.orElse(null);
 
 			if (bestFuel != null) {
-				Rotation2d newHeading = new Rotation2d(
-						bestFuel.getX() - simulatePose.getX(),
-						bestFuel.getY() - simulatePose.getY());
-				sortedPath.add(new Pose2d(bestFuel, newHeading));
+				Rotation2d approachAngle = new Rotation2d(
+						bestFuel.getX() - searchStartPose.getX(),
+						bestFuel.getY() - searchStartPose.getY());
 
-				simulatePose = new Pose2d(bestFuel, newHeading);
+				Translation2d stopPoint = bestFuel.minus(
+						new Translation2d(0.33, approachAngle));
+
+				Pose2d targetPose = new Pose2d(stopPoint, approachAngle);
+				sortedPath.add(targetPose);
+
+				currentSimPose = targetPose;
 				fules.remove(bestFuel);
+			} else {
+				break;
 			}
 		}
 
+		if (sortedPath.size() < 2) return null;
+		Logger.recordOutput("Sort path", sortedPath.toArray(Pose2d[]::new));
 		return sortedPath;
 	}
 }
