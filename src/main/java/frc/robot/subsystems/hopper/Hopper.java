@@ -2,6 +2,7 @@ package frc.robot.subsystems.hopper;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.rollers.RollerIO;
 import frc.robot.subsystems.rollers.RollerIOSystem;
@@ -24,7 +25,7 @@ public class Hopper extends SubsystemBase {
  
     public enum HopperState {
         Off(0.0),
-        Convey(0.0);
+        Convey(3.0);
 
         public final double volts;
 
@@ -41,6 +42,7 @@ public class Hopper extends SubsystemBase {
     public void periodic() {
         this.roller.periodic();
         
+        double volts = Math.abs(Math.sin(Timer.getFPGATimestamp() * 10.0 * Math.PI)) * 3.0;
         this.roller.setVolts(this.hopperState.volts);
     }
 }
