@@ -16,26 +16,43 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 import com.ctre.phoenix6.SignalLogger;
 
+import choreo.Choreo;
+import choreo.trajectory.SwerveSample;
+import choreo.trajectory.Trajectory;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobotBase;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Watchdog;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.commands.AutoRunnerCmd;
+import frc.robot.subsystems.SuperStructure;
 // import frc.robot.subsystems.SuperStructure;
 import frc.robot.subsystems.drive.Drive;
 
 public class Robot extends LoggedRobot {
 	private static final double loopOverrunWarningTimeout = 0.2;
-	private Command autonomousCommand;
+	private Command autonomousCommand = new InstantCommand();
 	private final RobotContainer robotContainer;
 
 	public static final Supplier<Boolean> isRedAlliance =
 			() -> DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
 
+	private final StructArrayPublisher<Pose2d> trajectoryPublisher = NetworkTableInstance.getDefault()
+		.getStructArrayTopic("TrajectoryPose", Pose2d.struct).publish();
+
+	private final SendableChooser<Trajectory<SwerveSample>> chooser = new SendableChooser<>();
+	private Trajectory<SwerveSample> trajectory = null;
+	private boolean didRunAuto = false;
+	
 	public Robot() {
 		super(0.02);
 
@@ -93,6 +110,22 @@ public class Robot extends LoggedRobot {
         DriverStation.silenceJoystickConnectionWarning(true);
         RobotController.setBrownoutVoltage(6.0);
 
+		this.chooser.setDefaultOption("Null", null);
+		for (String trajectoryName : Choreo.availableTrajectories()) {
+			if (!trajectoryName.equals("VariablePoses")) {
+				this.chooser.addOption(trajectoryName, Choreo.<SwerveSample>loadTrajectory(trajectoryName).get());
+			}
+		}
+
+		this.chooser.onChange(t -> {
+			this.trajectory = t;
+			if (this.trajectory == null) return;
+			this.trajectoryPublisher.accept(this.trajectory.getPoses());
+			this.initializeAutonomousCommand();
+		});
+
+		SmartDashboard.putData("Chooser", this.chooser);
+
 		if (RobotBase.isSimulation()) {
 			Drive.getInstance().resetOdometry(
 					new Pose2d(2.0, 2.0, Rotation2d.kZero));
@@ -110,13 +143,18 @@ public class Robot extends LoggedRobot {
 	@Override
 	public void disabledPeriodic() {}
 
+	private void initializeAutonomousCommand() {
+		if (this.trajectory == null) return;
+		// this.autonomousCommand = SuperStructure.getInstance().makeZeroAllSubsystemsCommand()
+		// 	.andThen(
+		// 			new AutoRunnerCmd(Drive.getInstance(), SuperStructure.getInstance(), this.trajectory));
+		this.autonomousCommand = new AutoRunnerCmd(Drive.getInstance(), SuperStructure.getInstance(), this.trajectory);
+	}
+
 	@Override
 	public void autonomousInit() {
-		this.autonomousCommand = robotContainer.getAutonomousCommand();
-
-		if (this.autonomousCommand != null) {
-			CommandScheduler.getInstance().schedule(this.autonomousCommand);
-		}
+		this.didRunAuto = true;
+		CommandScheduler.getInstance().schedule(this.autonomousCommand);;
 	}
 
 	@Override

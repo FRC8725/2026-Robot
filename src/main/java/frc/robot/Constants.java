@@ -56,6 +56,10 @@ public final class Constants {
         public static final double ALIGN_TRANSLATION_WEIGHT = 5.0;
         public static final double ALIGN_ANGLE_WEIGHT = 2.7;
         public static final double MAX_TURN_ANGLE = 100.0;
+
+        // Tolerance
+        public static final double STRATING_TOLERANCE = 0.15;
+        public static final double ALIGNMENT_TOLERANCE = 0.02;
     }
 
     public final class Vision {

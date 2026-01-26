@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.DriveCommand;
 import frc.robot.lib.limelight.VisionFieldPoseEstimate;
+import frc.robot.subsystems.SuperStructure;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveIOHardware;
@@ -22,6 +23,7 @@ public class RobotContainer {
 
 	private final Joysticks joysticks = new Joysticks();
 	private final RobotState robotState = new RobotState(this.visionEstimatorConsumer);
+	private final SuperStructure superStructure = new SuperStructure();
 	private final Drive drive = this.buildDriveSubsystem();
 	private final Vision objectVision = new Vision();
 

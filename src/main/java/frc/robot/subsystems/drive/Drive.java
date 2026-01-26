@@ -13,11 +13,13 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.lib.limelight.VisionFieldPoseEstimate;
 import frc.robot.lib.simulation.MapleSimDrivetrain;
 
@@ -51,7 +53,7 @@ public class Drive extends SubsystemBase {
             var config = RobotConfig.fromGUISettings();
             AutoBuilder.configure(
                 () -> this.inputs.Pose,   // Supplier of current robot pose
-                this::resetPose,         // Consumer for seeding pose against auto
+                this::resetOdometry,         // Consumer for seeding pose against auto
                 () -> this.getRobotChassisSpeeds(), // Supplier of current robot speeds
                 // Consumer of ChassisSpeeds and feedforwards to drive the robot
                 (speeds, feedforwards) -> setControl(
@@ -91,10 +93,6 @@ public class Drive extends SubsystemBase {
         this.io.setStateStdDevs(xStd, yStd, rStd);
     }
 
-    public void resetPose(Pose2d pose) {
-        this.io.resetOdometry(pose);
-    }
-
     public void followSample(SwerveSample sample) {
         Pose2d pose = this.inputs.Pose;
 
@@ -123,6 +121,12 @@ public class Drive extends SubsystemBase {
         this.setControl(this.choreoAutoRequest.withSpeeds(speeds));
     }
 
+    public void stopModules() {
+        this.setControl(
+                this.choreoAutoRequest
+                        .withSpeeds(new ChassisSpeeds()));
+    }
+
     @Override
     public void periodic() {
         double timestamp = Timer.getFPGATimestamp();
@@ -139,6 +143,10 @@ public class Drive extends SubsystemBase {
                         new Rotation3d(0.0, 0.0, pose.getRotation().getRadians()));
         Logger.recordOutput("Drive/Pose3d", pose3d);
         Logger.recordOutput("Drive/latencyPeriodicSec", Timer.getFPGATimestamp() - timestamp);
+    }
+
+    public boolean withinTolerance(Translation2d t) {
+        return this.getPose().getTranslation().getDistance(t) < Constants.Drive.ALIGNMENT_TOLERANCE;
     }
 
     public ChassisSpeeds getRobotChassisSpeeds() {
