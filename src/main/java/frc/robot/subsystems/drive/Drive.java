@@ -1,6 +1,7 @@
 package frc.robot.subsystems.drive;
 
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
@@ -21,6 +22,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.lib.limelight.VisionFieldPoseEstimate;
+import frc.robot.lib.math.MathHelpers;
 import frc.robot.lib.simulation.MapleSimDrivetrain;
 
 import org.littletonrobotics.junction.Logger;
@@ -32,6 +34,12 @@ public class Drive extends SubsystemBase {
 
     private final SwerveRequest.ApplyRobotSpeeds pathRequest = new SwerveRequest.ApplyRobotSpeeds();
     private final SwerveRequest.ApplyFieldSpeeds choreoAutoRequest = new SwerveRequest.ApplyFieldSpeeds();
+    private final SwerveRequest.FieldCentric stopRequest = 
+            new SwerveRequest.FieldCentric()
+                    .withDriveRequestType(DriveRequestType.Velocity)
+                    .withVelocityX(0.0)
+                    .withVelocityY(0.0)
+                    .withRotationalRate(0.0);
 
     private final PIDController xController = new PIDController(10.0, 0, 0.0);
     private final PIDController yController = new PIDController(10.0, 0, 0.0);
@@ -122,9 +130,7 @@ public class Drive extends SubsystemBase {
     }
 
     public void stopModules() {
-        this.setControl(
-                this.choreoAutoRequest
-                        .withSpeeds(new ChassisSpeeds()));
+        this.setControl(this.stopRequest);
     }
 
     @Override
@@ -143,6 +149,18 @@ public class Drive extends SubsystemBase {
                         new Rotation3d(0.0, 0.0, pose.getRotation().getRadians()));
         Logger.recordOutput("Drive/Pose3d", pose3d);
         Logger.recordOutput("Drive/latencyPeriodicSec", Timer.getFPGATimestamp() - timestamp);
+    }
+
+    public Pose2d getClosestScorePoint() {
+        Pose2d leftPoint = MathHelpers.mirrorIfRed(Constants.Field.LEFT_POINT);
+        Pose2d rightPoint = MathHelpers.mirrorIfRed(Constants.Field.RIGHT_POINT);
+
+        double leftDistance = this.getPose().getTranslation()
+                .getDistance(leftPoint.getTranslation());
+        double rightDistance = this.getPose().getTranslation()
+                .getDistance(rightPoint.getTranslation());
+
+        return leftDistance < rightDistance ? leftPoint : rightPoint;
     }
 
     public boolean withinTolerance(Translation2d t) {

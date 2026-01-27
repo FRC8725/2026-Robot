@@ -6,7 +6,7 @@
         {"axis": "z", "degrees": 0.0}
     ],
     "position": [
-        0.4245102, 0.4245102, 0.04445
+        0.4245102, 0.4245102, 0.0
     ],
     "cameras": [
         {
@@ -40,5 +40,26 @@
             "fov": 97.7
         }
     ],
-    "components": []
+    "components": [
+        {
+            "zeroedRotations": [
+                {"axis": "x", "degrees": 90.0},
+                {"axis": "y", "degrees": 0.0},
+                {"axis": "z", "degrees": 0.0}
+            ],
+            "zeroedPosition": [
+                0.0, 0.0, 0.0
+            ]
+        },
+        {
+            "zeroedRotations": [
+                {"axis": "x", "degrees": 90.0},
+                {"axis": "y", "degrees": 0.0},
+                {"axis": "z", "degrees": 0.0}
+            ],
+            "zeroedPosition": [
+                0.4245102, 0.4245102, 0.0
+            ]
+        }
+    ]
 }

@@ -19,6 +19,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.drive.Drive;
 
@@ -27,12 +28,6 @@ public class FuelTracking extends Command {
 	private final Vision vision;
 
 	private Command currentRunningPath = null;
-
-	private final PathConstraints constraints = new PathConstraints(
-			3.0,
-			2.0,
-			3 * Math.PI,
-			2 * Math.PI);
 
 	public FuelTracking(Drive drive, Vision vision) {
 		this.drive = drive;
@@ -73,7 +68,7 @@ public class FuelTracking extends Command {
 
 			PathPlannerPath path = new PathPlannerPath(
 					waypoints,
-					this.constraints,
+					Constants.Drive.CONSTRAINTS,
 					startState,
 					endState);
 			path.preventFlipping = true;

@@ -7,6 +7,7 @@ import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
+import frc.robot.Constants;
 import frc.robot.Constants.Intake;
 
 public class LifterIOSim implements LifterIO {
@@ -15,10 +16,10 @@ public class LifterIOSim implements LifterIO {
     private final SingleJointedArmSim sim = new SingleJointedArmSim(
             DCMotor.getKrakenX60(1),
             Intake.LIFTER_GEAR_RATIO,
-            SingleJointedArmSim.estimateMOI(0.1, 3.0),
+            SingleJointedArmSim.estimateMOI(0.1, 1.5),
             0.1,
             0.0,
-            Units.degreesToRadians(90.0),
+            0.47742 / (Constants.Intake.LIFTER_GEAR_DIAMETER * Math.PI) * Constants.Intake.LIFTER_GEAR_RATIO,
             true,
             0);
 

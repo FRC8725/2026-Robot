@@ -12,9 +12,11 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -46,7 +48,7 @@ public final class Constants {
     
     public final class Drive {
         public static final double ROBOT_WEIGHT_POUNDS = 150.0;
-        public static final double BUMPER_LENGTH_INCHES = 34.417;
+        public static final double BUMPER_LENGTH_INCHES = 33.2992125984252;
         public static final double MAX_SPEED = 3.0; // m/s
         public static final double MAX_ANGULAR_RATE = Math.PI * 2; // 1 rotation per second
         public static final double STEER_JOYSTICK_DEADBAND = 0.05;
@@ -69,25 +71,79 @@ public final class Constants {
         // Tolerance
         public static final double STRATING_TOLERANCE = 0.15;
         public static final double ALIGNMENT_TOLERANCE = 0.02;
+
+        public static final PathConstraints CONSTRAINTS = new PathConstraints(
+			3.0,
+			2.0,
+			3 * Math.PI,
+			2 * Math.PI);
     }
 
     public final class Hopper {
-		public static final int ID = 25;
+		public static final int ID = 24;
 		public static final double GEAR_RATIO = 1.0;
     }
 
 	public final class Shooter {
-		public static final double GEAR_RATIO = 17.5 * 75.0 / 8.0;
+		public static final int HOOD_ID = 20;
+		public static final int FLYWHEEL_MAIN_ID = 21;
+		public static final int FLYWHEEL_FOLLOW_ID = 22;
+		public static final int FEEDER_ID = 0;
+
+        public static final double HOOD_GEAR_RATIO = 17.5 * 75.0 / 8.0;
+		public static final double FLYWHEEL_GEAR_RATIO = 1.0;
+		
 		public static final double TOLERANCE = 3.0;
-	}
+
+        public static final TalonFXConfiguration FLYWHEEL_CONFIG = new TalonFXConfiguration()
+                .withCurrentLimits(
+						new CurrentLimitsConfigs()
+								.withStatorCurrentLimitEnable(true)
+								.withStatorCurrentLimit(60.0))
+				.withMotorOutput(
+						new MotorOutputConfigs()
+								.withInverted(InvertedValue.CounterClockwise_Positive)
+								.withNeutralMode(NeutralModeValue.Coast))
+				.withSlot0(
+						new Slot0Configs()
+								.withKP(0.1));
+		public static final TalonFXConfiguration HOOD_CONFIG = new TalonFXConfiguration()
+				.withCurrentLimits(
+						new CurrentLimitsConfigs()
+								.withStatorCurrentLimitEnable(true)
+                				.withStatorCurrentLimit(70.0)
+                				.withSupplyCurrentLimitEnable(true)
+                				.withSupplyCurrentLimit(50.0))
+				.withMotorOutput(
+						new MotorOutputConfigs()
+								.withInverted(InvertedValue.CounterClockwise_Positive)
+								.withNeutralMode(NeutralModeValue.Brake))
+				.withFeedback(
+						new FeedbackConfigs()
+								.withSensorToMechanismRatio(HOOD_GEAR_RATIO))
+				.withMotionMagic(
+						new MotionMagicConfigs()
+								.withMotionMagicCruiseVelocity(1.0)
+                				.withMotionMagicAcceleration(200.0)
+                				.withMotionMagicJerk(2000.0))
+				.withSlot0(
+						new Slot0Configs()
+								.withKS(0.25)
+								.withKV(13.0)
+								.withKA(0.0)
+								.withKG(0.0)
+								.withKP(100.0)
+								.withKD(0.0));
+    }
 
     public final class Intake {
         public static final int LIFTER_ID = 25;
         public static final int ROLLER_ID = 26;
         
         public static final double LIFTER_GEAR_RATIO = 40.0 / 14.0 * 8.0 / 5.0;
+		public static final double LIFTER_GEAR_DIAMETER = 0.030443;
         public static final double ROLLER_GEAR_RATIO = 1.0;
-        public static final double LIFTER_ANGLE_TOLERANCE = 0.01;
+        public static final double LIFTER_ANGLE_TOLERANCE = 0.1;
 
         public static final double LIFTER_LIMIT_DISTANCE = 0.0;
 
@@ -98,7 +154,7 @@ public final class Constants {
                                 .withSupplyCurrentLimit(40.0))
                 .withMotionMagic(
                         new MotionMagicConfigs()
-                                .withMotionMagicCruiseVelocity(0.8)
+                                .withMotionMagicCruiseVelocity(3.0)
                                 .withMotionMagicAcceleration(10.0)
                                 .withMotionMagicJerk(2000.0))
                 .withMotorOutput(
@@ -110,7 +166,8 @@ public final class Constants {
                                 .withSensorToMechanismRatio(LIFTER_GEAR_RATIO))
                 .withSlot0(
                         new Slot0Configs()
-                                .withKP(10.0)
+                                .withKP(21.0)
+                                .withKD(0.5)
                                 .withKS(0.0)
                                 .withKV(0.0)
                                 .withKG(0.0)
@@ -163,6 +220,19 @@ public final class Constants {
         // Field Size
         public static final double FIELD_X_SIZE = Units.inchesToMeters(651.22);
         public static final double FIELD_Y_SIZE = Units.inchesToMeters(317.69);
+
+        // Alliance Line
+        public static final double ALLIANCE_LINE_X = Units.inchesToMeters(156.61);
+
+        // Align Point
+        public static final Pose2d LEFT_POINT =
+                new Pose2d(
+						3.2558109760284424, 7.160459518432617,
+						new Rotation2d(1.9936496233117944));
+        public static final Pose2d RIGHT_POINT =
+				new Pose2d(
+						3.2558109760284424, 0.908866481567383,
+						new Rotation2d(-1.9936496233117944));
 
         // HUB tanslation
         public static final Translation2d HUB_CENTER = new Translation2d(

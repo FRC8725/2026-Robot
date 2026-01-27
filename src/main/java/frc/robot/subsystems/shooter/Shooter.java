@@ -1,12 +1,11 @@
 package frc.robot.subsystems.shooter;
 
-import java.util.function.Supplier;
-
 import org.littletonrobotics.junction.AutoLogOutput;
-import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -31,11 +30,10 @@ public class Shooter extends SubsystemBase {
     private HoodState hoodState = HoodState.Default;
     @AutoLogOutput(key = "Shooter/Feeder State")
     private FeederState feederState = FeederState.Off;
-    private final Supplier<Boolean> wantOffsetPositive;
-    private final Supplier<Boolean> wantOffsetNegative;
 
     public enum FlywheelState {
         Off(0.0),
+        Rest(100.0),
         Shoot(5000.0),
         SlowShoot(0.0);
 
@@ -48,7 +46,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public enum HoodState {
-        Default(0.0),
+        Default(10.0),
         AutoAim(0.0),
         Return(0.0);
 
@@ -73,14 +71,11 @@ public class Shooter extends SubsystemBase {
     }
 
     public Shooter(
-            FlywheelIO flywheelIO, HoodIO hoodIO, RollerIO rollerIO,
-            Supplier<Boolean> wantOffsetPositive, Supplier<Boolean> wantOffsetNegative) {
+            FlywheelIO flywheelIO, HoodIO hoodIO, RollerIO rollerIO) {
         SHOOTER = this;
         this.flywheel = new Flywheel(flywheelIO);
         this.hood = new Hood(hoodIO);
         this.feeder = new Feeder(rollerIO);
-        this.wantOffsetPositive = wantOffsetPositive;
-        this.wantOffsetNegative = wantOffsetNegative;
     }
 
     public static Shooter getInstance() {
@@ -100,22 +95,25 @@ public class Shooter extends SubsystemBase {
 
     @AutoLogOutput(key = "Shooter/atSetpoint")
     public boolean atSetpoint() {
-        return Math.abs(this.flywheel.getVelocity() - this.flywheelState.speed / 60.0) < Constants.Shooter.TOLERANCE;
+        return Math.abs(this.flywheel.getVelocity() - this.flywheelState.speed / 60.0)
+                < Constants.Shooter.TOLERANCE;
     }
 
     @Override
     public void periodic() {
-        if (this.wantOffsetPositive.get()) this.offset += 0.1;
-        if (this.wantOffsetNegative.get()) this.offset -= 0.1;
         this.flywheel.periodic();
         this.hood.periodic();
         this.feeder.periodic();
 
         this.flywheel.setVelocity(this.flywheelState.speed);
-        this.hood.setControl(this.request.withPosition(Units.degreesToRotations(this.offset)));
+        this.hood.setControl(new MotionMagicVoltage(Units.degreesToRotations(this.hoodState.angle)));
         this.feeder.setVolts(this.feederState.volts);
+    }
 
-        Logger.recordOutput("Shooter Measure Deg", Units.rotationsToDegrees(this.hood.getPosition()));
-        Logger.recordOutput("Shooter Setpoint Deg", this.offset);
+    @AutoLogOutput(key = "Component/Shooter")
+    public Pose3d getSimulationPose() {
+        return new Pose3d(
+                0.4245102, 0.4245102, 0.0,
+                new Rotation3d(0.0, this.hood.getPosition(), 0.0));
     }
 }

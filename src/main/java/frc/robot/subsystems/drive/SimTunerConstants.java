@@ -127,8 +127,8 @@ public class SimTunerConstants {
     private static final boolean frontLeftSteerInverted = true;
     private static final boolean frontLeftEncoderInverted = false;
 
-    private static final Distance frontLeftXPos = Inches.of(11.375);
-    private static final Distance frontLeftYPos = Inches.of(11.375);
+    private static final Distance frontLeftXPos = Inches.of(10.875);
+    private static final Distance frontLeftYPos = Inches.of(10.875);
 
     // Front Righ
     private static final int frontRightDriveId = 3;
@@ -138,8 +138,8 @@ public class SimTunerConstants {
     private static final boolean frontRightSteerInverted = true;
     private static final boolean frontRightEncoderInverted = false;
 
-    private static final Distance frontRightXPos = Inches.of(11.375);
-    private static final Distance frontRightYPos = Inches.of(-11.375);
+    private static final Distance frontRightXPos = Inches.of(10.875);
+    private static final Distance frontRightYPos = Inches.of(-10.875);
 
     // Back Left
     private static final int backLeftDriveId = 5;
@@ -149,8 +149,8 @@ public class SimTunerConstants {
     private static final boolean backLeftSteerInverted = true;
     private static final boolean backLeftEncoderInverted = false;
 
-    private static final Distance backLeftXPos = Inches.of(-11.375);
-    private static final Distance backLeftYPos = Inches.of(11.375);
+    private static final Distance backLeftXPos = Inches.of(-10.875);
+    private static final Distance backLeftYPos = Inches.of(10.875);
 
     // Back Right
     private static final int backRightDriveId = 7;
@@ -160,8 +160,8 @@ public class SimTunerConstants {
     private static final boolean backRightSteerInverted = true;
     private static final boolean backRightEncoderInverted = false;
 
-    private static final Distance backRightXPos = Inches.of(-11.375);
-    private static final Distance backRightYPos = Inches.of(-11.375);
+    private static final Distance backRightXPos = Inches.of(-10.875);
+    private static final Distance backRightYPos = Inches.of(-10.875);
 
     public static final SwerveModuleConstants<
                     TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>

@@ -15,9 +15,9 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.lib.FuelEstimator;
-import frc.robot.lib.LimelightHelpers;
-import frc.robot.lib.LimelightHelpers.RawDetection;
+import frc.robot.lib.limelight.LimelightHelpers;
+import frc.robot.lib.limelight.LimelightHelpers.RawDetection;
+import frc.robot.lib.math.FuelEstimator;
 import frc.robot.subsystems.drive.Drive;
 
 public class Vision extends SubsystemBase {

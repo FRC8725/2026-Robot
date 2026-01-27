@@ -1,16 +1,38 @@
 package frc.robot;
 
+import java.util.List;
 import java.util.function.Consumer;
 
+import org.littletonrobotics.junction.Logger;
+
+import com.pathplanner.lib.util.PathPlannerLogging;
+
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.DriveCommand;
+import frc.robot.commands.SuperStructureCmd;
 import frc.robot.lib.limelight.VisionFieldPoseEstimate;
 import frc.robot.subsystems.SuperStructure;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveIOHardware;
 import frc.robot.subsystems.drive.DriveIOSim;
+import frc.robot.subsystems.hopper.Hopper;
+import frc.robot.subsystems.hopper.HopperIOHardware;
+import frc.robot.subsystems.hopper.HopperIOSim;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.lifter.LifterIOHardware;
+import frc.robot.subsystems.intake.lifter.LifterIOSim;
+import frc.robot.subsystems.intake.roller.IntakeRollerHardware;
+import frc.robot.subsystems.intake.roller.IntakeRollerSim;
+import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.feeder.FeederIOHardware;
+import frc.robot.subsystems.shooter.feeder.FeederIOSim;
+import frc.robot.subsystems.shooter.flywheel.FlywheelIOHardware;
+import frc.robot.subsystems.shooter.flywheel.FlywheelIOSim;
+import frc.robot.subsystems.shooter.hood.HoodIOHardware;
+import frc.robot.subsystems.shooter.hood.HoodIOSim;
 
 public class RobotContainer {
 	private final Consumer<VisionFieldPoseEstimate> visionEstimatorConsumer = 
@@ -23,6 +45,9 @@ public class RobotContainer {
 
 	private final Joysticks joysticks = new Joysticks();
 	private final RobotState robotState = new RobotState(this.visionEstimatorConsumer);
+	private final Intake intake = this.buildIntakeSubsystem();
+	private final Shooter shooter = this.buildShooterSubsystem();
+	private final Hopper hopper = this.buildHopperSubsystem();
 	private final SuperStructure superStructure = new SuperStructure();
 	private final Drive drive = this.buildDriveSubsystem();
 	private final Vision objectVision = new Vision();
@@ -41,10 +66,52 @@ public class RobotContainer {
 							Constants.Drive.drivetrain.getModuleConstants()));
 		}
 	}
+
+	public Shooter buildShooterSubsystem() {
+		if (RobotBase.isSimulation()) {
+			return new Shooter(
+					new FlywheelIOSim(),
+					new HoodIOSim(),
+					new FeederIOSim());
+		} else {
+			return new Shooter(
+					new FlywheelIOHardware(),
+					new HoodIOHardware(), 
+					new FeederIOHardware());
+		}
+	}
+
+	public Intake buildIntakeSubsystem() {
+		if (RobotBase.isSimulation()) {
+			return new Intake(
+					new LifterIOSim(),
+					new IntakeRollerSim());
+		} else {
+			return new Intake(
+					new LifterIOHardware(),
+					new IntakeRollerHardware());
+		}
+	}
+
+	public Hopper buildHopperSubsystem() {
+		if (RobotBase.isSimulation()) {
+			return new Hopper(
+					new HopperIOSim());
+		} else {
+			return new Hopper(
+					new HopperIOHardware());
+		}
+	}
 	
 	public RobotContainer() {
 		this.drive.setDefaultCommand(
 				new DriveCommand(this.drive, this.objectVision, this.joysticks::getDriveInput));
+		this.superStructure.setDefaultCommand(
+				new SuperStructureCmd(this.joysticks));
+
+		PathPlannerLogging.setLogActivePathCallback(
+				(List<Pose2d> poses) ->
+						Logger.recordOutput("PathPlanner Path", poses.toArray(Pose2d[]::new)));
 	}
 
 	public Command getAutonomousCommand() {

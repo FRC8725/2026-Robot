@@ -34,6 +34,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.commands.AutoRunnerCmd;
+import frc.robot.lib.math.MathHelpers;
 import frc.robot.subsystems.SuperStructure;
 // import frc.robot.subsystems.SuperStructure;
 import frc.robot.subsystems.drive.Drive;
@@ -45,6 +46,9 @@ public class Robot extends LoggedRobot {
 
 	public static final Supplier<Boolean> isRedAlliance =
 			() -> DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
+	public static final Supplier<Boolean> isOnAllianceZone =
+			() -> MathHelpers.mirrorIfRed(Drive.getInstance().getPose()).getX()
+					< Constants.Field.ALLIANCE_LINE_X;
 
 	private final StructArrayPublisher<Pose2d> trajectoryPublisher = NetworkTableInstance.getDefault()
 		.getStructArrayTopic("TrajectoryPose", Pose2d.struct).publish();

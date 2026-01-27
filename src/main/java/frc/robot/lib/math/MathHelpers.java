@@ -7,9 +7,23 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.Constants;
+import frc.robot.Robot;
 
 public class MathHelpers {
     public static final Pose2d POSE2D_ZERO = new Pose2d();
+
+    public static Translation2d mirrorIfRed(Translation2d t) {
+        return Robot.isRedAlliance.get() ?
+            new Translation2d(Constants.Field.FIELD_X_SIZE - t.getX(), t.getY()) : t;
+    }
+
+    public static Pose2d mirrorIfRed(Pose2d t) {
+        return Robot.isRedAlliance.get() ?
+            new Pose2d(
+                    Constants.Field.FIELD_X_SIZE - t.getX(), t.getY(),
+                    t.getRotation().rotateBy(Rotation2d.k180deg))
+            : t;
+    }
 
     public static boolean epsilonEqal(double a, double b, double epsilon) {
         return Math.abs(a - b) < epsilon;
