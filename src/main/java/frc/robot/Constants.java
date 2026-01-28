@@ -13,6 +13,8 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.math.util.Units;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -26,8 +28,10 @@ public final class Constants {
         public static final int LIFTER_ID = 25;
         public static final int ROLLER_ID = 26;
         
-        public static final double LIFTER_GEAR_RATIO = 40.0 / 14.0 * 8.0 / 5.0;
-        public static final double ROLLER_GEAR_RATIO = 1.0;
+        public static final double LIFTER_GEAR_RATIO = 36.0 / 5.0;
+        public static final double ROLLER_GEAR_RATIO = 5.0 / 3.0;
+        public static final double LIFTER_GEAR_DIAMETER = Units.inchesToMeters(0.601 * 2.0);
+        public static final double LIFTER_MECHANISM_RATIO = LIFTER_GEAR_RATIO / (LIFTER_GEAR_DIAMETER * Math.PI);
         public static final double LIFTER_ANGLE_TOLERANCE = 0.01;
 
         public static final double LIFTER_LIMIT_DISTANCE = 0.0;
@@ -39,19 +43,19 @@ public final class Constants {
                                 .withSupplyCurrentLimit(40.0))
                 .withMotionMagic(
                         new MotionMagicConfigs()
-                                .withMotionMagicCruiseVelocity(0.8)
+                                .withMotionMagicCruiseVelocity(3.0)
                                 .withMotionMagicAcceleration(10.0)
                                 .withMotionMagicJerk(2000.0))
                 .withMotorOutput(
                         new MotorOutputConfigs()
-                                .withInverted(InvertedValue.CounterClockwise_Positive)
+                                .withInverted(InvertedValue.Clockwise_Positive)
                                 .withNeutralMode(NeutralModeValue.Brake))
                 .withFeedback(
                         new FeedbackConfigs()
-                                .withSensorToMechanismRatio(LIFTER_GEAR_RATIO))
+                                .withSensorToMechanismRatio(LIFTER_MECHANISM_RATIO))
                 .withSlot0(
                         new Slot0Configs()
-                                .withKP(10.0)
+                                .withKP(150.0)
                                 .withKS(0.0)
                                 .withKV(0.0)
                                 .withKG(0.0)

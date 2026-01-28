@@ -25,9 +25,9 @@ public class Intake extends SubsystemBase {
 
     public enum LifterState {
         Up(0.0),
-        Down(3.0);
+        Down(0.3);
 
-        // Units: degree
+        // Units: meter
         public final double angle;
 
         LifterState(double angle) {
@@ -38,7 +38,7 @@ public class Intake extends SubsystemBase {
     public enum RollerState {
         Off(0.0),
         SlowIn(0.0),
-        In(0.0);
+        In(1.5);
 
         public final double volts;
 

@@ -1,7 +1,5 @@
 package frc.robot.subsystems.intake.lifter;
 
-import org.littletonrobotics.junction.Logger;
-
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
@@ -45,11 +43,6 @@ public class LifterIOHardware implements LifterIO {
         inputs.appliedVolts = this.appliedVolts.getValueAsDouble();
         inputs.supplyCurrent = this.supplyCurrent.getValueAsDouble();
         inputs.connected = this.lifter.isConnected();
-                
-        Logger.recordOutput("Intake/Lifter/PositionRads", this.position.getValueAsDouble());
-        Logger.recordOutput("Intake/Lifter/VelocityRPS", this.velocity.getValueAsDouble());
-        Logger.recordOutput("Intake/Lifter/AppliedVolts", this.appliedVolts.getValueAsDouble());
-        Logger.recordOutput("Intake/Lifter/SupplyCurrent", this.supplyCurrent.getValueAsDouble());
     }
 
     @Override
