@@ -111,7 +111,7 @@ public class RobotContainer {
 
 		PathPlannerLogging.setLogActivePathCallback(
 				(List<Pose2d> poses) ->
-						Logger.recordOutput("PathPlanner Path", poses.toArray(Pose2d[]::new)));
+						Logger.recordOutput("Auto/PathPlanner", poses.toArray(Pose2d[]::new)));
 	}
 
 	public Command getAutonomousCommand() {

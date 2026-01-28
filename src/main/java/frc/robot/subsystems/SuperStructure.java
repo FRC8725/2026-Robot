@@ -7,7 +7,6 @@ import java.util.stream.Stream;
 import org.littletonrobotics.junction.AutoLogOutput;
 
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.hopper.Hopper;
@@ -42,7 +41,18 @@ public class SuperStructure extends SubsystemBase {
             Shooter.FlywheelState.Rest,
             Shooter.HoodState.Default,
             Shooter.FeederState.Off,
-            Hopper.HopperState.Off)
+            Hopper.HopperState.Off),
+        PreShoot(
+            Shooter.FlywheelState.Shoot,
+            Shooter.HoodState.AutoAim,
+            Shooter.FeederState.Push,
+            Hopper.HopperState.Off),
+        Shoot(
+            Shooter.FlywheelState.Shoot,
+            Shooter.HoodState.AutoAim,
+            Shooter.FeederState.Push,
+            Hopper.HopperState.Convey),
+        
         ;
 
         public final Shooter.FlywheelState flywheelState;
@@ -110,7 +120,6 @@ public class SuperStructure extends SubsystemBase {
     }
 
     public void setStates() {
-        // System.out.println(this.state.i);
         Shooter.getInstance().setStates(
                 this.state.flywheelState,
                 this.state.hoodState,

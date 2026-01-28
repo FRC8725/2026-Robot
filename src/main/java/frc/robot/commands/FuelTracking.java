@@ -76,7 +76,7 @@ public class FuelTracking extends Command {
 			currentRunningPath = AutoBuilder.followPath(path);
         	currentRunningPath.initialize();
 
-			Logger.recordOutput("Fuel Tracking Path", path.getPathPoses().toArray(Pose2d[]::new));
+			Logger.recordOutput("Auto/Fuel Tracking", path.getPathPoses().toArray(Pose2d[]::new));
 		}
 		
 		if (this.currentRunningPath != null) {
@@ -132,7 +132,7 @@ public class FuelTracking extends Command {
 		}
 
 		if (sortedPath.size() < 2) return null;
-		Logger.recordOutput("Sort path", sortedPath.toArray(Pose2d[]::new));
+		Logger.recordOutput("Auto/Sort Point", sortedPath.toArray(Pose2d[]::new));
 		return sortedPath;
 	}
 }

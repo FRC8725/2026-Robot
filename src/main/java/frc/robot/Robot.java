@@ -51,7 +51,7 @@ public class Robot extends LoggedRobot {
 					< Constants.Field.ALLIANCE_LINE_X;
 
 	private final StructArrayPublisher<Pose2d> trajectoryPublisher = NetworkTableInstance.getDefault()
-		.getStructArrayTopic("TrajectoryPose", Pose2d.struct).publish();
+		.getStructArrayTopic("Auto/Trajectory", Pose2d.struct).publish();
 
 	private final SendableChooser<Trajectory<SwerveSample>> chooser = new SendableChooser<>();
 	private Trajectory<SwerveSample> trajectory = null;

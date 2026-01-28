@@ -81,10 +81,9 @@ public class Intake extends SubsystemBase {
         this.lifter.periodic();
         this.roller.periodic();
 
-        // System.out.println(Units.degreesToRotations(this.getEffectiveLifterState().angle));
         this.lifter.setControl(
                 this.request.withPosition(this.getEffectiveLifterState().angle));
-        this.roller.setVolts(this.rollerState.volts);
+        this.roller.setVolts(this.getEffectiveRollerState().volts);
     }
 
     @AutoLogOutput(key = "Intake/LifterState")
