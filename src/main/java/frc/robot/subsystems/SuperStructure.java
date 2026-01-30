@@ -43,12 +43,12 @@ public class SuperStructure extends SubsystemBase {
             Shooter.FeederState.Off,
             Hopper.HopperState.Off),
         PreShoot(
-            Shooter.FlywheelState.Shoot,
+            Shooter.FlywheelState.Auto,
             Shooter.HoodState.AutoAim,
             Shooter.FeederState.Push,
             Hopper.HopperState.Off),
         Shoot(
-            Shooter.FlywheelState.Shoot,
+            Shooter.FlywheelState.Auto,
             Shooter.HoodState.AutoAim,
             Shooter.FeederState.Push,
             Hopper.HopperState.Convey),

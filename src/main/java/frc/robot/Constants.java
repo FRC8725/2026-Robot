@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.List;
+
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
@@ -16,6 +18,7 @@ import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -238,4 +241,12 @@ public final class Constants {
         public static final Translation2d HUB_CENTER = new Translation2d(
                 Units.inchesToMeters(182.11), Units.inchesToMeters(158.84));
     }
+
+	// Distance & Angle 
+	public static final List<Pair<Double, Double>> SHOOTER_ANGLE_MAP = List.of(
+		new Pair<>(null, null));
+
+	// Distance & Velocity
+	public static final List<Pair<Double, Double>> SHOOTER_VELOCITY_MAP = List.of(
+		new Pair<>(null, null));
 }

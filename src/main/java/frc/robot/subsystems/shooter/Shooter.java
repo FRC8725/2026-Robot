@@ -9,6 +9,8 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.lib.util.ShootCaculator;
+import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.rollers.RollerIO;
 import frc.robot.subsystems.shooter.feeder.Feeder;
 import frc.robot.subsystems.shooter.flywheel.Flywheel;
@@ -22,6 +24,7 @@ public class Shooter extends SubsystemBase {
     private final Hood hood;
     private final Feeder feeder;
     private final MotionMagicVoltage request = new MotionMagicVoltage(0.0);
+    private final ShootCaculator shootCaculator = new ShootCaculator();
     public double offset = 5.0;
 
     @AutoLogOutput(key = "Shooter/Flywheel State")
@@ -34,7 +37,7 @@ public class Shooter extends SubsystemBase {
     public enum FlywheelState {
         Off(0.0),
         Rest(100.0),
-        Shoot(5000.0),
+        Auto(0.0),
         SlowShoot(0.0);
 
         // RPM
@@ -46,7 +49,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public enum HoodState {
-        Default(10.0),
+        Default(0.0),
         AutoAim(0.0),
         Return(0.0);
 
@@ -93,12 +96,6 @@ public class Shooter extends SubsystemBase {
         this.flywheel.setVolts(volts);
     }
 
-    @AutoLogOutput(key = "Shooter/atSetpoint")
-    public boolean atSetpoint() {
-        return Math.abs(this.flywheel.getVelocity() - this.flywheelState.speed / 60.0)
-                < Constants.Shooter.TOLERANCE;
-    }
-
     @Override
     public void periodic() {
         this.flywheel.periodic();
@@ -106,8 +103,36 @@ public class Shooter extends SubsystemBase {
         this.feeder.periodic();
 
         this.flywheel.setVelocity(this.flywheelState.speed);
-        this.hood.setControl(new MotionMagicVoltage(Units.degreesToRotations(this.hoodState.angle)));
+        this.hood.setControl(
+                new MotionMagicVoltage(
+                        Units.degreesToRotations(this.hoodState.angle)));
         this.feeder.setVolts(this.feederState.volts);
+    }
+
+    public double getDesiredPosition() {
+        if (this.hoodState != HoodState.AutoAim)
+            return this.hoodState.angle;
+
+        double distance = Constants.Field.HUB_CENTER.getDistance(
+                Drive.getInstance().getPose().getTranslation());
+
+        return this.shootCaculator.getHoodAngle(distance);
+    }
+
+    public double getDesiredVelocity() {
+        if (this.flywheelState != FlywheelState.Auto)
+            return this.flywheelState.speed;
+
+        double distance = Constants.Field.HUB_CENTER.getDistance(
+                Drive.getInstance().getPose().getTranslation());
+        
+        return this.shootCaculator.getFlywheelVelocity(distance);
+    }
+
+    @AutoLogOutput(key = "Shooter/atSetpoint")
+    public boolean atSetpoint() {
+        return Math.abs(this.flywheel.getVelocity() - this.flywheelState.speed / 60.0)
+                < Constants.Shooter.TOLERANCE;
     }
 
     @AutoLogOutput(key = "Component/Shooter")
