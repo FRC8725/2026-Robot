@@ -65,7 +65,7 @@ public class Drive extends SubsystemBase {
                 () -> this.getRobotChassisSpeeds(), // Supplier of current robot speeds
                 // Consumer of ChassisSpeeds and feedforwards to drive the robot
                 (speeds, feedforwards) -> setControl(
-                    this.pathRequest.withSpeeds(ChassisSpeeds.discretize(speeds, 0.020))
+                    this.pathRequest.withSpeeds(ChassisSpeeds.discretize(speeds, Constants.ROBOT_PERIODIC))
                         .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
                         .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())
                 ),

@@ -5,6 +5,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import frc.robot.Constants;
 
 public class RollerIOSim implements RollerIO {
     private final DCMotorSim sim;
@@ -17,7 +18,7 @@ public class RollerIOSim implements RollerIO {
 
     @Override
     public void updateInputs(RollerIOInputs inputs) {
-        this.sim.update(0.02);
+        this.sim.update(Constants.ROBOT_PERIODIC);
 
         inputs.positionRads = this.sim.getAngularPositionRad();
         inputs.velocityRPS = this.sim.getAngularVelocityRPM() / 60.0;

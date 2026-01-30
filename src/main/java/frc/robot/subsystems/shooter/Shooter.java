@@ -25,13 +25,13 @@ public class Shooter extends SubsystemBase {
     private final Feeder feeder;
     private final MotionMagicVoltage request = new MotionMagicVoltage(0.0);
     private final ShootCaculator shootCaculator = new ShootCaculator();
-    public double offset = 5.0;
+    public double offset = 0.0;
 
-    @AutoLogOutput(key = "Shooter/Flywheel State")
+    @AutoLogOutput(key = "Shooter/FlywheelState")
     private FlywheelState flywheelState = FlywheelState.Off;
-    @AutoLogOutput(key = "Shooter/Hood State")    
+    @AutoLogOutput(key = "Shooter/HoodState")    
     private HoodState hoodState = HoodState.Default;
-    @AutoLogOutput(key = "Shooter/Feeder State")
+    @AutoLogOutput(key = "Shooter/FeederState")
     private FeederState feederState = FeederState.Off;
 
     public enum FlywheelState {
@@ -109,6 +109,7 @@ public class Shooter extends SubsystemBase {
         this.feeder.setVolts(this.feederState.volts);
     }
 
+    @AutoLogOutput(key = "Shooter/HoodDesiredPosition")
     public double getDesiredPosition() {
         if (this.hoodState != HoodState.AutoAim)
             return this.hoodState.angle;
@@ -119,6 +120,7 @@ public class Shooter extends SubsystemBase {
         return this.shootCaculator.getHoodAngle(distance);
     }
 
+    @AutoLogOutput(key = "Shoooter/FlywheelDesiredVelocity")
     public double getDesiredVelocity() {
         if (this.flywheelState != FlywheelState.Auto)
             return this.flywheelState.speed;

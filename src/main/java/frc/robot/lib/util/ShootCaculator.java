@@ -19,9 +19,9 @@ public class ShootCaculator {
     }
 
     public double getHoodAngle(double distance) {
-        if (distance > MIN_DISTANCE) { // Angle
+        if (distance > MIN_DISTANCE) {
             return MIN_DISTANCE;
-        } else { // Velocity
+        } else {
             return this.shooterVelocityMap.get(distance);
         }
     }

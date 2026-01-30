@@ -38,7 +38,7 @@ public class LifterIOSim implements LifterIO {
         inputs.supplyCurrent = this.sim.getCurrentDrawAmps();
         inputs.connected = true;
 
-        this.sim.update(0.020);
+        this.sim.update(Constants.ROBOT_PERIODIC);
         this.sim.setInputVoltage(this.simState.getMotorVoltage());
 
         this.simState.setRawRotorPosition(

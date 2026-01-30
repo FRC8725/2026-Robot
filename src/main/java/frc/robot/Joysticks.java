@@ -63,7 +63,7 @@ public class Joysticks {
 
         if (wantScore) {
             if (this.launchAlignMode == AlignMode.None) {
-                this.launchAlignMode = Robot.isOnAllianceZone.get()
+                this.launchAlignMode = Robot.isInAllianceZone.get()
                         ? AlignMode.ZoneAlign
                         : AlignMode.PointAlign;
             }

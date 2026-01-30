@@ -37,7 +37,7 @@ public class RollerIOHardware implements RollerIO {
                         reverse 
                                 ? InvertedValue.Clockwise_Positive
                                 : InvertedValue.CounterClockwise_Positive)
-                .withNeutralMode(NeutralModeValue.Brake);
+                .withNeutralMode(NeutralModeValue.Coast);
         config.Feedback
                 .withVelocityFilterTimeConstant(0.1);
 

@@ -7,6 +7,7 @@ package frc.robot;
 import java.lang.reflect.Field;
 import java.util.function.Supplier;
 
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -44,9 +45,11 @@ public class Robot extends LoggedRobot {
 	private Command autonomousCommand = new InstantCommand();
 	private final RobotContainer robotContainer;
 
+	@AutoLogOutput(key = "Robot/isRedAlliance")
 	public static final Supplier<Boolean> isRedAlliance =
 			() -> DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
-	public static final Supplier<Boolean> isOnAllianceZone =
+	@AutoLogOutput(key = "Robot/isInAllianceZone")
+	public static final Supplier<Boolean> isInAllianceZone =
 			() -> MathHelpers.mirrorIfRed(Drive.getInstance().getPose()).getX()
 					< Constants.Field.ALLIANCE_LINE_X;
 
@@ -58,7 +61,7 @@ public class Robot extends LoggedRobot {
 	private boolean didRunAuto = false;
 	
 	public Robot() {
-		super(0.02);
+		super(Constants.ROBOT_PERIODIC);
 
 		Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
         Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);

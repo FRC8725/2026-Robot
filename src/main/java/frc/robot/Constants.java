@@ -34,6 +34,7 @@ public final class Constants {
     public static final boolean useMapleSim = true;
     public static final AprilTagFieldLayout kAprilTagLayout = 
             AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark);
+	public static final double ROBOT_PERIODIC = 0.02;
 
     public static final double kRobotMassKg = Units.lbsToKilograms(150.0);
     public static final double kRobotMomentOfInertia = 2 * 9.38;
