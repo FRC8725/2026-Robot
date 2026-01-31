@@ -78,7 +78,7 @@ public final class Constants {
 
         public static final PathConstraints CONSTRAINTS = new PathConstraints(
 			3.0,
-			2.0,
+			2.5,
 			3 * Math.PI,
 			2 * Math.PI);
     }
@@ -245,9 +245,9 @@ public final class Constants {
 
 	// Distance & Angle 
 	public static final List<Pair<Double, Double>> SHOOTER_ANGLE_MAP = List.of(
-		new Pair<>(null, null));
+		new Pair<>(1.0, 1.0));
 
 	// Distance & Velocity
 	public static final List<Pair<Double, Double>> SHOOTER_VELOCITY_MAP = List.of(
-		new Pair<>(null, null));
+		new Pair<>(1.0, 1.0));
 }

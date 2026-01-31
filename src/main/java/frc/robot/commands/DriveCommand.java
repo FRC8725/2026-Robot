@@ -5,9 +5,12 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants;
 import frc.robot.Joysticks;
 import frc.robot.Robot;
@@ -82,11 +85,16 @@ public class DriveCommand extends Command {
 			}
 
 			if (this.pathCommand == null) {
-				this.pathCommand = AutoBuilder.pathfindToPose(
-						this.drive.getClosestScorePoint(),
-						Constants.Drive.CONSTRAINTS,
-						0.0);
+				// Generate path
+				Pose2d scorePose = this.drive.getClosestScorePoint();
+				Pose2d approachPose = new Pose2d(
+						4.9, 7.6, Rotation2d.kCCW_90deg);
 
+				this.pathCommand = Commands.sequence(
+						AutoBuilder.pathfindToPose(
+								approachPose, Constants.Drive.CONSTRAINTS, 1.5),
+						AutoBuilder.pathfindToPose(
+								scorePose, Constants.Drive.CONSTRAINTS, 0.0));
 				this.pathCommand.initialize();
 			}
 

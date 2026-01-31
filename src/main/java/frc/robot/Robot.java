@@ -45,10 +45,10 @@ public class Robot extends LoggedRobot {
 	private Command autonomousCommand = new InstantCommand();
 	private final RobotContainer robotContainer;
 
-	@AutoLogOutput(key = "Robot/isRedAlliance")
+	// @AutoLogOutput(key = "Robot/isRedAlliance")
 	public static final Supplier<Boolean> isRedAlliance =
 			() -> DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
-	@AutoLogOutput(key = "Robot/isInAllianceZone")
+	// @AutoLogOutput(key = "Robot/isInAllianceZone")
 	public static final Supplier<Boolean> isInAllianceZone =
 			() -> MathHelpers.mirrorIfRed(Drive.getInstance().getPose()).getX()
 					< Constants.Field.ALLIANCE_LINE_X;
