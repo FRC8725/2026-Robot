@@ -9,6 +9,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
+import frc.robot.Constants;
 import frc.robot.Constants.Shooter;
 
 public class FlywheelIOSim implements FlywheelIO {
@@ -34,7 +35,7 @@ public class FlywheelIOSim implements FlywheelIO {
 
     @Override
     public void updateInputs(FlywheelIOInputs inputs) {
-        this.sim.update(0.020);
+        this.sim.update(Constants.ROBOT_PERIODIC);
         this.sim.setInputVoltage(this.simState.getMotorVoltage());
 
         inputs.positionRads += this.sim.getAngularVelocityRadPerSec() * 0.02;

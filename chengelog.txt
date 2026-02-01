@@ -56,3 +56,7 @@ v0.1.1
 v0.1.2
 1. Optimized RobotContainer create io input
 2. Add mechnism roller io to solve some problem
+
+v1.0
+1. Update from alpha-simulation
+2. Install pathplanerlib

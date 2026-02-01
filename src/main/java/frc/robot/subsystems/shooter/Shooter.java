@@ -4,9 +4,13 @@ import org.littletonrobotics.junction.AutoLogOutput;
 
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.lib.util.ShootCaculator;
+import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.rollers.RollerIO;
 import frc.robot.subsystems.shooter.feeder.Feeder;
 import frc.robot.subsystems.shooter.flywheel.Flywheel;
@@ -20,18 +24,20 @@ public class Shooter extends SubsystemBase {
     private final Hood hood;
     private final Feeder feeder;
     private final MotionMagicVoltage request = new MotionMagicVoltage(0.0);
-    public double offset = 5.0;
+    private final ShootCaculator shootCaculator = new ShootCaculator();
+    public double offset = 0.0;
 
-    @AutoLogOutput(key = "Shooter/Flywheel State")
+    @AutoLogOutput(key = "Shooter/FlywheelState")
     private FlywheelState flywheelState = FlywheelState.Off;
-    @AutoLogOutput(key = "Shooter/Hood State")    
+    @AutoLogOutput(key = "Shooter/HoodState")    
     private HoodState hoodState = HoodState.Default;
-    @AutoLogOutput(key = "Shooter/Feeder State")
+    @AutoLogOutput(key = "Shooter/FeederState")
     private FeederState feederState = FeederState.Off;
 
     public enum FlywheelState {
         Off(0.0),
-        Shoot(5000.0),
+        Rest(100.0),
+        Auto(0.0),
         SlowShoot(0.0);
 
         // RPM
@@ -90,12 +96,6 @@ public class Shooter extends SubsystemBase {
         this.flywheel.setVolts(volts);
     }
 
-    @AutoLogOutput(key = "Shooter/atSetpoint")
-    public boolean atSetpoint() {
-        return Math.abs(this.flywheel.getVelocity() - this.flywheelState.speed / 60.0)
-                < Constants.Shooter.TOLERANCE;
-    }
-
     @Override
     public void periodic() {
         this.flywheel.periodic();
@@ -103,7 +103,44 @@ public class Shooter extends SubsystemBase {
         this.feeder.periodic();
 
         this.flywheel.setVelocity(this.flywheelState.speed);
-        this.hood.setControl(new MotionMagicVoltage(Units.degreesToRotations(this.offset)));
+        this.hood.setControl(
+                new MotionMagicVoltage(
+                        Units.degreesToRotations(this.hoodState.angle)));
         this.feeder.setVolts(this.feederState.volts);
+    }
+
+    @AutoLogOutput(key = "Shooter/HoodDesiredPosition")
+    public double getDesiredPosition() {
+        if (this.hoodState != HoodState.AutoAim)
+            return this.hoodState.angle;
+
+        double distance = Constants.Field.HUB_CENTER.getDistance(
+                Drive.getInstance().getPose().getTranslation());
+
+        return this.shootCaculator.getHoodAngle(distance);
+    }
+
+    @AutoLogOutput(key = "Shoooter/FlywheelDesiredVelocity")
+    public double getDesiredVelocity() {
+        if (this.flywheelState != FlywheelState.Auto)
+            return this.flywheelState.speed;
+
+        double distance = Constants.Field.HUB_CENTER.getDistance(
+                Drive.getInstance().getPose().getTranslation());
+        
+        return this.shootCaculator.getFlywheelVelocity(distance);
+    }
+
+    @AutoLogOutput(key = "Shooter/atSetpoint")
+    public boolean atSetpoint() {
+        return Math.abs(this.flywheel.getVelocity() - this.flywheelState.speed / 60.0)
+                < Constants.Shooter.TOLERANCE;
+    }
+
+    @AutoLogOutput(key = "Component/Shooter")
+    public Pose3d getSimulationPose() {
+        return new Pose3d(
+                0.4245102, 0.4245102, 0.0,
+                new Rotation3d(0.0, this.hood.getPosition(), 0.0));
     }
 }

@@ -64,6 +64,11 @@ public class FlywheelIOHardware implements FlywheelIO {
 
     @Override
     public void runVelocity(double rpm, double feedforward) {
+        if (rpm == 0.0) { // Stop motor
+            this.flywheelMain.setVoltage(0.0);
+            this.flywheelFollow.setControl(this.follower);
+            return;
+        }
         this.flywheelMain.setControl(
                 this.velocityControl.withVelocity(rpm / 60.0).withFeedForward(feedforward));
         this.flywheelFollow.setControl(this.follower);

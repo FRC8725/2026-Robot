@@ -16,11 +16,11 @@ public class HoodIOSim implements HoodIO {
     private final SingleJointedArmSim sim = new SingleJointedArmSim(
             DCMotor.getKrakenX44(1),
             Constants.Shooter.HOOD_GEAR_RATIO,
-            SingleJointedArmSim.estimateMOI(0.1, 0.5),
-            0.1,
+            SingleJointedArmSim.estimateMOI(0.2, 0.5),
+            0.2,
             0.0,
-            0.0,
-            true,
+            Units.degreesToRadians(22.0),
+            false,
             0.0);
 
     public HoodIOSim() {
@@ -38,7 +38,7 @@ public class HoodIOSim implements HoodIO {
         inputs.supplyCurrent = this.sim.getCurrentDrawAmps();
         inputs.connected = true;
 
-        this.sim.update(0.020);
+        this.sim.update(Constants.ROBOT_PERIODIC);
         this.sim.setInputVoltage(this.simState.getMotorVoltage());
 
         this.simState.setRawRotorPosition(
@@ -73,5 +73,4 @@ public class HoodIOSim implements HoodIO {
     public double getPosition() {
         return this.hood.getPosition().getValueAsDouble();
     }
-    
 }
