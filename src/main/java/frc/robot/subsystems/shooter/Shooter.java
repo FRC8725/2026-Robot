@@ -7,7 +7,6 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.lib.util.ShootCaculator;
@@ -38,7 +37,7 @@ public class Shooter extends SubsystemBase {
     public enum FlywheelState {
         Off(0.0),
         Rest(100.0),
-        Auto(0.0),
+        Auto(5000.0),
         SlowShoot(0.0);
 
         // RPM
@@ -105,7 +104,7 @@ public class Shooter extends SubsystemBase {
 
         this.flywheel.setVelocity(this.flywheelState.speed);
         this.hood.setControl(
-                new MotionMagicVoltage(
+                this.request.withPosition(
                         Units.degreesToRotations(this.hoodState.angle)));
         this.feeder.setVolts(this.feederState.volts);
     }

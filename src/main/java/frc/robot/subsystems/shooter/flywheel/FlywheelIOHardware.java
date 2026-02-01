@@ -39,6 +39,8 @@ public class FlywheelIOHardware implements FlywheelIO {
         
         this.flywheelMain.getConfigurator().apply(Shooter.FLYWHEEL_CONFIG);
         this.flywheelFollow.getConfigurator().apply(Shooter.FLYWHEEL_CONFIG);
+
+        BaseStatusSignal.setUpdateFrequencyForAll(100.0, this.supplyCurrent);
     }
 
     @Override

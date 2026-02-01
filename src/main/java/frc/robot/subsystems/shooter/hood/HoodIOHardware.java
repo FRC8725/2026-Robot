@@ -2,12 +2,8 @@ package frc.robot.subsystems.shooter.hood;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
@@ -28,31 +24,7 @@ public class HoodIOHardware implements HoodIO {
     public HoodIOHardware() {
         this.lifter = new TalonFX(Shooter.HOOD_ID);
 
-        TalonFXConfiguration config = new TalonFXConfiguration();
-        Slot0Configs slot0 = new Slot0Configs();
-        slot0.kS = 0.25;
-        slot0.kV = 13.0;
-        slot0.kA = 0.0;
-        slot0.kG = 0.0;
-        slot0.kP = 250.0;
-        slot0.kD = 0.0;
-        config.CurrentLimits
-                .withStatorCurrentLimitEnable(true)
-                .withStatorCurrentLimit(70.0)
-                .withSupplyCurrentLimitEnable(true)
-                .withSupplyCurrentLimit(50.0);
-        config.MotionMagic
-                .withMotionMagicCruiseVelocity(1.0)
-                .withMotionMagicAcceleration(200.0)
-                .withMotionMagicJerk(2000.0);
-        config.MotorOutput
-                .withInverted(InvertedValue.CounterClockwise_Positive)
-                .withNeutralMode(NeutralModeValue.Brake);
-        config.Feedback
-                .withSensorToMechanismRatio(Constants.Shooter.HOOD_GEAR_RATIO);
-        config.Slot0 = slot0;
-
-        this.lifter.getConfigurator().apply(config);
+        this.lifter.getConfigurator().apply(Constants.Shooter.HOOD_CONFIG);
 
         this.position = this.lifter.getPosition();
         this.velocity = this.lifter.getVelocity();

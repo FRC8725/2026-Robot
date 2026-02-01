@@ -10,7 +10,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.SuperStructure;
-import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.lifter.LifterIO;
 import frc.robot.subsystems.intake.lifter.LifterSubsystem;
 import frc.robot.subsystems.rollers.RollerIO;

@@ -63,3 +63,7 @@ v1.0
 
 v1.0.1
 1. Add shooter simulation 3D
+
+v1.0.2
+1. Fix flywheel config
+2. Fix Intake lifter record bug

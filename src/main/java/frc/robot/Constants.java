@@ -132,15 +132,17 @@ public final class Constants {
         public static final TalonFXConfiguration FLYWHEEL_CONFIG = new TalonFXConfiguration()
                 .withCurrentLimits(
 						new CurrentLimitsConfigs()
+								.withSupplyCurrentLimitEnable(true)
+								.withSupplyCurrentLimit(60.0)
 								.withStatorCurrentLimitEnable(true)
-								.withStatorCurrentLimit(60.0))
+								.withStatorCurrentLimit(80.0))
 				.withMotorOutput(
 						new MotorOutputConfigs()
 								.withInverted(InvertedValue.CounterClockwise_Positive)
 								.withNeutralMode(NeutralModeValue.Coast))
 				.withSlot0(
 						new Slot0Configs()
-								.withKP(0.1));
+								.withKP(0.3));
 		public static final TalonFXConfiguration HOOD_CONFIG = new TalonFXConfiguration()
 				.withCurrentLimits(
 						new CurrentLimitsConfigs()
