@@ -31,13 +31,13 @@ public class RollerIOHardware implements RollerIO {
         TalonFXConfiguration config = new TalonFXConfiguration();
         config.CurrentLimits
                 .withStatorCurrentLimitEnable(true)
-                .withStatorCurrentLimit(40.0);
+                .withStatorCurrentLimit(80.0);
         config.MotorOutput
                 .withInverted(
                         reverse 
                                 ? InvertedValue.Clockwise_Positive
                                 : InvertedValue.CounterClockwise_Positive)
-                .withNeutralMode(NeutralModeValue.Brake);
+                .withNeutralMode(NeutralModeValue.Coast);
         config.Feedback
                 .withVelocityFilterTimeConstant(0.1);
 

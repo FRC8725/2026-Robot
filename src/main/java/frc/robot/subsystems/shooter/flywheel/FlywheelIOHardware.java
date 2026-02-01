@@ -42,30 +42,36 @@ public class FlywheelIOHardware implements FlywheelIO {
         TalonFXConfiguration config = new TalonFXConfiguration();
         config.CurrentLimits
                 .withStatorCurrentLimitEnable(true)
-                .withStatorCurrentLimit(60.0);
+                .withStatorCurrentLimit(80.0)
+                .withSupplyCurrentLimitEnable(true)
+                .withSupplyCurrentLimit(60.0);
         config.MotorOutput
                 .withInverted(InvertedValue.CounterClockwise_Positive)
-                .withNeutralMode(NeutralModeValue.Brake);
+                .withNeutralMode(NeutralModeValue.Coast);
+        // config.MotionMagic
+        //         .withMotionMagicAcceleration(follow)
         config.Slot0
-                .withKP(0.1);
+                .withKP(0.3);
         
         this.flywheelMain.getConfigurator().apply(config);
         this.flywheelFollow.getConfigurator().apply(config);
+
+        BaseStatusSignal.setUpdateFrequencyForAll(100.0, this.supplyCurrent);
     }
 
     @Override
     public void updateInputs(FlywheelIOInputs inputs) {
-        inputs.positionRads = this.position.getValueAsDouble();
-        inputs.velocityRPS = this.velocity.getValueAsDouble();
-        inputs.appliedVolts = this.volts.getValueAsDouble();
-        inputs.supplyCurrent = this.supplyCurrent.getValueAsDouble();
-        inputs.connected = this.flywheelMain.isConnected();
-
         BaseStatusSignal.refreshAll(
                 this.position,
                 this.velocity,
                 this.volts,
                 this.supplyCurrent);
+
+        inputs.positionRads = this.position.getValueAsDouble();
+        inputs.velocityRPS = this.velocity.getValueAsDouble();
+        inputs.appliedVolts = this.volts.getValueAsDouble();
+        inputs.supplyCurrent = this.supplyCurrent.getValueAsDouble();
+        inputs.connected = this.flywheelMain.isConnected();
     }
 
     @Override
@@ -76,6 +82,11 @@ public class FlywheelIOHardware implements FlywheelIO {
 
     @Override
     public void runVelocity(double rpm, double feedforward) {
+        if (rpm == 0) {
+            this.flywheelMain.setVoltage(0.0);
+            this.flywheelFollow.setControl(this.follower);
+            return;
+        }
         this.flywheelMain.setControl(
                 this.velocityControl.withVelocity(rpm / 60.0).withFeedForward(feedforward));
         this.flywheelFollow.setControl(this.follower);

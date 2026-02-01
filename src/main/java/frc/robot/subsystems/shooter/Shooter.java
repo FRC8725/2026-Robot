@@ -36,7 +36,7 @@ public class Shooter extends SubsystemBase {
 
     public enum FlywheelState {
         Off(0.0),
-        Shoot(5000.0),
+        Shoot(5400.0),
         SlowShoot(0.0);
 
         // RPM
@@ -62,7 +62,7 @@ public class Shooter extends SubsystemBase {
 
     public enum FeederState {
         Off(0.0),
-        Push(5.0),
+        Push(6.0),
         SlowPush(0.0);
 
         public final double volts;
