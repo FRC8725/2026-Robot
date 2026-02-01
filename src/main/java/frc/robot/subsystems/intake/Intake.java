@@ -38,7 +38,7 @@ public class Intake extends SubsystemBase {
     public enum RollerState {
         Off(0.0),
         SlowIn(0.0),
-        In(1.5);
+        In(3.0);
 
         public final double volts;
 
