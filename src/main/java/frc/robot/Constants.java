@@ -31,7 +31,7 @@ import frc.robot.subsystems.drive.SimTunerConstants;
 import frc.robot.subsystems.drive.TunerConstants;
 
 public final class Constants {
-    public static final boolean useMapleSim = false;
+    public static final boolean useMapleSim = true;
     public static final AprilTagFieldLayout kAprilTagLayout = 
             AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark);
     public static final double ROBOT_PERIODIC = 0.02;

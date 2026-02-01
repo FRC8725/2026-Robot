@@ -60,3 +60,6 @@ v0.1.2
 v1.0
 1. Update from alpha-simulation
 2. Install pathplanerlib
+
+v1.0.1
+1. Add shooter simulation 3D
