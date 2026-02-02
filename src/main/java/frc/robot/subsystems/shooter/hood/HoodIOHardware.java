@@ -29,11 +29,11 @@ public class HoodIOHardware implements HoodIO {
 
         TalonFXConfiguration config = new TalonFXConfiguration();
         Slot0Configs slot0 = new Slot0Configs();
-        slot0.kS = 0.25;
-        slot0.kV = 13.0;
+        slot0.kS = 0.3;
+        slot0.kV = 30.0;
         slot0.kA = 0.0;
         slot0.kG = 0.0;
-        slot0.kP = 250.0;
+        slot0.kP = 450.0;
         slot0.kD = 0.0;
         config.CurrentLimits
                 .withStatorCurrentLimitEnable(true)

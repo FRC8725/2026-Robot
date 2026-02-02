@@ -36,7 +36,7 @@ public class Shooter extends SubsystemBase {
 
     public enum FlywheelState {
         Off(0.0),
-        Shoot(5400.0),
+        Shoot(4000.0),
         SlowShoot(0.0);
 
         // RPM

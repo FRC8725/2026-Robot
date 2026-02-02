@@ -6,7 +6,7 @@ package frc.robot;
 
 public final class Constants {
 	public final class Shooter {
-		public static final double GEAR_RATIO = 17.5 * 75.0 / 8.0;
-		public static final double TOLERANCE = 3.0;
+		public static final double GEAR_RATIO = 294.0;
+		public static final double TOLERANCE = 1.0;
 	}
 }

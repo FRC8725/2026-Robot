@@ -52,6 +52,8 @@ public class FlywheelIOHardware implements FlywheelIO {
         //         .withMotionMagicAcceleration(follow)
         config.Slot0
                 .withKP(0.3);
+        config.Feedback
+                .withSensorToMechanismRatio(1.0);
         
         this.flywheelMain.getConfigurator().apply(config);
         this.flywheelFollow.getConfigurator().apply(config);
