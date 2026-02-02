@@ -1,10 +1,22 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.PS5Controller;
 import edu.wpi.first.wpilibj.XboxController;
+// import frc.robot.subsystems.SuperStructure;
 import frc.robot.subsystems.SuperStructure;
 
 public class Joysticks {
     private final XboxController driver = new XboxController(0);
+    // private final PS5Controller controller = new PS5Controller(1);
+
+    private AlignMode launchAlignMode = AlignMode.None;
+
+
+    public enum AlignMode {
+        None,
+        ZoneAlign,
+        PointAlign
+    }
 
     public static class DriveInputs {
         public double leftY;
@@ -12,11 +24,17 @@ public class Joysticks {
         public double rightX;
         public double deadZone;
         public boolean oriented;
+        public AlignMode alignMode;
+        public boolean wantTrack;
 
         public boolean isNonZero() {
             return Math.abs(leftX) > deadZone ||
                 Math.abs(leftY) > deadZone ||
                 Math.abs(rightX) > deadZone;
+        }
+
+        public boolean isRotateZero() {
+            return Math.abs(rightX) < deadZone;
         }
 
         public DriveInputs getRedFlipped() {
@@ -26,6 +44,8 @@ public class Joysticks {
             flipped.rightX = this.rightX;
             flipped.deadZone = deadZone;
             flipped.oriented = oriented;
+            flipped.alignMode = alignMode;
+            flipped.wantTrack = wantTrack;
             return flipped;
         }
     }
@@ -37,6 +57,21 @@ public class Joysticks {
         input.rightX = this.driver.getRightX();
         input.oriented = this.driver.getLeftBumperButton();
         input.deadZone = 0.05;
+        input.wantTrack = this.driver.getAButton();
+
+        boolean wantScore = this.getInput().wantScore;
+
+        if (wantScore) {
+            if (this.launchAlignMode == AlignMode.None) {
+                this.launchAlignMode = Robot.isInAllianceZone.get()
+                        ? AlignMode.ZoneAlign
+                        : AlignMode.PointAlign;
+            }
+        } else {
+            this.launchAlignMode = AlignMode.None;
+        }
+
+        input.alignMode = this.launchAlignMode;
         
         return input;
     }
@@ -44,6 +79,9 @@ public class Joysticks {
     public SuperStructure.StructureInput getInput() {
         SuperStructure.StructureInput input = new SuperStructure.StructureInput();
 
+        input.wantIntake = this.driver.getRightTriggerAxis() > 0.3;
+        input.wantScore = this.driver.getRightBumperButton();
+        
         return input;
     }
 }

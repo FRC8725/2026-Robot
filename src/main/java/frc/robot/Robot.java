@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Watchdog;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.lib.math.MathHelpers;
 import frc.robot.subsystems.drive.Drive;
 
 public class Robot extends LoggedRobot {
@@ -34,9 +35,12 @@ public class Robot extends LoggedRobot {
 
 	public static final Supplier<Boolean> isRedAlliance =
 			() -> DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
+	public static final Supplier<Boolean> isInAllianceZone =
+			() -> MathHelpers.mirrorIfRed(Drive.getInstance().getPose()).getX()
+					< Constants.Field.ALLIANCE_LINE_X;
 
 	public Robot() {
-		super(0.02);
+		super(Constants.ROBOT_PERIODIC);
 
 		Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
         Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);

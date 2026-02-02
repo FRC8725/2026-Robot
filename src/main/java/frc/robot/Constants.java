@@ -82,8 +82,7 @@ public final class Constants {
         public static final int LIFTER_ID = 25;
         public static final int ROLLER_ID = 26;
         
-		// TODO
-        public static final double LIFTER_GEAR_RATIO = 40.0 / 14.0 * 8.0 / 5.0;
+        public static final double LIFTER_GEAR_RATIO = 294.0;
 		public static final double LIFTER_GEAR_DIAMETER = 0.030443;
         public static final double ROLLER_GEAR_RATIO = 1.0;
         public static final double LIFTER_ANGLE_TOLERANCE = 0.1;
@@ -123,8 +122,7 @@ public final class Constants {
 		public static final int FEEDER_ID = 0;
 
         public static final double HOOD_GEAR_RATIO = 294.0;
-		// TODO
-		public static final double FLYWHEEL_GEAR_RATIO = 1.0;
+		public static final double FLYWHEEL_GEAR_RATIO = 3.0;
 		
 		// TODO
 		public static final double TOLERANCE = 3.0;

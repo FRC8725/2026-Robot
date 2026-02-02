@@ -23,6 +23,7 @@ import frc.robot.RobotState;
 import frc.robot.lib.limelight.MegatagPoseEstimate;
 import frc.robot.lib.limelight.VisionFieldPoseEstimate;
 import frc.robot.lib.math.MathHelpers;
+import frc.robot.subsystems.vision.apriltag.VisionIO;
 
 public class Vision extends SubsystemBase {
     private final VisionIO io;

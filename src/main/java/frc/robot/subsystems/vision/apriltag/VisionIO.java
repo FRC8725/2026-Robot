@@ -1,4 +1,4 @@
-package frc.robot.subsystems.vision;
+package frc.robot.subsystems.vision.apriltag;
 
 import edu.wpi.first.math.geometry.Pose3d;
 import frc.robot.lib.limelight.FiducialObservation;

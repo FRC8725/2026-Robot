@@ -1,6 +1,11 @@
 package frc.robot.subsystems.drive;
 
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 
 import choreo.Choreo.TrajectoryLogger;
 import choreo.auto.AutoFactory;
@@ -9,10 +14,15 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.lib.limelight.VisionFieldPoseEstimate;
+import frc.robot.lib.math.MathHelpers;
 import frc.robot.lib.simulation.MapleSimDrivetrain;
 import org.littletonrobotics.junction.Logger;
 
@@ -21,7 +31,14 @@ public class Drive extends SubsystemBase {
     private final DriveIO io;
     private final DriveIOInputsAutoLogged inputs = new DriveIOInputsAutoLogged();
 
+    private final SwerveRequest.ApplyRobotSpeeds pathRequest = new SwerveRequest.ApplyRobotSpeeds();
     private final SwerveRequest.ApplyFieldSpeeds choreoAutoRequest = new SwerveRequest.ApplyFieldSpeeds();
+    private final SwerveRequest.FieldCentric stopRequest = 
+            new SwerveRequest.FieldCentric()
+                    .withDriveRequestType(DriveRequestType.Velocity)
+                    .withVelocityX(0.0)
+                    .withVelocityY(0.0)
+                    .withRotationalRate(0.0);
 
     private final PIDController xController = new PIDController(10.0, 0, 0.0);
     private final PIDController yController = new PIDController(10.0, 0, 0.0);
@@ -31,6 +48,36 @@ public class Drive extends SubsystemBase {
         DRIVE = this;
         this.io = io;
         this.headingController.enableContinuousInput(-Math.PI, Math.PI);
+        this.configureAutoBuilder();
+    }
+
+    private void configureAutoBuilder() {
+        try {
+            var config = RobotConfig.fromGUISettings();
+            AutoBuilder.configure(
+                () -> this.inputs.Pose,   // Supplier of current robot pose
+                this::resetOdometry,         // Consumer for seeding pose against auto
+                () -> this.getRobotChassisSpeeds(), // Supplier of current robot speeds
+                // Consumer of ChassisSpeeds and feedforwards to drive the robot
+                (speeds, feedforwards) -> setControl(
+                    this.pathRequest.withSpeeds(ChassisSpeeds.discretize(speeds, Constants.ROBOT_PERIODIC))
+                        .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
+                        .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())
+                ),
+                new PPHolonomicDriveController(
+                    // PID constants for translation
+                    new PIDConstants(10.0, 0.0, 0.0),
+                    // PID constants for rotation
+                    new PIDConstants(7.0, 0.0, 0.0)
+                ),
+                config,
+                // Assume the path needs to be flipped for Red vs Blue, this is normally the case
+                () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
+                this // Subsystem for requirements
+            );
+        } catch (Exception ex) {
+            DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", ex.getStackTrace());
+        }
     }
 
     public static Drive getInstance() {
@@ -81,6 +128,10 @@ public class Drive extends SubsystemBase {
         this.setControl(this.choreoAutoRequest.withSpeeds(speeds));
     }
 
+    public void stopModules() {
+        this.setControl(this.stopRequest);
+    }
+
     @Override
     public void periodic() {
         double timestamp = Timer.getFPGATimestamp();
@@ -98,6 +149,23 @@ public class Drive extends SubsystemBase {
         Logger.recordOutput("Drive/Pose3d", pose3d);
         Logger.recordOutput("Drive/latencyPeriodicSec", Timer.getFPGATimestamp() - timestamp);
     }
+
+    public Pose2d getClosestScorePoint() {
+        Pose2d leftPoint = MathHelpers.mirrorIfRed(Constants.Field.LEFT_POINT);
+        Pose2d rightPoint = MathHelpers.mirrorIfRed(Constants.Field.RIGHT_POINT);
+
+        double leftDistance = this.getPose().getTranslation()
+                .getDistance(leftPoint.getTranslation());
+        double rightDistance = this.getPose().getTranslation()
+                .getDistance(rightPoint.getTranslation());
+
+        return leftDistance < rightDistance ? leftPoint : rightPoint;
+    }
+
+    public boolean withinTolerance(Translation2d t) {
+        return this.getPose().getTranslation().getDistance(t) < Constants.Drive.ALIGNMENT_TOLERANCE;
+    }
+
 
     public ChassisSpeeds getRobotChassisSpeeds() {
         return this.inputs.Speeds;
