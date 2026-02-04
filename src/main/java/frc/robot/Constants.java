@@ -19,6 +19,7 @@ public final class Constants {
 		public static final double DRUM_RADIUS_METERS = DRUM_CIRCUMFERENCE / (2.0 * Math.PI);
 		public static final double MECHANISM_GEAR_RATIO = LIFTER_GEAR_RATIO / DRUM_CIRCUMFERENCE;
         public static final double ROLLER_GEAR_RATIO = 1.0;
+        // TODO 2/5
         public static final double LIFTER_ANGLE_TOLERANCE = 0.1;
 
         public static final double LIFTER_LIMIT_DISTANCE = 0.0;
@@ -40,7 +41,7 @@ public final class Constants {
                 .withFeedback(
                         new FeedbackConfigs()
                                 .withSensorToMechanismRatio(MECHANISM_GEAR_RATIO))
-                .withSlot0(
+                .withSlot0( // TODO 2/5
                         new Slot0Configs()
                                 .withKP(10.0)
                                 .withKS(0.0)

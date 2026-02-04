@@ -24,6 +24,7 @@ public class Intake extends SubsystemBase {
     private RollerState rollerState = RollerState.Off;
 
     public enum LifterState {
+        // TODO 2/5
         Up(0.0),
         Down(0.3);
 
@@ -36,6 +37,7 @@ public class Intake extends SubsystemBase {
     }
 
     public enum RollerState {
+        // TODO 2/5
         Off(0.0),
         SlowIn(0.0),
         In(3.0);
