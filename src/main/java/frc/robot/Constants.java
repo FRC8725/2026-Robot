@@ -126,8 +126,9 @@ public final class Constants {
         public static final double HOOD_GEAR_RATIO = 294.0;
 		public static final double FLYWHEEL_GEAR_RATIO = 1.0;
 		
-		// TODO
-		public static final double TOLERANCE = 3.0;
+		// TODO 2/5
+		public static final double FLYWHEEL_TOLERANCE = 3.0;
+		public static final double HOOD_TOLERANCE = Units.degreesToRadians(0.3);
 
         public static final TalonFXConfiguration FLYWHEEL_CONFIG = new TalonFXConfiguration()
                 .withCurrentLimits(
@@ -173,7 +174,7 @@ public final class Constants {
     }
 
 	public final class Hopper {
-		public static final int ID = 24;
+		public static final int ROLLER_ID = 24;
 		public static final int CENTER_ID = 25;
 		public static final double GEAR_RATIO = 1.0;
 	}

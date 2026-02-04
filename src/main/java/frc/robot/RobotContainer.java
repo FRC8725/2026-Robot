@@ -3,15 +3,16 @@ package frc.robot;
 import java.util.function.Consumer;
 
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.SuperStructureCmd;
 import frc.robot.lib.limelight.VisionFieldPoseEstimate;
 import frc.robot.subsystems.drive.DriveIOHardware;
 import frc.robot.subsystems.drive.DriveIOSim;
 import frc.robot.subsystems.hopper.Hopper;
-import frc.robot.subsystems.hopper.HopperIOHardware;
-import frc.robot.subsystems.hopper.HopperIOSim;
+import frc.robot.subsystems.hopper.center.HopperCenterIOHardware;
+import frc.robot.subsystems.hopper.center.HopperCenterIOSim;
+import frc.robot.subsystems.hopper.roller.HopperRollerIOHardware;
+import frc.robot.subsystems.hopper.roller.HopperRollerIOSim;
 import frc.robot.subsystems.SuperStructure;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.Intake;
@@ -94,10 +95,12 @@ public class RobotContainer {
 	public Hopper buildHopperSubsystem() {
 		if (RobotBase.isSimulation()) {
 			return new Hopper(
-					new HopperIOSim());
+					new HopperRollerIOSim(),
+					new HopperCenterIOSim());
 		} else {
 			return new Hopper(
-					new HopperIOHardware());
+					new HopperRollerIOHardware(),
+					new HopperCenterIOHardware());
 		}
 	}
 

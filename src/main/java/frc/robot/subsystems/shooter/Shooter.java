@@ -106,11 +106,11 @@ public class Shooter extends SubsystemBase {
         this.flywheel.setVelocity(this.flywheelState.speed);
         this.hood.setControl(
                 this.request.withPosition(
-                        Units.degreesToRotations(this.hoodState.angle)));
+                        Units.degreesToRotations(this.getDesiredPosition())));
         this.feeder.setVolts(this.feederState.volts);
     }
 
-    @AutoLogOutput(key = "Shooter/HoodDesiredPosition")
+    @AutoLogOutput(key = "Shooter/HoodDesiredPosition") // Degrees
     public double getDesiredPosition() {
         if (this.hoodState != HoodState.AutoAim)
             return this.hoodState.angle;
@@ -121,7 +121,7 @@ public class Shooter extends SubsystemBase {
         return this.shootCaculator.getHoodAngle(distance);
     }
 
-    @AutoLogOutput(key = "Shoooter/FlywheelDesiredVelocity")
+    @AutoLogOutput(key = "Shoooter/FlywheelDesiredVelocity") // Rotate per minute
     public double getDesiredVelocity() {
         if (this.flywheelState != FlywheelState.Auto)
             return this.flywheelState.speed;
@@ -132,10 +132,16 @@ public class Shooter extends SubsystemBase {
         return this.shootCaculator.getFlywheelVelocity(distance);
     }
 
-    @AutoLogOutput(key = "Shooter/atSetpoint")
-    public boolean atSetpoint() {
+    @AutoLogOutput(key = "Shooter/FlywheelAtSetpoint")
+    public boolean flywheelAtSetpoint() {
         return Math.abs(this.flywheel.getVelocity() - this.flywheelState.speed / 60.0)
-                < Constants.Shooter.TOLERANCE;
+                < Constants.Shooter.FLYWHEEL_TOLERANCE;
+    }
+
+    @AutoLogOutput(key = "Shooter/HoodAtSetpoint")
+    public boolean hoodAtSetpoint() {
+        return Math.abs(this.hood.getPosition() - this.getDesiredPosition())
+                < Constants.Shooter.HOOD_TOLERANCE;
     }
 
     @AutoLogOutput(key = "Component/Shooter")
