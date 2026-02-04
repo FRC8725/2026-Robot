@@ -4,6 +4,7 @@ import frc.robot.Constants.Hopper;
 import frc.robot.subsystems.rollers.RollerIOHardware;
 
 public class HopperRollerIOHardware extends RollerIOHardware {
+    // TODO 2/5
     private static final boolean reverse = false;
 
     public HopperRollerIOHardware() {

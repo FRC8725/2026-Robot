@@ -12,7 +12,7 @@ public class Hopper extends SubsystemBase {
     private final RollerIOSystem center;
 
     @AutoLogOutput(key = "Hopper/State")
-    private HopperState hopperState = HopperState.Off;
+    public HopperState hopperState = HopperState.Off;
 
     public Hopper(RollerIO rollerIO, RollerIO centerIO) {
         HOPPER = this;
@@ -25,6 +25,7 @@ public class Hopper extends SubsystemBase {
     }
  
     public enum HopperState {
+        // TODO 2/5
         Off(0.0, 0.0),
         Convey(3.0, 3.0);
 
