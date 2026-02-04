@@ -7,6 +7,7 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.lib.util.ShootCaculator;
@@ -141,6 +142,6 @@ public class Shooter extends SubsystemBase {
     public Pose3d getSimulationPose() {
         return new Pose3d(
                 -Units.inchesToMeters(10.0), 0.0, Units.inchesToMeters(17.5),
-                new Rotation3d(0.0, this.hood.getPosition() + Units.degreesToRadians(15.0), 0.0));
+                new Rotation3d(0.0, this.hood.getPosition(), 0.0));
     }
 }

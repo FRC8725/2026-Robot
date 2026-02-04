@@ -4,12 +4,15 @@ import java.util.function.Consumer;
 
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.commands.DriveCommand;
+import frc.robot.commands.SuperStructureCmd;
 import frc.robot.lib.limelight.VisionFieldPoseEstimate;
 import frc.robot.subsystems.drive.DriveIOHardware;
 import frc.robot.subsystems.drive.DriveIOSim;
 import frc.robot.subsystems.hopper.Hopper;
 import frc.robot.subsystems.hopper.HopperIOHardware;
 import frc.robot.subsystems.hopper.HopperIOSim;
+import frc.robot.subsystems.SuperStructure;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.lifter.LifterIOHardware;
@@ -26,6 +29,7 @@ import frc.robot.subsystems.shooter.hood.HoodIOSim;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.apriltag.VisionIOHardware;
 import frc.robot.subsystems.vision.apriltag.VisionIOSim;
+import frc.robot.subsystems.vision.object.ObjectVision;
 
 public class RobotContainer {
 	private final Consumer<VisionFieldPoseEstimate> visionEstimatorConsumer = 
@@ -37,12 +41,14 @@ public class RobotContainer {
             };
 
 	private final RobotState robotState = new RobotState(this.visionEstimatorConsumer);
+	private final SuperStructure superStructure = new SuperStructure();
 	private final Joysticks joysticks = new Joysticks();
 	private final Drive drive = this.buildDriveSubsystem();
 	private final Intake intake = this.buildIntakeSubsystem();
 	private final Shooter shooter = this.buildShooterSubsystem();
 	private final Hopper hopper = this.buildHopperSubsystem();
 	private final Vision vision = this.buildVisionSubsystem();
+	private final ObjectVision objectVision = new ObjectVision();
 
 	public Drive buildDriveSubsystem() {
 		if (RobotBase.isSimulation()) {
@@ -107,13 +113,20 @@ public class RobotContainer {
 		}
 	}
 
-	public RobotContainer() {
-		// this.drive.setDefaultCommand(
-		// 		new DriveCommand(this.drive, 
-		// 			this.controller::getLeftY, this.controller::getLeftX, this.controller::getRightX));
+	public Drive getDriveSubsystem() {
+		return this.drive;
 	}
 
-	public Command getAutonomousCommand() {
-		return null;
+	public SuperStructure getSuperStructure() {
+		return this.superStructure;
+	}
+
+	public RobotContainer() {
+	}
+
+	public void initializeTeleoperate() {
+		this.drive.setDefaultCommand(
+				new DriveCommand(this.drive, this.objectVision, this.joysticks::getDriveInput));
+		this.superStructure.setDefaultCommand(new SuperStructureCmd(this.joysticks));
 	}
 }

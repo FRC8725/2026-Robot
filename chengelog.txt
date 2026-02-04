@@ -70,3 +70,10 @@ v1.0.2
 
 v1.0.3
 1. Sync from alphaBot-Simulation (FuelTracking & Point align)
+
+v1.0.4
+1. Update model
+2. Simulate shooter
+3. Simulate leftSide path
+4. Add pathplanner config
+5. Simulate Autonoumous

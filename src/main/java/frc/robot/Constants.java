@@ -82,8 +82,11 @@ public final class Constants {
         public static final int LIFTER_ID = 25;
         public static final int ROLLER_ID = 26;
         
-        public static final double LIFTER_GEAR_RATIO = 294.0;
+        public static final double LIFTER_GEAR_RATIO = 3.0;
 		public static final double LIFTER_GEAR_DIAMETER = 0.030443;
+		public static final double LIFTER_DISTANCE = 0.275;
+		public static final double LIFTER_MECHANISM =
+				0.266;
         public static final double ROLLER_GEAR_RATIO = 1.0;
         public static final double LIFTER_ANGLE_TOLERANCE = 0.1;
 
@@ -96,7 +99,7 @@ public final class Constants {
                                 .withSupplyCurrentLimit(40.0))
                 .withMotionMagic(
                         new MotionMagicConfigs()
-                                .withMotionMagicCruiseVelocity(3.0)
+                                .withMotionMagicCruiseVelocity(1.0)
                                 .withMotionMagicAcceleration(10.0)
                                 .withMotionMagicJerk(2000.0))
                 .withMotorOutput(
@@ -105,10 +108,10 @@ public final class Constants {
                                 .withNeutralMode(NeutralModeValue.Brake))
                 .withFeedback(
                         new FeedbackConfigs()
-                                .withSensorToMechanismRatio(LIFTER_GEAR_RATIO))
+                                .withSensorToMechanismRatio(LIFTER_MECHANISM))
                 .withSlot0(
                         new Slot0Configs()
-                                .withKP(21.0)
+                                .withKP(10.0)
                                 .withKS(0.0)
                                 .withKV(0.0)
                                 .withKG(0.0)
@@ -162,11 +165,11 @@ public final class Constants {
                 				.withMotionMagicJerk(2000.0))
 				.withSlot0(
 						new Slot0Configs()
-								.withKS(0.25)
-								.withKV(13.0)
+								.withKS(0.3)
+								.withKV(30.0)
 								.withKA(0.0)
 								.withKG(0.0)
-								.withKP(250.0)
+								.withKP(450.0)
 								.withKD(0.0));
     }
 

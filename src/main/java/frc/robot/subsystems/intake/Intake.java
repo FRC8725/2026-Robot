@@ -7,6 +7,7 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.SuperStructure;
@@ -27,7 +28,7 @@ public class Intake extends SubsystemBase {
 
     public enum LifterState {
         Up(0.0),
-        Down(3.0),
+        Down(0.3),
         OperateControl(0.0);
 
         // Units: rotation
@@ -56,6 +57,7 @@ public class Intake extends SubsystemBase {
         INTAKE = this;
         this.lifter = new LifterSubsystem(lifterIO);
         this.roller = new RollerIOSystem(rollerIO, "Intake/Roller");
+        this.setZeroPosition();
     }
 
     public static Intake getInstance() {
@@ -121,12 +123,13 @@ public class Intake extends SubsystemBase {
 
     @AutoLogOutput(key = "Component/IntakeLifter")
     public Pose3d getSimulationPose() {
-        double length = Units.radiansToRotations(this.lifter.getPosition())
-                * Constants.Intake.LIFTER_GEAR_DIAMETER * Math.PI;
+        double length = this.lifter.getPosition();
+        // double length = Constants.Intake.LIFTER_DISTANCE;
+
         return new Pose3d(
-                length * Math.cos(Units.degreesToRadians(11.175)),
+                length * Math.cos(Units.degreesToRadians(17.0)),
                 0.0,
-                -length * Math.sin(Units.degreesToRadians(11.175)),
+                -length * Math.sin(Units.degreesToRadians(17.0)),
                 Rotation3d.kZero);
     }
 }

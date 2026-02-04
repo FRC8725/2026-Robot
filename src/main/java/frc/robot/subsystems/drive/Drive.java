@@ -13,6 +13,7 @@ import choreo.trajectory.SwerveSample;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -86,6 +87,11 @@ public class Drive extends SubsystemBase {
 
     public void resetOdometry(Pose2d pose) {
         this.io.resetOdometry(pose);
+    }
+
+    public void resetYaw(Rotation2d rotation) {
+        this.io.resetOdometry(
+                new Pose2d(this.getPose().getTranslation(), rotation));
     }
 
     public void setControl(SwerveRequest request) {
