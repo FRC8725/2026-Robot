@@ -7,14 +7,17 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotState;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants;
 import frc.robot.Joysticks;
 import frc.robot.Robot;
 import frc.robot.Joysticks.AlignMode;
+import frc.robot.lib.math.MathHelpers;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.vision.object.ObjectVision;
 
@@ -69,7 +72,7 @@ public class DriveCommand extends Command {
         Joysticks.DriveInputs inputs = this.driveInputs.get();
 		if (Robot.isRedAlliance.get()) inputs = inputs.getRedFlipped();
 
-		if (inputs.isNonZero() && !RobotState.isAutonomous()) {
+		if (!inputs.isRotateZero() && !RobotState.isAutonomous()) {
 			if (this.pathCommand != null) {
 				this.pathCommand.end(true);
 				this.pathCommand = null;
@@ -79,6 +82,9 @@ public class DriveCommand extends Command {
 		}
 
 		if (inputs.alignMode == AlignMode.PointAlign) {
+			if (inputs.isNonZero())
+				return;
+
 			if (this.isAligning) {
 				this.drive.stopModules();
 				return;
@@ -124,23 +130,32 @@ public class DriveCommand extends Command {
 				}
 				this.fuelTracking.execute();
 			} else {
-				this.setSpeeds();
+				ChassisSpeeds speeds = this.getSpeeds();
+				this.drive.setControl(
+						this.driveNoHeading
+								.withVelocityX(speeds.vxMetersPerSecond)
+								.withVelocityY(speeds.vyMetersPerSecond)
+								.withRotationalRate(speeds.omegaRadiansPerSecond));
 			}
-		} else {
+		} else if (inputs.alignMode == AlignMode.ZoneAlign && inputs.isRotateZero()) {
+			if (this.isAligning) {
+				this.drive.stopModules();
+				return;
+			}
 
+			Rotation2d targetAngle = MathHelpers.getAngleFromHub(this.drive.getPose());
+			ChassisSpeeds speeds = this.getSpeeds();
+			this.drive.setControl(
+					this.driveWithHeading
+							.withVelocityX(speeds.vxMetersPerSecond)
+							.withVelocityY(speeds.vyMetersPerSecond)
+							.withTargetDirection(targetAngle));
 		}
-		 
+		
 		if (this.isTraking) {
 			this.fuelTracking.end(true);
 			this.isTraking = false;
-		}
-		// Facing hub
-		// Rotation2d targetAngle = MathHelpers.getAngleFromHub(this.driveSubsystem.getPose());
-		// this.driveSubsystem.setControl(
-		// 		this.driveNoHeading
-		// 				.withVelocityX(speeds.vxMetersPerSecond)
-		// 				.withVelocityY(speeds.vyMetersPerSecond)
-		// 				.withRotationalRate(speeds.omegaRadiansPerSecond));		
+		}	
     }
 
 	@Override
@@ -157,7 +172,7 @@ public class DriveCommand extends Command {
         return false;
     }
 
-	public void setSpeeds() {
+	public ChassisSpeeds getSpeeds() {
 		double x = this.xLimiter.calculate(-this.driveInputs.get().leftY);
 		double y = this.yLimiter.calculate(-this.driveInputs.get().leftX);
 		double rot = this.rLimiter.calculate(-this.driveInputs.get().rightX);
@@ -175,11 +190,7 @@ public class DriveCommand extends Command {
 		double ySpeed = r * Math.sin(theta) * Constants.Drive.MAX_VELOCITY;
 		double rSpeed = rot * Constants.Drive.MAX_ANGULAR_VELOCITY;
 
-		this.drive.setControl(
-				this.driveNoHeading
-						.withVelocityX(xSpeed)
-						.withVelocityY(ySpeed)
-						.withRotationalRate(rSpeed));
+		return new ChassisSpeeds(xSpeed, ySpeed, rSpeed);
 	}
 
 	public double deadZone(double input, double deadZone) {

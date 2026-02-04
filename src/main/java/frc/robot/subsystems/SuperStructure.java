@@ -5,12 +5,14 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 import frc.robot.subsystems.hopper.Hopper;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
@@ -151,6 +153,7 @@ public class SuperStructure extends SubsystemBase {
     @Override
     public void periodic() {
         this.stateTime.start();
+        Logger.recordOutput("Robot/IsInAllianceZone", Robot.isInAllianceZone == null ? false : Robot.isInAllianceZone.get());
 
         for (Transition transition : this.transitions) {
             if (this.state == transition.currentState && transition.booleanSupplier.get()) {

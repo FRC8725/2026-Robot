@@ -5,23 +5,22 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
+import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import frc.robot.Constants;
 import frc.robot.Constants.Intake;
 
 public class LifterIOSim implements LifterIO {
     private final TalonFX lifter;
     private final TalonFXSimState simState;
-    private final SingleJointedArmSim sim = new SingleJointedArmSim(
-            DCMotor.getFalcon500(1),
-            Intake.LIFTER_GEAR_RATIO,
-            SingleJointedArmSim.estimateMOI(0.1, 1.0),
-            0.1,
-            0.0,
-            Constants.Intake.LIFTER_MECHANISM,
-            false,
-            0);
+    private final ElevatorSim sim = new ElevatorSim(
+        DCMotor.getFalcon500(1),
+        Intake.LIFTER_GEAR_RATIO, 
+        2.0,
+        Intake.DRUM_RADIUS_METERS,
+        0.0,
+        0.5,
+        false,
+        0.0);
 
     public LifterIOSim() {
         this.lifter = new TalonFX(Intake.LIFTER_ID);
@@ -32,21 +31,17 @@ public class LifterIOSim implements LifterIO {
 
     @Override
     public void updateInputs(LifterIOInputs inputs) {
-        inputs.positionRads = this.sim.getAngleRads();
-        inputs.velocityRPS = Units.radiansToRotations(this.sim.getVelocityRadPerSec());
+        this.sim.setInputVoltage(this.simState.getMotorVoltage());
+        this.sim.update(Constants.ROBOT_PERIODIC);
+
+        inputs.positionLength = this.lifter.getPosition().getValueAsDouble();
+        inputs.velocityRPS = this.lifter.getVelocity().getValueAsDouble();
         inputs.appliedVolts = this.simState.getMotorVoltage();
         inputs.supplyCurrent = this.sim.getCurrentDrawAmps();
-        inputs.connected = true;
+        inputs.connected = true;   
 
-        this.sim.update(Constants.ROBOT_PERIODIC);
-        this.sim.setInputVoltage(this.simState.getMotorVoltage());
-
-        this.simState.setRawRotorPosition(
-                Units.radiansToRotations(this.sim.getAngleRads())
-                        * Intake.LIFTER_GEAR_RATIO);
-        this.simState.setRotorVelocity(
-                Units.radiansToRotations(this.sim.getVelocityRadPerSec())
-                        * Intake.LIFTER_GEAR_RATIO);
+        this.simState.setRawRotorPosition(this.sim.getPositionMeters() * Intake.MECHANISM_GEAR_RATIO);
+        this.simState.setRotorVelocity(this.sim.getVelocityMetersPerSecond() * Intake.MECHANISM_GEAR_RATIO);
     }
 
     @Override

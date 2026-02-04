@@ -82,11 +82,10 @@ public final class Constants {
         public static final int LIFTER_ID = 25;
         public static final int ROLLER_ID = 26;
         
-        public static final double LIFTER_GEAR_RATIO = 3.0;
-		public static final double LIFTER_GEAR_DIAMETER = 0.030443;
-		public static final double LIFTER_DISTANCE = 0.275;
-		public static final double LIFTER_MECHANISM =
-				0.266;
+        public static final double LIFTER_GEAR_RATIO = 24.0 / 5.0;
+		public static final double DRUM_CIRCUMFERENCE = 10.0 * 0.00798;
+		public static final double DRUM_RADIUS_METERS = DRUM_CIRCUMFERENCE / (2.0 * Math.PI);
+		public static final double MECHANISM_GEAR_RATIO = LIFTER_GEAR_RATIO / DRUM_CIRCUMFERENCE;
         public static final double ROLLER_GEAR_RATIO = 1.0;
         public static final double LIFTER_ANGLE_TOLERANCE = 0.1;
 
@@ -108,7 +107,7 @@ public final class Constants {
                                 .withNeutralMode(NeutralModeValue.Brake))
                 .withFeedback(
                         new FeedbackConfigs()
-                                .withSensorToMechanismRatio(LIFTER_MECHANISM))
+                                .withSensorToMechanismRatio(MECHANISM_GEAR_RATIO))
                 .withSlot0(
                         new Slot0Configs()
                                 .withKP(10.0)
@@ -122,7 +121,7 @@ public final class Constants {
 		public static final int HOOD_ID = 20;
 		public static final int FLYWHEEL_MAIN_ID = 21;
 		public static final int FLYWHEEL_FOLLOW_ID = 22;
-		public static final int FEEDER_ID = 0;
+		public static final int FEEDER_ID = 23;
 
         public static final double HOOD_GEAR_RATIO = 294.0;
 		public static final double FLYWHEEL_GEAR_RATIO = 1.0;
@@ -175,6 +174,7 @@ public final class Constants {
 
 	public final class Hopper {
 		public static final int ID = 24;
+		public static final int CENTER_ID = 25;
 		public static final double GEAR_RATIO = 1.0;
 	}
 

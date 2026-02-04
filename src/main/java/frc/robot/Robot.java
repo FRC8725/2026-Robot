@@ -47,7 +47,8 @@ public class Robot extends LoggedRobot {
 	private final DigitalInput input = new DigitalInput(0);
 
 	public static final Supplier<Boolean> isRedAlliance =
-			() -> DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
+			() -> DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue)
+					== DriverStation.Alliance.Red;
 	// TODO
 	public static final Supplier<Boolean> isInAllianceZone =
 			() -> MathHelpers.mirrorIfRed(Drive.getInstance().getPose()).getX()

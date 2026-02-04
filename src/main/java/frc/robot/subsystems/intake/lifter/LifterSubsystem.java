@@ -26,6 +26,6 @@ public class LifterSubsystem {
     }
 
     public double getPosition() {
-        return this.inputs.positionRads;
+        return this.inputs.positionLength;
     }
 }

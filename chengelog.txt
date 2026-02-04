@@ -82,3 +82,7 @@ v1.0.5
 1. Simulate Autonoumous's mechnism movement
 2. Optimized Flywheel simulation variable
 3. Update camera pose
+
+v1.0.6
+1. Fix intake gear ratio & simulation bug
+2. Fix isRedAlliance variable null bug
