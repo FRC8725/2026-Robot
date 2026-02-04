@@ -14,7 +14,7 @@ public class HoodIOSim implements HoodIO {
     private final TalonFX hood;
     private final TalonFXSimState simState;
     private final SingleJointedArmSim sim = new SingleJointedArmSim(
-            DCMotor.getKrakenX44(1),
+            DCMotor.getKrakenX60(1),
             Constants.Shooter.HOOD_GEAR_RATIO,
             SingleJointedArmSim.estimateMOI(0.2, 0.5),
             0.2,

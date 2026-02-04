@@ -87,9 +87,15 @@ public class AutoRunnerCmd extends Command {
 	// TODO
 	private final List<Event> eventTypes = List.of(
 		new Event(
+			"wantIntake",
+			new SuperStructure.StructureInput() {{ wantIntake = true; }}),
+		new Event(
+			"stopIntake",
+			new SuperStructure.StructureInput() {{ wantIntake = false; }}),
+		new Event(
 			"zoneAlign",
 			new SuperStructure.StructureInput() {{ wantScore = true; }},
-			() -> true, // TODO
+			() -> (SuperStructure.getInstance().state == SuperStructure.State.Shoot), // TODO
 			AlignMode.ZoneAlign),
 		new Event(
 			"trackFuel",

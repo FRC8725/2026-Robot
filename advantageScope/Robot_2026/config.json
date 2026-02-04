@@ -13,11 +13,11 @@
             "name": "Left",
             "rotations": [
                 {"axis": "x", "degrees": 0.0},
-                {"axis": "y", "degrees": -45.0},
-                {"axis": "z", "degrees": 0.0}
+                {"axis": "y", "degrees": -30.0},
+                {"axis": "z", "degrees": 180.0}
             ],
             "position": [
-                0.306542, 0.076121, 0.120064
+                -0.27019, 0.266653, 0.20102
             ],
             "resolution": [
                 1280, 800
@@ -28,11 +28,11 @@
             "name": "Right",
             "rotations": [
                 {"axis": "x", "degrees": 0.0},
-                {"axis": "y", "degrees": -45.0},
-                {"axis": "z", "degrees": 0.0}
+                {"axis": "y", "degrees": -30.0},
+                {"axis": "z", "degrees": 180.0}
             ],
             "position": [
-                0.306542, -0.076121, 0.120064
+                -0.27019, -0.266653, 0.20102
             ],
             "resolution": [
                 1280, 800

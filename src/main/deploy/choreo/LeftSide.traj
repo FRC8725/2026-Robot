@@ -282,5 +282,7 @@
  },
  "events":[
    {"name":"zoneAlign", "from":{"target":0, "targetTimestamp":0.0, "offset":{"exp":"0 s", "val":0.0}}, "event":null},
-   {"name":"zoneAlign", "from":{"target":6, "targetTimestamp":5.69333, "offset":{"exp":"0 s", "val":0.0}}, "event":null}]
+   {"name":"zoneAlign", "from":{"target":6, "targetTimestamp":5.69333, "offset":{"exp":"0 s", "val":0.0}}, "event":null},
+   {"name":"wantIntake", "from":{"target":2, "targetTimestamp":1.82124, "offset":{"exp":"0 s", "val":0.0}}, "event":null},
+   {"name":"stopIntake", "from":{"target":4, "targetTimestamp":3.87209, "offset":{"exp":"0 s", "val":0.0}}, "event":null}]
 }

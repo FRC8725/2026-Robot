@@ -18,7 +18,7 @@ public class FlywheelIOSim implements FlywheelIO {
     private final FlywheelSim sim = new FlywheelSim(
             LinearSystemId.createFlywheelSystem(
                     DCMotor.getKrakenX60(2),
-                    0.02,
+                    0.001,
                     Shooter.FLYWHEEL_GEAR_RATIO),
             DCMotor.getKrakenX60(2));
 

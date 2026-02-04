@@ -6,6 +6,8 @@ import java.util.stream.Stream;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 
+import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -98,7 +100,13 @@ public class SuperStructure extends SubsystemBase {
     }
 
     private final List<Transition> transitions = Stream.of(
-        new Transition(State.Start, State.Rest, () -> this.inputs.wantIntake)
+        new Transition(State.Start, State.Rest, () -> this.inputs.wantIntake),
+        new Transition(State.Start, State.Rest, () -> RobotState.isAutonomous()),
+
+        new Transition(State.Rest, State.PreShoot, () -> this.inputs.wantScore),
+        new Transition(State.PreShoot, State.Rest, () -> !this.inputs.wantScore),
+        new Transition(State.PreShoot, State.Shoot, () -> Shooter.getInstance().atSetpoint()),
+        new Transition(State.Shoot, State.Rest, () -> !this.inputs.wantScore)
     ).toList();
 
     public class Transition {

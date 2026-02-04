@@ -77,3 +77,8 @@ v1.0.4
 3. Simulate leftSide path
 4. Add pathplanner config
 5. Simulate Autonoumous
+
+v1.0.5
+1. Simulate Autonoumous's mechnism movement
+2. Optimized Flywheel simulation variable
+3. Update camera pose
