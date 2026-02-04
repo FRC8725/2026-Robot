@@ -14,7 +14,8 @@ package frc.robot;
  */
 public final class Constants {
   	public final class Hopper {
-		public static final int ID = 25;
+		public static final int ROLLER_ID = 25;
+		public static final int CENTER_ID = 26;
 		public static final double GEAR_RATIO = 1.0;
 	}
 }
