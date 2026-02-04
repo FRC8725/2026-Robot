@@ -7,7 +7,7 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 public interface LifterIO {
     @AutoLog
     public class LifterIOInputs {
-        public double positionRads = 0.0;
+        public double positionlength = 0.0;
         public double velocityRPS = 0.0;
         public double appliedVolts = 0.0;
         public double supplyCurrent = 0.0;

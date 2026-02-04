@@ -31,7 +31,7 @@ public class LifterIOSim implements LifterIO {
 
     @Override
     public void updateInputs(LifterIOInputs inputs) {
-        inputs.positionRads = this.sim.getAngleRads();
+        inputs.positionlength = this.sim.getAngleRads();
         inputs.velocityRPS = Units.radiansToRotations(this.sim.getVelocityRadPerSec());
         inputs.appliedVolts = this.simState.getMotorVoltage();
         inputs.supplyCurrent = this.sim.getCurrentDrawAmps();

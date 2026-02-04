@@ -89,12 +89,4 @@ public class Intake extends SubsystemBase {
                 this.lifter.getPosition() - Units.degreesToRotations(this.lifterState.angle))
                         < Constants.Intake.LIFTER_ANGLE_TOLERANCE;
     }
-
-    // @AutoLogOutput(key = "Intake/isUnsafe")
-    // public boolean isUnsafe() {
-    //     double robotSide = Drive.getInstance().getPose().getY();
-    //     double distance = Math.min(Constants.Field.FIELD_Y_SIZE - robotSide, robotSide);
-
-    //     return distance < Constants.Intake.LIFTER_LIMIT_DISTANCE;
-    // }
 }

@@ -38,7 +38,7 @@ public class LifterIOHardware implements LifterIO {
                 this.appliedVolts,
                 this.supplyCurrent);
 
-        inputs.positionRads = Units.rotationsToRadians(this.position.getValueAsDouble());
+        inputs.positionlength = Units.rotationsToRadians(this.position.getValueAsDouble());
         inputs.velocityRPS = this.velocity.getValueAsDouble();
         inputs.appliedVolts = this.appliedVolts.getValueAsDouble();
         inputs.supplyCurrent = this.supplyCurrent.getValueAsDouble();
