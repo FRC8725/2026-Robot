@@ -137,7 +137,7 @@ public class Shooter extends SubsystemBase {
 
     @AutoLogOutput(key = "Shooter/FlywheelAtSetpoint")
     public boolean flywheelAtSetpoint() {
-        return Math.abs(this.flywheel.getVelocity() + this.flywheelState.speed / 60.0)
+        return Math.abs(this.flywheel.getVelocity() - this.flywheelState.speed / 60.0)
                 < Constants.Shooter.FLYWHEEL_TOLERANCE;
     }
 

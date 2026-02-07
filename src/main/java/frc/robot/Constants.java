@@ -206,19 +206,19 @@ public final class Constants {
         public static final double kMinAmbiguityToFlip = 0.08;
 
         // Camera pose on the robot
-        public static final double CAMERA_LEFT_DEGS = 30.0;
+        public static final double CAMERA_LEFT_DEGS = 45.0;
         public static final double CAMERA_LEFT_PITCH_RADS = Units.degreesToRadians(CAMERA_LEFT_DEGS);
         public static final Rotation2d CAMERA_LEFT_YAW = Rotation2d.k180deg;
         public static final String CAMERA_LEFT_NAME = "limelight-left";
         public static final Transform3d CAMERA_LEFT_TRANSFORM = new Transform3d(
-                -0.27019, -0.266653, 0.20102,
+                -0.276806, -0.266652, 0.202819,
                 new Rotation3d(0.0, CAMERA_LEFT_PITCH_RADS, CAMERA_LEFT_YAW.getRadians()));
-        public static final double CAMERA_RIGHT_DEGS = 30.0;
+        public static final double CAMERA_RIGHT_DEGS = 45.0;
         public static final double CAMERA_RIGHT_PITCH_RADS = Units.degreesToRadians(CAMERA_RIGHT_DEGS);
         public static final Rotation2d CAMERA_RIGHT_YAW = Rotation2d.k180deg;
         public static final String CAMERA_RIGHT_NAME = "limelight-right";
         public static final Transform3d CAMERA_RIGHT_TRANSFORM = new Transform3d(
-                -0.27019, 0.266653, 0.20102,
+                -0.276806, 0.266652, 0.202819,
                 new Rotation3d(0.0, CAMERA_RIGHT_PITCH_RADS, CAMERA_LEFT_YAW.getRadians()));
     }
         

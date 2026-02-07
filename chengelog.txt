@@ -91,3 +91,9 @@ v1.1
 1. Test shooter, hopper, intake mechanism variable
 2. Simulation fuel
 3. Adjust drive pid
+
+v1.1.1
+1. Zero cancoder
+2. Calibration limelight
+3. Update photonlib and CTRE Lib
+4. Update limelight pose
