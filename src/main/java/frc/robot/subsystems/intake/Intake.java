@@ -7,7 +7,6 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.SuperStructure;
@@ -27,8 +26,9 @@ public class Intake extends SubsystemBase {
     private RollerState rollerState = RollerState.Off;
 
     public enum LifterState {
-        Up(0.0),
-        Down(0.3),
+        Up(0.05),
+        // Up(0.262),
+        Down(0.27),
         OperateControl(0.0);
 
         // Units: rotation
@@ -43,7 +43,7 @@ public class Intake extends SubsystemBase {
         Off(0.0),
         Rest(1.0),
         SlowIn(0.0),
-        In(3.0),
+        In(3.5),
         OperateControl(0.0);
 
         public final double volts;
@@ -109,7 +109,7 @@ public class Intake extends SubsystemBase {
     @AutoLogOutput(key = "Intake/atSetpoint")
     public boolean atSetpoint() {
         return Math.abs(
-                this.lifter.getPosition() - Units.rotationsToRadians(this.getEffectiveLifterState().angle))
+                this.lifter.getPosition() - this.getEffectiveLifterState().angle)
                         < Constants.Intake.LIFTER_ANGLE_TOLERANCE;
     }
 

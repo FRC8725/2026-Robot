@@ -49,8 +49,8 @@ public final class Constants {
     public final class Drive {
         public static final double ROBOT_WEIGHT_POUNDS = 150.0;
         public static final double BUMPER_LENGTH_INCHES = 34.417;
-        public static final double MAX_SPEED = 3.0; // m/s
-        public static final double MAX_ANGULAR_RATE = Math.PI * 2; // 1 rotation per second
+        public static final double MAX_SPEED = 2.0; // m/s
+        public static final double MAX_ANGULAR_RATE = Math.PI; // 1 rotation per second
         public static final double STEER_JOYSTICK_DEADBAND = 0.05;
         public static final CommandSwerveDrivetrain drivetrain =
                 RobotBase.isSimulation()
@@ -87,8 +87,9 @@ public final class Constants {
 		public static final double DRUM_RADIUS_METERS = DRUM_CIRCUMFERENCE / (2.0 * Math.PI);
 		public static final double MECHANISM_GEAR_RATIO = LIFTER_GEAR_RATIO / DRUM_CIRCUMFERENCE;
         public static final double ROLLER_GEAR_RATIO = 1.0;
-        public static final double LIFTER_ANGLE_TOLERANCE = 0.1;
+        public static final double LIFTER_ANGLE_TOLERANCE = 0.01;
 
+		// TODO
         public static final double LIFTER_LIMIT_DISTANCE = 0.0;
 
         public static final TalonFXConfiguration LIFTER_CONFIG = new TalonFXConfiguration()
@@ -98,7 +99,7 @@ public final class Constants {
                                 .withSupplyCurrentLimit(40.0))
                 .withMotionMagic(
                         new MotionMagicConfigs()
-                                .withMotionMagicCruiseVelocity(1.0)
+                                .withMotionMagicCruiseVelocity(1.5)
                                 .withMotionMagicAcceleration(10.0)
                                 .withMotionMagicJerk(2000.0))
                 .withMotorOutput(
@@ -110,7 +111,7 @@ public final class Constants {
                                 .withSensorToMechanismRatio(MECHANISM_GEAR_RATIO))
                 .withSlot0(
                         new Slot0Configs()
-                                .withKP(10.0)
+                                .withKP(100.0)
                                 .withKS(0.0)
                                 .withKV(0.0)
                                 .withKG(0.0)
@@ -126,8 +127,8 @@ public final class Constants {
         public static final double HOOD_GEAR_RATIO = 294.0;
 		public static final double FLYWHEEL_GEAR_RATIO = 1.0;
 		
-		// TODO 2/5
 		public static final double FLYWHEEL_TOLERANCE = 3.0;
+		// TODO 2/5
 		public static final double HOOD_TOLERANCE = Units.degreesToRadians(0.3);
 
         public static final TalonFXConfiguration FLYWHEEL_CONFIG = new TalonFXConfiguration()
@@ -139,7 +140,7 @@ public final class Constants {
 								.withStatorCurrentLimit(80.0))
 				.withMotorOutput(
 						new MotorOutputConfigs()
-								.withInverted(InvertedValue.CounterClockwise_Positive)
+								.withInverted(InvertedValue.Clockwise_Positive)
 								.withNeutralMode(NeutralModeValue.Coast))
 				.withSlot0(
 						new Slot0Configs()
@@ -175,7 +176,7 @@ public final class Constants {
 
 	public final class Hopper {
 		public static final int ROLLER_ID = 24;
-		public static final int CENTER_ID = 25;
+		public static final int CENTER_ID = 27;
 		public static final double GEAR_RATIO = 1.0;
 	}
 
@@ -210,14 +211,14 @@ public final class Constants {
         public static final Rotation2d CAMERA_LEFT_YAW = Rotation2d.k180deg;
         public static final String CAMERA_LEFT_NAME = "limelight-left";
         public static final Transform3d CAMERA_LEFT_TRANSFORM = new Transform3d(
-                -0.27019, 0.266653, 0.20102,
+                -0.27019, -0.266653, 0.20102,
                 new Rotation3d(0.0, CAMERA_LEFT_PITCH_RADS, CAMERA_LEFT_YAW.getRadians()));
         public static final double CAMERA_RIGHT_DEGS = 30.0;
         public static final double CAMERA_RIGHT_PITCH_RADS = Units.degreesToRadians(CAMERA_RIGHT_DEGS);
-        public static final Rotation2d CAMERA_RIGHT_YAW = Rotation2d.kZero;
+        public static final Rotation2d CAMERA_RIGHT_YAW = Rotation2d.k180deg;
         public static final String CAMERA_RIGHT_NAME = "limelight-right";
         public static final Transform3d CAMERA_RIGHT_TRANSFORM = new Transform3d(
-                -0.27019, -0.266653, 0.20102,
+                -0.27019, 0.266653, 0.20102,
                 new Rotation3d(0.0, CAMERA_RIGHT_PITCH_RADS, CAMERA_LEFT_YAW.getRadians()));
     }
         

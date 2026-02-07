@@ -3,11 +3,12 @@ package frc.robot.lib.util;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import frc.robot.Constants;
+import frc.robot.subsystems.shooter.Shooter;
 
 public class ShootCaculator {
     private final double MIN_DISTANCE = 0.0;
     private final double MAX_DISTANCE = 0.0;
-    private final double DEFAULT_VELOCITY = 0.0;
+    private final double DEFAULT_VELOCITY = Shooter.FlywheelState.Auto.speed;
 
     private final InterpolatingDoubleTreeMap shooterAngleMap = new InterpolatingDoubleTreeMap();
     private final InterpolatingDoubleTreeMap shooterVelocityMap = new InterpolatingDoubleTreeMap();

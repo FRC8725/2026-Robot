@@ -7,7 +7,6 @@ import java.util.stream.Stream;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -49,7 +48,7 @@ public class SuperStructure extends SubsystemBase {
         PreShoot(
             Shooter.FlywheelState.Auto,
             Shooter.HoodState.Default,
-            Shooter.FeederState.Push,
+            Shooter.FeederState.Off,
             Hopper.HopperState.Off),
         Shoot(
             Shooter.FlywheelState.Auto,

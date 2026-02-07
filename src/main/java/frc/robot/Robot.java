@@ -8,6 +8,8 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.function.Supplier;
 
+import org.ironmaple.simulation.SimulatedArena;
+import org.ironmaple.simulation.seasonspecific.rebuilt2026.RebuiltFuelOnField;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -23,8 +25,7 @@ import choreo.trajectory.SwerveSample;
 import choreo.trajectory.Trajectory;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobotBase;
@@ -140,7 +141,10 @@ public class Robot extends LoggedRobot {
 
 		if (RobotBase.isSimulation()) {
 			Drive.getInstance().resetOdometry(
-					new Pose2d(2.0, 2.0, Rotation2d.kZero));					
+					new Pose2d(2.0, 2.0, Rotation2d.kZero));
+			SimulatedArena.getInstance().addGamePiece(
+					new RebuiltFuelOnField(new Translation2d(2.0, 2.0)));
+            SimulatedArena.getInstance().placeGamePiecesOnField();
 		}
 	}
 
@@ -188,6 +192,7 @@ public class Robot extends LoggedRobot {
 	@Override
 	public void autonomousInit() {
 		this.didRunAuto = true;
+        
 		CommandScheduler.getInstance().schedule(this.autonomousCommand);
 	}
 
@@ -224,5 +229,9 @@ public class Robot extends LoggedRobot {
 	public void simulationInit() {}
 
 	@Override
-	public void simulationPeriodic() {}
+	public void simulationPeriodic() {
+		Logger.recordOutput(
+                "FieldSimulation/Fuel",
+                SimulatedArena.getInstance().getGamePiecesArrayByType("Fuel"));
+	}
 }

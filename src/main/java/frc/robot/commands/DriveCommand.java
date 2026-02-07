@@ -10,7 +10,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotState;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants;
@@ -37,9 +36,9 @@ public class DriveCommand extends Command {
 
     private final SwerveRequest.FieldCentric driveNoHeading =
             new SwerveRequest.FieldCentric()
-                    .withDeadband(3.0 * 0.05)
+                    .withDeadband(Constants.Drive.MAX_SPEED * 0.05)
                     .withRotationalDeadband(
-                            8.2
+                            4.2
                                     * 0.05)
                     .withDriveRequestType(DriveRequestType.Velocity);
     private final SwerveRequest.FieldCentricFacingAngle driveWithHeading =
@@ -80,6 +79,7 @@ public class DriveCommand extends Command {
 			this.isAligning = false;
 			inputs.alignMode = AlignMode.None;
 		}
+		inputs.alignMode = AlignMode.None;
 
 		if (inputs.alignMode == AlignMode.PointAlign) {
 			if (inputs.isNonZero())
@@ -114,7 +114,6 @@ public class DriveCommand extends Command {
 				this.isAligning = true;
 				this.drive.stopModules();
 			}
-
 		} else if (inputs.alignMode == AlignMode.None) {
 			this.isAligning = false;
 

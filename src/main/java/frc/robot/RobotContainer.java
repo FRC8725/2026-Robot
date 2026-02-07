@@ -50,6 +50,7 @@ public class RobotContainer {
 	private final Hopper hopper = this.buildHopperSubsystem();
 	private final Vision vision = this.buildVisionSubsystem();
 	private final ObjectVision objectVision = new ObjectVision();
+	private final Simulation simulation = this.buildSimulation();
 
 	public Drive buildDriveSubsystem() {
 		if (RobotBase.isSimulation()) {
@@ -113,6 +114,14 @@ public class RobotContainer {
 			return new Vision(
 					new VisionIOHardware(),
 					this.robotState);
+		}
+	}
+
+	public Simulation buildSimulation() {
+		if (RobotBase.isSimulation()) {
+			return new Simulation(this);
+		} else {
+			return null;
 		}
 	}
 

@@ -7,7 +7,6 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.lib.util.ShootCaculator;
@@ -38,8 +37,8 @@ public class Shooter extends SubsystemBase {
     public enum FlywheelState {
         Off(0.0),
         Rest(100.0),
-        Auto(5000.0),
-        SlowShoot(0.0);
+        Auto(3000.0),
+        SlowShoot(2000.0);
 
         // RPM
         public final double speed;
@@ -110,6 +109,10 @@ public class Shooter extends SubsystemBase {
         this.feeder.setVolts(this.feederState.volts);
     }
 
+    public double getPosition() {
+        return this.hood.getPosition();
+    }
+
     @AutoLogOutput(key = "Shooter/HoodDesiredPosition") // Degrees
     public double getDesiredPosition() {
         if (this.hoodState != HoodState.AutoAim)
@@ -121,7 +124,7 @@ public class Shooter extends SubsystemBase {
         return this.shootCaculator.getHoodAngle(distance);
     }
 
-    @AutoLogOutput(key = "Shoooter/FlywheelDesiredVelocity") // Rotate per minute
+    @AutoLogOutput(key = "Shooter/FlywheelDesiredVelocity") // Rotate per minute
     public double getDesiredVelocity() {
         if (this.flywheelState != FlywheelState.Auto)
             return this.flywheelState.speed;
@@ -134,7 +137,7 @@ public class Shooter extends SubsystemBase {
 
     @AutoLogOutput(key = "Shooter/FlywheelAtSetpoint")
     public boolean flywheelAtSetpoint() {
-        return Math.abs(this.flywheel.getVelocity() - this.flywheelState.speed / 60.0)
+        return Math.abs(this.flywheel.getVelocity() + this.flywheelState.speed / 60.0)
                 < Constants.Shooter.FLYWHEEL_TOLERANCE;
     }
 

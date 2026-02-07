@@ -2,7 +2,6 @@ package frc.robot.commands;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -84,7 +83,7 @@ public class AutoRunnerCmd extends Command {
     	}
 	}
 
-	// TODO
+	// TODO auto
 	private final List<Event> eventTypes = List.of(
 		new Event(
 			"wantIntake",
@@ -95,7 +94,7 @@ public class AutoRunnerCmd extends Command {
 		new Event(
 			"zoneAlign",
 			new SuperStructure.StructureInput() {{ wantScore = true; }},
-			() -> (SuperStructure.getInstance().state == SuperStructure.State.Shoot), // TODO
+			() -> (SuperStructure.getInstance().state == SuperStructure.State.Shoot), // TODO auto
 			AlignMode.ZoneAlign),
 		new Event(
 			"trackFuel",
@@ -105,7 +104,7 @@ public class AutoRunnerCmd extends Command {
 		new Event(
 			"pointAlign",
 			new SuperStructure.StructureInput() {{ wantScore = true; }},
-			() -> true, // TODO
+			() -> true, // TODO auto
 			AlignMode.PointAlign));
 
 	private Event eventFromEventMarker(EventMarker eventMarker) {

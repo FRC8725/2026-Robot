@@ -86,3 +86,8 @@ v1.0.5
 v1.0.6
 1. Fix intake gear ratio & simulation bug
 2. Fix isRedAlliance variable null bug
+
+v1.1
+1. Test shooter, hopper, intake mechanism variable
+2. Simulation fuel
+3. Adjust drive pid
