@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.Joysticks.AlignMode;
+import frc.robot.lib.math.MathHelpers;
 import frc.robot.subsystems.SuperStructure;
 import frc.robot.subsystems.drive.Drive;
 
@@ -94,7 +95,7 @@ public class AutoRunnerCmd extends Command {
 		new Event(
 			"zoneAlign",
 			new SuperStructure.StructureInput() {{ wantScore = true; }},
-			() -> (SuperStructure.getInstance().state == SuperStructure.State.Shoot), // TODO auto
+			() -> (SuperStructure.getInstance().state == SuperStructure.State.PreShoot), // TODO auto
 			AlignMode.ZoneAlign),
 		new Event(
 			"trackFuel",
@@ -216,8 +217,7 @@ public class AutoRunnerCmd extends Command {
 				// Generate path
 				Pose2d scorePose = this.drive.getClosestScorePoint();
 
-				Pose2d approachPose = new Pose2d(
-						4.9, 7.6, Rotation2d.kCCW_90deg);
+				Pose2d approachPose = MathHelpers.mirrorIfRed(Constants.Field.LEFT_APPROACH_POSE);
 
 				this.pathCommand = Commands.sequence(
 						AutoBuilder.pathfindToPose(
@@ -226,7 +226,7 @@ public class AutoRunnerCmd extends Command {
 								scorePose, Constants.Drive.CONSTRAINTS, 0.0));
 			} else if (mode == AlignMode.ZoneAlign) {
 				this.pathCommand = AutoBuilder.pathfindToPose(
-						Constants.Field.LEFT_POINT, Constants.Drive.CONSTRAINTS);
+						this.drive.getClosestScorePoint(), Constants.Drive.CONSTRAINTS);
 			}
 
 			if (this.pathCommand != null)

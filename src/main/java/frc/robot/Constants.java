@@ -235,6 +235,8 @@ public final class Constants {
                 new Pose2d(
 						3.2558109760284424, 7.160459518432617,
 						new Rotation2d(1.9936496233117944));
+		public static final Pose2d LEFT_APPROACH_POSE = 
+				new Pose2d(4.9, 7.6, Rotation2d.kCCW_90deg);
         public static final Pose2d RIGHT_POINT =
 				new Pose2d(
 						3.2558109760284424, 0.908866481567383,

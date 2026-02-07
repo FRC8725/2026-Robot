@@ -97,3 +97,6 @@ v1.1.1
 2. Calibration limelight
 3. Update photonlib and CTRE Lib
 4. Update limelight pose
+
+v1.1.2
+1. Simulate Red alliance auto
