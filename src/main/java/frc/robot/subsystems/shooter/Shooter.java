@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.lib.math.MathHelpers;
 import frc.robot.lib.util.ShootCaculator;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.rollers.RollerIO;
@@ -122,12 +123,12 @@ public class Shooter extends SubsystemBase {
         if (fup.get()) velocityOffset += 100;
         if (fdown.get()) velocityOffset -= 100;
 
-        Logger.recordOutput("Shooter/velocityoffset", velocityOffset);
+        Logger.recordOutput("Shooter/HUB_DISTANCE", MathHelpers.mirrorIfRed(Constants.Field.HUB_CENTER).getDistance(Drive.getInstance().getPose().getTranslation()));
 
-        this.flywheel.setVelocity(this.flywheelState.speed + velocityOffset);
+        this.flywheel.setVelocity(this.getDesiredVelocity());
         this.hood.setControl(
                 this.request.withPosition(
-                        Units.degreesToRotations(this.getDesiredPosition() + offset)));
+                        Units.degreesToRotations(this.getDesiredPosition())));
         this.feeder.setVolts(this.feederState.volts);
     }
 
@@ -135,12 +136,17 @@ public class Shooter extends SubsystemBase {
         return this.hood.getPosition();
     }
 
-    @AutoLogOutput(key = "Shooter/HoodDesiredPosition") // Degrees
+    /**
+     * 
+     * @return Units: Degrees
+     * 
+     */
+    @AutoLogOutput(key = "Shooter/HoodDesiredPosition")
     public double getDesiredPosition() {
         if (this.hoodState != HoodState.AutoAim)
             return this.hoodState.angle;
 
-        double distance = Constants.Field.HUB_CENTER.getDistance(
+        double distance = MathHelpers.mirrorIfRed(Constants.Field.HUB_CENTER).getDistance(
                 Drive.getInstance().getPose().getTranslation());
 
         return this.shootCaculator.getHoodAngle(distance);
@@ -149,9 +155,9 @@ public class Shooter extends SubsystemBase {
     @AutoLogOutput(key = "Shooter/FlywheelDesiredVelocity") // Rotate per minute
     public double getDesiredVelocity() {
         if (this.flywheelState != FlywheelState.Auto)
-            return this.flywheelState.speed + velocityOffset;
+            return this.flywheelState.speed;
 
-        double distance = Constants.Field.HUB_CENTER.getDistance(
+        double distance = MathHelpers.mirrorIfRed(Constants.Field.HUB_CENTER).getDistance(
                 Drive.getInstance().getPose().getTranslation());
         
         return this.shootCaculator.getFlywheelVelocity(distance);
@@ -159,13 +165,13 @@ public class Shooter extends SubsystemBase {
 
     @AutoLogOutput(key = "Shooter/FlywheelAtSetpoint")
     public boolean flywheelAtSetpoint() {
-        return Math.abs(this.flywheel.getVelocity() - (this.flywheelState.speed + velocityOffset) / 60.0)
+        return Math.abs(this.flywheel.getVelocity() - this.getDesiredVelocity() / 60.0)
                 < Constants.Shooter.FLYWHEEL_TOLERANCE;
     }
 
     @AutoLogOutput(key = "Shooter/HoodAtSetpoint")
     public boolean hoodAtSetpoint() {
-        return Math.abs(this.hood.getPosition() - this.getDesiredPosition())
+        return Math.abs(Units.radiansToDegrees(this.hood.getPosition()) - this.getDesiredPosition())
                 < Constants.Shooter.HOOD_TOLERANCE;
     }
 

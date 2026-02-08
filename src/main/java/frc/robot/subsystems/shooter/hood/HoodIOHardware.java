@@ -69,6 +69,6 @@ public class HoodIOHardware implements HoodIO {
 
     @Override
     public double getPosition() {
-        return this.lifter.getPosition().getValueAsDouble();
+        return Units.rotationsToRadians(this.lifter.getPosition().getValueAsDouble());
     }
 }

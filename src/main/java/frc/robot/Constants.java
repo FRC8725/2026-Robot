@@ -89,7 +89,7 @@ public final class Constants {
         public static final double ROLLER_GEAR_RATIO = 1.0;
         public static final double LIFTER_ANGLE_TOLERANCE = 0.01;
 
-		// TODO
+		// TODO LATE
         public static final double LIFTER_LIMIT_DISTANCE = 0.0;
 
         public static final TalonFXConfiguration LIFTER_CONFIG = new TalonFXConfiguration()
@@ -128,8 +128,7 @@ public final class Constants {
 		public static final double FLYWHEEL_GEAR_RATIO = 1.0;
 		
 		public static final double FLYWHEEL_TOLERANCE = 3.0;
-		// TODO 2/5
-		public static final double HOOD_TOLERANCE = Units.degreesToRadians(0.3);
+		public static final double HOOD_TOLERANCE = 0.5;
 
         public static final TalonFXConfiguration FLYWHEEL_CONFIG = new TalonFXConfiguration()
                 .withCurrentLimits(
@@ -249,11 +248,19 @@ public final class Constants {
 
 	// Distance & Angle 
 	public static final List<Pair<Double, Double>> SHOOTER_ANGLE_MAP = List.of(
-			new Pair<>(10.135, 1.054701),
-			new Pair<>(10.38, 3.691395),
-			new Pair<>(10.674, 5.273446));
+			new Pair<>(2.8452, 1.054701),
+            new Pair<>(3.0027, 2.636694),
+			new Pair<>(3.0902, 3.691395),
+            new Pair<>(3.1102, 4.042962),
+			new Pair<>(3.3842, 5.273446),
+            new Pair<>(3.6902, 7.38279));
 
 	// Distance & Velocity
 	public static final List<Pair<Double, Double>> SHOOTER_VELOCITY_MAP = List.of(
-			new Pair<>(1.0, 1.0));
+			new Pair<>(2.4502, 3200.0),
+			new Pair<>(2.2927, 3000.0),
+			new Pair<>(2.1502, 2800.0),
+			new Pair<>(1.9652, 2700.0),
+			new Pair<>(1.7322, 2600.0),
+			new Pair<>(1.5602, 2600.0));
 }

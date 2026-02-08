@@ -100,3 +100,9 @@ v1.1.1
 
 v1.1.2
 1. Simulate Red alliance auto
+
+v1.1.3
+1. Test tuner constants couple gear ratio
+2. Test auto align rotation pid
+3. Test shooter angle & distnace map and shooter velocity & distance map
+4. Fix shooter variable bugs

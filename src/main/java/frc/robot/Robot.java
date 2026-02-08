@@ -50,7 +50,6 @@ public class Robot extends LoggedRobot {
 	public static final Supplier<Boolean> isRedAlliance =
 			() -> DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue)
 					== DriverStation.Alliance.Red;
-	// TODO
 	public static final Supplier<Boolean> isInAllianceZone =
 			() -> MathHelpers.mirrorIfRed(Drive.getInstance().getPose()).getX()
 					< Constants.Field.ALLIANCE_LINE_X;

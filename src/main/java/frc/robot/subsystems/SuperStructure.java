@@ -47,12 +47,12 @@ public class SuperStructure extends SubsystemBase {
             Hopper.HopperState.Off),
         PreShoot(
             Shooter.FlywheelState.Auto,
-            Shooter.HoodState.Default,
+            Shooter.HoodState.AutoAim,
             Shooter.FeederState.Off,
             Hopper.HopperState.Off),
         Shoot(
             Shooter.FlywheelState.Auto,
-            Shooter.HoodState.Default,
+            Shooter.HoodState.AutoAim,
             Shooter.FeederState.Push,
             Hopper.HopperState.Convey),
         
@@ -106,7 +106,7 @@ public class SuperStructure extends SubsystemBase {
 
         new Transition(State.Rest, State.PreShoot, () -> this.inputs.wantScore),
         new Transition(State.PreShoot, State.Rest, () -> !this.inputs.wantScore),
-        new Transition(State.PreShoot, State.Shoot, () -> Shooter.getInstance().flywheelAtSetpoint()),
+        new Transition(State.PreShoot, State.Shoot, () -> Shooter.getInstance().flywheelAtSetpoint() && Shooter.getInstance().hoodAtSetpoint()),
         new Transition(State.Shoot, State.Rest, () -> !this.inputs.wantScore)
     ).toList();
 
