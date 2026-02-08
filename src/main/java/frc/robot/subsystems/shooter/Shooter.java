@@ -1,6 +1,9 @@
 package frc.robot.subsystems.shooter;
 
+import java.util.function.Supplier;
+
 import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 
@@ -26,6 +29,11 @@ public class Shooter extends SubsystemBase {
     private final MotionMagicVoltage request = new MotionMagicVoltage(0.0);
     private final ShootCaculator shootCaculator = new ShootCaculator();
     public double offset = 0.0;
+    public double velocityOffset = 0.0;
+    private final Supplier<Boolean> up;
+    private final Supplier<Boolean> down;
+    private final Supplier<Boolean> fup;
+    private final Supplier<Boolean> fdown;
 
     @AutoLogOutput(key = "Shooter/FlywheelState")
     private FlywheelState flywheelState = FlywheelState.Off;
@@ -37,7 +45,7 @@ public class Shooter extends SubsystemBase {
     public enum FlywheelState {
         Off(0.0),
         Rest(100.0),
-        Auto(3000.0),
+        Auto(3500.0),
         SlowShoot(2000.0);
 
         // RPM
@@ -74,11 +82,17 @@ public class Shooter extends SubsystemBase {
     }
 
     public Shooter(
-            FlywheelIO flywheelIO, HoodIO hoodIO, RollerIO rollerIO) {
+            FlywheelIO flywheelIO, HoodIO hoodIO, RollerIO rollerIO,
+            Supplier<Boolean> up, Supplier<Boolean> down,
+            Supplier<Boolean> fup, Supplier<Boolean> fdown) {
         SHOOTER = this;
         this.flywheel = new Flywheel(flywheelIO);
         this.hood = new Hood(hoodIO);
         this.feeder = new Feeder(rollerIO);
+        this.up = up;
+        this.down = down;
+        this.fup = fup;
+        this.fdown = fdown;
     }
 
     public static Shooter getInstance() {
@@ -102,10 +116,18 @@ public class Shooter extends SubsystemBase {
         this.hood.periodic();
         this.feeder.periodic();
 
-        this.flywheel.setVelocity(this.flywheelState.speed);
+        if (up.get()) offset += 0.1;
+        if (down.get()) offset -= 0.1;
+
+        if (fup.get()) velocityOffset += 100;
+        if (fdown.get()) velocityOffset -= 100;
+
+        Logger.recordOutput("Shooter/velocityoffset", velocityOffset);
+
+        this.flywheel.setVelocity(this.flywheelState.speed + velocityOffset);
         this.hood.setControl(
                 this.request.withPosition(
-                        Units.degreesToRotations(this.getDesiredPosition())));
+                        Units.degreesToRotations(this.getDesiredPosition() + offset)));
         this.feeder.setVolts(this.feederState.volts);
     }
 
@@ -127,7 +149,7 @@ public class Shooter extends SubsystemBase {
     @AutoLogOutput(key = "Shooter/FlywheelDesiredVelocity") // Rotate per minute
     public double getDesiredVelocity() {
         if (this.flywheelState != FlywheelState.Auto)
-            return this.flywheelState.speed;
+            return this.flywheelState.speed + velocityOffset;
 
         double distance = Constants.Field.HUB_CENTER.getDistance(
                 Drive.getInstance().getPose().getTranslation());
@@ -137,7 +159,7 @@ public class Shooter extends SubsystemBase {
 
     @AutoLogOutput(key = "Shooter/FlywheelAtSetpoint")
     public boolean flywheelAtSetpoint() {
-        return Math.abs(this.flywheel.getVelocity() - this.flywheelState.speed / 60.0)
+        return Math.abs(this.flywheel.getVelocity() - (this.flywheelState.speed + velocityOffset) / 60.0)
                 < Constants.Shooter.FLYWHEEL_TOLERANCE;
     }
 

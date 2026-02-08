@@ -1,10 +1,16 @@
 package frc.robot;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.subsystems.SuperStructure;
 
 public class Joysticks {
     private final XboxController driver = new XboxController(0);
+    public final Supplier<Boolean> up = () -> this.driver.getXButton();
+    public final Supplier<Boolean> down = () -> this.driver.getBButton();
+    public final Supplier<Boolean> fup = () -> this.driver.getPOV() == 180;
+    public final Supplier<Boolean> fdown = () -> this.driver.getPOV() == 0;
 
     private AlignMode launchAlignMode = AlignMode.None;
 

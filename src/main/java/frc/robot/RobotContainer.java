@@ -72,12 +72,20 @@ public class RobotContainer {
 			return new Shooter(
 					new FlywheelIOSim(),
 					new HoodIOSim(),
-					new FeederIOSim());
+					new FeederIOSim(),
+					this.joysticks.up,
+					this.joysticks.down,
+					this.joysticks.fup,
+					this.joysticks.fdown);
 		} else {
 			return new Shooter(
 					new FlywheelIOHardware(),
 					new HoodIOHardware(), 
-					new FeederIOHardware());
+					new FeederIOHardware(),
+					this.joysticks.up,
+					this.joysticks.down,
+					this.joysticks.fup,
+					this.joysticks.fdown);
 		}
 	}
 

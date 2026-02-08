@@ -249,7 +249,9 @@ public final class Constants {
 
 	// Distance & Angle 
 	public static final List<Pair<Double, Double>> SHOOTER_ANGLE_MAP = List.of(
-			new Pair<>(1.0, 1.0));
+			new Pair<>(10.135, 1.054701),
+			new Pair<>(10.38, 3.691395),
+			new Pair<>(10.674, 5.273446));
 
 	// Distance & Velocity
 	public static final List<Pair<Double, Double>> SHOOTER_VELOCITY_MAP = List.of(

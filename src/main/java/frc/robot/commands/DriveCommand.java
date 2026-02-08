@@ -22,6 +22,8 @@ import frc.robot.subsystems.vision.object.ObjectVision;
 
 import java.util.function.Supplier;
 
+import org.littletonrobotics.junction.Logger;
+
 public class DriveCommand extends Command {
     private final Drive drive;
     private final Supplier<Joysticks.DriveInputs> driveInputs;
@@ -68,6 +70,7 @@ public class DriveCommand extends Command {
 
     @Override
     public void execute() {
+		Logger.recordOutput("HUB_Distance", this.drive.getPose().getTranslation().getDistance(Constants.Field.HUB_CENTER));
         Joysticks.DriveInputs inputs = this.driveInputs.get();
 		if (Robot.isRedAlliance.get()) inputs = inputs.getRedFlipped();
 

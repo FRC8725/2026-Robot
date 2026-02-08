@@ -6,7 +6,7 @@ import frc.robot.Constants;
 import frc.robot.subsystems.shooter.Shooter;
 
 public class ShootCaculator {
-    private final double MIN_DISTANCE = 0.0;
+    private final double MIN_DISTANCE = 9.88;
     private final double MAX_DISTANCE = 0.0;
     private final double DEFAULT_VELOCITY = Shooter.FlywheelState.Auto.speed;
 
