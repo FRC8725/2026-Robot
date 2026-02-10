@@ -102,6 +102,7 @@ public class SuperStructure extends SubsystemBase {
         public boolean wantIntake = false;
         public boolean wantScore = false;
         public boolean wantTrack = false;
+        public boolean resetHood = false;
     }
 
     private final List<Transition> transitions = Stream.of(

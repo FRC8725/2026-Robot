@@ -84,6 +84,7 @@ public class Joysticks {
 
         input.wantIntake = this.driver.getRightTriggerAxis() > 0.3;
         input.wantScore = this.driver.getRightBumperButton();
+        input.resetHood = this.driver.getLeftBumperButton();
         
         return input;
     }

@@ -107,6 +107,10 @@ public class Shooter extends SubsystemBase {
         this.feederState = feederState;
     }
 
+    public void setHoodState(HoodState hoodState) {
+        this.hoodState = hoodState;
+    }
+    
     public void setFlywheelVolts(double volts) {
         this.flywheel.setVolts(volts);
     }
