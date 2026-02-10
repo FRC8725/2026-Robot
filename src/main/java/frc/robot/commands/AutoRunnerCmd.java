@@ -165,10 +165,6 @@ public class AutoRunnerCmd extends Command {
 				&& this.shouldRunEvent(this.events.get(this.eventI))) {
 			Event ev = this.events.get(eventI++);
 			this.superStructure.inputs = ev.inputs;
-			// if (ev.) 
-			// 	this.postAlignInputs = ev.inputs;
-			// else 
-			// 	this.superStructure.inputs = ev.inputs;
 
 			if (ev.waitCondition != null) {
 				this.currentWaitEvent = ev;
@@ -220,7 +216,7 @@ public class AutoRunnerCmd extends Command {
 
 				this.pathCommand = Commands.sequence(
 						AutoBuilder.pathfindToPose(
-									approachPose, Constants.Drive.CONSTRAINTS, 1.5),
+								approachPose, Constants.Drive.CONSTRAINTS, 1.5),
 						AutoBuilder.pathfindToPose(
 								scorePose, Constants.Drive.CONSTRAINTS, 0.0));
 			} else if (mode == AlignMode.ZoneAlign) {

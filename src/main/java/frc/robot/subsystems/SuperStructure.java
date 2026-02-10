@@ -22,7 +22,7 @@ public class SuperStructure extends SubsystemBase {
     @AutoLogOutput(key = "SuperStructure/State")
     public State state = State.Start;
     public StructureInput inputs = new StructureInput();
-    private final Timer stateTime = new Timer();
+    public final Timer stateTime = new Timer();
 
     public SuperStructure() {
         SUPERSTRUCTURE = this;
@@ -49,11 +49,15 @@ public class SuperStructure extends SubsystemBase {
             Shooter.FlywheelState.Auto,
             Shooter.HoodState.AutoAim,
             Shooter.FeederState.Off,
+            Intake.LifterState.Down,
+            Intake.RollerState.SlowIn,
             Hopper.HopperState.Off),
         Shoot(
             Shooter.FlywheelState.Auto,
             Shooter.HoodState.AutoAim,
             Shooter.FeederState.Push,
+            Intake.LifterState.Down,
+            Intake.RollerState.SlowIn,
             Hopper.HopperState.Convey),
         
         ;

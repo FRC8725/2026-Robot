@@ -59,7 +59,7 @@ public class Joysticks {
         input.leftY = this.driver.getLeftY() * (Robot.isRedAlliance.get() ? -1.0 : 1.0);
         input.rightX = this.driver.getRightX();
         input.oriented = this.driver.getLeftBumperButton();
-        input.deadZone = 0.05;
+        input.deadZone = 0.03;
         input.wantTrack = this.driver.getAButton();
 
         boolean wantScore = this.getInput().wantScore;

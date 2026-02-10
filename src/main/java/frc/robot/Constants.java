@@ -58,9 +58,9 @@ public final class Constants {
                         : TunerConstants.createDrivetrain();
         
 		// Phycical Limit
-        public static final double MAX_MOTOR_RPM = 4675.0;
+        public static final double MAX_MOTOR_RPM = 3000.0;
         public static final double MAX_VELOCITY = (MAX_MOTOR_RPM / 60.0) / TunerConstants.kDriveGearRatio * 2.0 * Units.inchesToMeters(1.897) * Math.PI;
-        public static final double MAX_ANGULAR_VELOCITY = MAX_VELOCITY / (Units.inchesToMeters(12.75) * Math.sqrt(2.0)); // TODO: Research HOW
+        public static final double MAX_ANGULAR_VELOCITY = (MAX_VELOCITY - 500.0) / (Units.inchesToMeters(12.75) * Math.sqrt(2.0)); // TODO: Research HOW
 
         // Align weight
         public static final double ALIGN_TRANSLATION_WEIGHT = 5.0;
@@ -205,19 +205,19 @@ public final class Constants {
         public static final double kMinAmbiguityToFlip = 0.08;
 
         // Camera pose on the robot
-        public static final double CAMERA_LEFT_DEGS = 45.0;
+        public static final double CAMERA_LEFT_DEGS = 35.0;
         public static final double CAMERA_LEFT_PITCH_RADS = Units.degreesToRadians(CAMERA_LEFT_DEGS);
         public static final Rotation2d CAMERA_LEFT_YAW = Rotation2d.k180deg;
         public static final String CAMERA_LEFT_NAME = "limelight-left";
         public static final Transform3d CAMERA_LEFT_TRANSFORM = new Transform3d(
-                -0.276806, -0.266652, 0.202819,
+                -0.281546, -0.266652, 0.2033524,
                 new Rotation3d(0.0, CAMERA_LEFT_PITCH_RADS, CAMERA_LEFT_YAW.getRadians()));
-        public static final double CAMERA_RIGHT_DEGS = 45.0;
+        public static final double CAMERA_RIGHT_DEGS = 35.0;
         public static final double CAMERA_RIGHT_PITCH_RADS = Units.degreesToRadians(CAMERA_RIGHT_DEGS);
         public static final Rotation2d CAMERA_RIGHT_YAW = Rotation2d.k180deg;
         public static final String CAMERA_RIGHT_NAME = "limelight-right";
         public static final Transform3d CAMERA_RIGHT_TRANSFORM = new Transform3d(
-                -0.276806, 0.266652, 0.202819,
+                -0.281546, 0.266652, 0.2033524,
                 new Rotation3d(0.0, CAMERA_RIGHT_PITCH_RADS, CAMERA_LEFT_YAW.getRadians()));
     }
         
@@ -235,11 +235,14 @@ public final class Constants {
 						3.2558109760284424, 7.160459518432617,
 						new Rotation2d(1.9936496233117944));
 		public static final Pose2d LEFT_APPROACH_POSE = 
-				new Pose2d(4.9, 7.6, Rotation2d.kCCW_90deg);
+				new Pose2d(4.9, 7.6, Rotation2d.kZero);
+
         public static final Pose2d RIGHT_POINT =
 				new Pose2d(
 						3.2558109760284424, 0.908866481567383,
 						new Rotation2d(-1.9936496233117944));
+        public static final Pose2d RIGHT_APPROACH_POSE = 
+                new Pose2d(4.9, 0.469326, Rotation2d.kZero);
 
         // HUB tanslation
         public static final Translation2d HUB_CENTER = new Translation2d(

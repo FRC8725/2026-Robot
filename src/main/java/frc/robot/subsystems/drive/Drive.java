@@ -168,6 +168,18 @@ public class Drive extends SubsystemBase {
         return leftDistance < rightDistance ? leftPoint : rightPoint;
     }
 
+    public Pose2d getClosestApproachPose() {
+        Pose2d leftPose = MathHelpers.mirrorIfRed(Constants.Field.LEFT_APPROACH_POSE);
+        Pose2d rightPose = MathHelpers.mirrorIfRed(Constants.Field.RIGHT_APPROACH_POSE);
+
+        double leftDistance  = this.getPose().getTranslation()
+                .getDistance(leftPose.getTranslation());
+        double rightDistance = this.getPose().getTranslation()
+                .getDistance(rightPose.getTranslation());
+
+        return leftDistance < rightDistance ? leftPose : rightPose;
+    }
+
     public boolean withinTolerance(Translation2d t) {
         return this.getPose().getTranslation().getDistance(t) < Constants.Drive.ALIGNMENT_TOLERANCE;
     }

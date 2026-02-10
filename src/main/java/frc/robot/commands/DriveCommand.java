@@ -70,7 +70,6 @@ public class DriveCommand extends Command {
 
     @Override
     public void execute() {
-		// Logger.recordOutput("HUB_Distance", this.drive.getPose().getTranslation().getDistance(Constants.Field.HUB_CENTER));
         Joysticks.DriveInputs inputs = this.driveInputs.get();
 		if (Robot.isRedAlliance.get()) inputs = inputs.getRedFlipped();
 
@@ -96,8 +95,7 @@ public class DriveCommand extends Command {
 			if (this.pathCommand == null) {
 				// Generate path
 				Pose2d scorePose = this.drive.getClosestScorePoint();
-				Pose2d approachPose = new Pose2d(
-						4.9, 7.6, Rotation2d.kCCW_90deg);
+				Pose2d approachPose = this.drive.getClosestApproachPose();
 
 				this.pathCommand = Commands.sequence(
 						AutoBuilder.pathfindToPose(
@@ -185,8 +183,8 @@ public class DriveCommand extends Command {
 		r = this.deadZone(r, this.driveInputs.get().deadZone);
 		rot = this.deadZone(rot, this.driveInputs.get().deadZone);
 
-		r = r * r;
-		rot = rot * rot * Math.signum(rot);
+		// r = r * r;
+		// rot = rot * rot * Math.signum(rot);
 
 		double xSpeed = r * Math.cos(theta) * Constants.Drive.MAX_VELOCITY;
 		double ySpeed = r * Math.sin(theta) * Constants.Drive.MAX_VELOCITY;

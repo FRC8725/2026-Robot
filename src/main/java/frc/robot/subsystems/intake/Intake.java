@@ -10,6 +10,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.SuperStructure;
+import frc.robot.subsystems.SuperStructure.State;
 import frc.robot.subsystems.intake.lifter.LifterIO;
 import frc.robot.subsystems.intake.lifter.LifterSubsystem;
 import frc.robot.subsystems.rollers.RollerIO;
@@ -25,8 +26,11 @@ public class Intake extends SubsystemBase {
     private LifterState lifterState = LifterState.Up;
     private RollerState rollerState = RollerState.Off;
 
+    private double lastTime = 0.0;
+    private final double distance = 0.1;
+
     public enum LifterState {
-        Up(0.05),
+        Up(0.27),
         // Up(0.262),
         Down(0.27),
         OperateControl(0.0);
@@ -42,8 +46,8 @@ public class Intake extends SubsystemBase {
     public enum RollerState {
         Off(0.0),
         Rest(1.0),
-        SlowIn(0.0),
-        In(3.5),
+        SlowIn(3.0),
+        In(6.0),
         OperateControl(0.0);
 
         public final double volts;
@@ -81,8 +85,12 @@ public class Intake extends SubsystemBase {
         this.lifter.periodic();
         this.roller.periodic();
 
+        double angle = this.getEffectiveLifterState().angle - 
+                (SuperStructure.getInstance().state == State.PreShoot || SuperStructure.getInstance().state == State.Shoot
+                ? Math.abs(Math.sin(SuperStructure.getInstance().stateTime.get()) * distance)
+                : 0.0); 
         this.lifter.setControl(
-                this.request.withPosition(this.getEffectiveLifterState().angle));
+                this.request.withPosition(angle));
         this.roller.setVolts(this.getEffectiveRollerState().volts);
     }
 
