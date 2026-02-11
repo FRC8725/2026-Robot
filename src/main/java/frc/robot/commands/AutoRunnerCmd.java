@@ -7,12 +7,16 @@ import java.util.stream.Collectors;
 
 import org.littletonrobotics.junction.Logger;
 
+import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import choreo.trajectory.EventMarker;
 import choreo.trajectory.SwerveSample;
 import choreo.trajectory.Trajectory;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -35,6 +39,10 @@ public class AutoRunnerCmd extends Command {
 	private Pose2d lastPose = null;
 	private Command pathCommand = null;
 	private int eventI = 0;
+	private final SwerveRequest.FieldCentricFacingAngle driveWithHeading =
+            new SwerveRequest.FieldCentricFacingAngle()
+                    .withDeadband(0.05)
+                    .withDriveRequestType(DriveRequestType.Velocity);
 
 	public AutoRunnerCmd(
 			SuperStructure superStructure, Drive drive, Trajectory<SwerveSample> trajectory) {
@@ -94,7 +102,7 @@ public class AutoRunnerCmd extends Command {
 		new Event(
 			"zoneAlign",
 			new SuperStructure.StructureInput() {{ wantScore = true; }},
-			() -> (SuperStructure.getInstance().state == SuperStructure.State.PreShoot), // TODO auto
+			() -> SuperStructure.getInstance().stateTime.hasElapsed(3.0),
 			AlignMode.ZoneAlign),
 		new Event(
 			"trackFuel",
@@ -210,18 +218,22 @@ public class AutoRunnerCmd extends Command {
 		if (this.pathCommand == null) {
 			if (mode == AlignMode.PointAlign) {
 				// Generate path
-				Pose2d scorePose = this.drive.getClosestScorePoint();
-
-				Pose2d approachPose = MathHelpers.mirrorIfRed(Constants.Field.LEFT_APPROACH_POSE);
-
+				Pose2d[] pathPoses = this.drive.getClosestScorePoints();
+				
 				this.pathCommand = Commands.sequence(
 						AutoBuilder.pathfindToPose(
-								approachPose, Constants.Drive.CONSTRAINTS, 1.5),
+								pathPoses[0], Constants.Drive.CONSTRAINTS, 1.5),
 						AutoBuilder.pathfindToPose(
-								scorePose, Constants.Drive.CONSTRAINTS, 0.0));
+								pathPoses[1], Constants.Drive.CONSTRAINTS, 1.5),
+						AutoBuilder.pathfindToPose(
+								pathPoses[2], Constants.Drive.CONSTRAINTS, 0.0));
 			} else if (mode == AlignMode.ZoneAlign) {
-				this.pathCommand = AutoBuilder.pathfindToPose(
-						this.drive.getClosestScorePoint(), Constants.Drive.CONSTRAINTS);
+				Rotation2d targetAngle = MathHelpers.getAngleFromHub(this.drive.getPose());
+				this.drive.setControl(
+					this.driveWithHeading
+							.withVelocityX(0.0)
+							.withVelocityY(0.0)
+							.withTargetDirection(targetAngle));
 			}
 
 			if (this.pathCommand != null)

@@ -32,6 +32,8 @@ public class Simulation extends SubsystemBase {
                 Meters.of(0.258555),
                 IntakeSimulation.IntakeSide.FRONT,
             30);
+        
+        this.intakeSimulation.addGamePiecesToIntake(8);
     }
 
     public void handleIntakeSimulation() {
@@ -58,7 +60,7 @@ public class Simulation extends SubsystemBase {
                             this.container.getDriveSubsystem().getRobotChassisSpeeds(),
                             this.container.getDriveSubsystem().getPose().getRotation(),
                             Meters.of(0.4446524),
-                            MetersPerSecond.of(8.0),
+                            MetersPerSecond.of(6.5),
                             Degrees.of(20.0 + Units.radiansToDegrees(Shooter.getInstance().getPosition()) + 90.0)));
         }
     }

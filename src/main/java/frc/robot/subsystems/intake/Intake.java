@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.lib.math.MathHelpers;
 import frc.robot.subsystems.SuperStructure;
 import frc.robot.subsystems.SuperStructure.State;
 import frc.robot.subsystems.intake.lifter.LifterIO;
@@ -30,9 +31,10 @@ public class Intake extends SubsystemBase {
     private final double distance = 0.1;
 
     public enum LifterState {
-        Up(0.27),
+        Up(0.05),
         // Up(0.262),
         Down(0.27),
+        Zero(0.03),
         OperateControl(0.0);
 
         // Units: rotation
@@ -87,8 +89,13 @@ public class Intake extends SubsystemBase {
 
         double angle = this.getEffectiveLifterState().angle - 
                 (SuperStructure.getInstance().state == State.PreShoot || SuperStructure.getInstance().state == State.Shoot
-                ? Math.abs(Math.sin(SuperStructure.getInstance().stateTime.get()) * distance)
-                : 0.0); 
+                        || SuperStructure.getInstance().state == State.PreShootHome || SuperStructure.getInstance().state == State.ShootHome
+                ? Math.abs(Math.sin(2.0 * SuperStructure.getInstance().stateTime.get()) * distance)
+                : 0.0);
+
+        if (MathHelpers.inAutoTimer(3.0))
+            angle = LifterState.Zero.angle;
+        
         this.lifter.setControl(
                 this.request.withPosition(angle));
         this.roller.setVolts(this.getEffectiveRollerState().volts);
@@ -101,7 +108,7 @@ public class Intake extends SubsystemBase {
         else if (SuperStructure.getInstance().inputs.wantIntake)
             return LifterState.Down;
         else 
-            return LifterState.Up;
+            return LifterState.Down;
     }
 
     @AutoLogOutput(key = "Intake/RollerState")

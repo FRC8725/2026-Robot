@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
 import frc.robot.Robot;
 
@@ -44,5 +45,13 @@ public class MathHelpers {
     public static Transform2d toTransform2d(Transform3d t) {
         return new Transform2d(
                 t.getTranslation().toTranslation2d(), t.getRotation().toRotation2d());
+    }
+
+    public static boolean atInterval(Pose2d pose, double target, double d) {
+        return pose.getX() > target - d && pose.getX() < target + d; 
+    }
+
+    public static boolean inAutoTimer(double time) {
+        return Timer.getFPGATimestamp() - Robot.autoStartTime < time;
     }
 }

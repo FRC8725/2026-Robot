@@ -3,6 +3,7 @@ package frc.robot;
 import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.SuperStructure;
 
 public class Joysticks {
@@ -84,7 +85,9 @@ public class Joysticks {
 
         input.wantIntake = this.driver.getRightTriggerAxis() > 0.3;
         input.wantScore = this.driver.getRightBumperButton();
-        input.resetHood = this.driver.getLeftBumperButton();
+        input.wantShootHome = this.driver.getLeftBumperButton();
+        input.alignMode = this.launchAlignMode;
+        SmartDashboard.putString("AlignMode", input.alignMode.toString());
         
         return input;
     }

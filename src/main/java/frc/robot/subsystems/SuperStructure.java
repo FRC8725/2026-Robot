@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
+import frc.robot.Joysticks.AlignMode;
+import frc.robot.commands.DriveCommand;
 import frc.robot.subsystems.hopper.Hopper;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
@@ -45,6 +47,20 @@ public class SuperStructure extends SubsystemBase {
             Shooter.HoodState.Default,
             Shooter.FeederState.Off,
             Hopper.HopperState.Off),
+        PreShootHome(
+            Shooter.FlywheelState.Home,
+            Shooter.HoodState.Home,
+            Shooter.FeederState.Off,
+            Intake.LifterState.Down,
+            Intake.RollerState.SlowIn,
+            Hopper.HopperState.Off),
+        ShootHome(
+            Shooter.FlywheelState.Home,
+            Shooter.HoodState.Home,
+            Shooter.FeederState.Push,
+            Intake.LifterState.Down,
+            Intake.RollerState.SlowIn,
+            Hopper.HopperState.Convey),
         PreShoot(
             Shooter.FlywheelState.Auto,
             Shooter.HoodState.AutoAim,
@@ -102,17 +118,23 @@ public class SuperStructure extends SubsystemBase {
         public boolean wantIntake = false;
         public boolean wantScore = false;
         public boolean wantTrack = false;
-        public boolean resetHood = false;
+        public boolean wantShootHome = false;
+        public AlignMode alignMode = AlignMode.None;
     }
 
     private final List<Transition> transitions = Stream.of(
         new Transition(State.Start, State.Rest, () -> this.inputs.wantIntake),
         new Transition(State.Start, State.Rest, () -> RobotState.isAutonomous()),
 
-        new Transition(State.Rest, State.PreShoot, () -> this.inputs.wantScore),
+        new Transition(State.Rest, State.PreShoot, () -> this.inputs.wantScore && ((this.inputs.alignMode == AlignMode.PointAlign && DriveCommand.isAligning) || (this.inputs.alignMode == AlignMode.ZoneAlign) || RobotState.isAutonomous())),
         new Transition(State.PreShoot, State.Rest, () -> !this.inputs.wantScore),
         new Transition(State.PreShoot, State.Shoot, () -> Shooter.getInstance().flywheelAtSetpoint() && Shooter.getInstance().hoodAtSetpoint()),
-        new Transition(State.Shoot, State.Rest, () -> !this.inputs.wantScore)
+        new Transition(State.Shoot, State.Rest, () -> !this.inputs.wantScore),
+
+        new Transition(State.Rest, State.PreShootHome, () -> this.inputs.wantShootHome && !Robot.isInAllianceZone.get()),
+        new Transition(State.PreShootHome, State.Rest, () -> !this.inputs.wantShootHome || Robot.isInAllianceZone.get()),
+        new Transition(State.PreShootHome, State.ShootHome, () -> Shooter.getInstance().flywheelAtSetpoint() && Shooter.getInstance().hoodAtSetpoint()),
+        new Transition(State.ShootHome, State.Rest, () -> !this.inputs.wantShootHome || Robot.isInAllianceZone.get())
     ).toList();
 
     public class Transition {

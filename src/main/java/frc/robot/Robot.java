@@ -31,6 +31,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobotBase;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Watchdog;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -46,6 +47,7 @@ public class Robot extends LoggedRobot {
 	private Command autonomousCommand;
 	private final RobotContainer robotContainer;
 	private final DigitalInput input = new DigitalInput(0);
+	public static double autoStartTime = 0.0;
 
 	public static final Supplier<Boolean> isRedAlliance =
 			() -> DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue)
@@ -191,6 +193,7 @@ public class Robot extends LoggedRobot {
 	@Override
 	public void autonomousInit() {
 		this.didRunAuto = true;
+		autoStartTime = Timer.getFPGATimestamp();
         
 		CommandScheduler.getInstance().schedule(this.autonomousCommand);
 	}

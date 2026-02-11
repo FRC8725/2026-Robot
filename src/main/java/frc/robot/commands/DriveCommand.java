@@ -2,6 +2,11 @@ package frc.robot.commands;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.IdealStartingState;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.RotationTarget;
+import com.pathplanner.lib.path.Waypoint;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -10,8 +15,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants;
 import frc.robot.Joysticks;
 import frc.robot.Robot;
@@ -20,9 +25,10 @@ import frc.robot.lib.math.MathHelpers;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.vision.object.ObjectVision;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.function.Supplier;
-
-import org.littletonrobotics.junction.Logger;
 
 public class DriveCommand extends Command {
     private final Drive drive;
@@ -30,7 +36,7 @@ public class DriveCommand extends Command {
     private final FuelTracking fuelTracking;
 	private Command pathCommand = null;
     private boolean isTraking = false;
-	private boolean isAligning = false;
+	public static boolean isAligning = false;
 
 	private final SlewRateLimiter xLimiter = new SlewRateLimiter(4.5);
 	private final SlewRateLimiter yLimiter = new SlewRateLimiter(4.5);
@@ -70,6 +76,7 @@ public class DriveCommand extends Command {
 
     @Override
     public void execute() {
+		SmartDashboard.putBoolean("IsAligning", isAligning);
         Joysticks.DriveInputs inputs = this.driveInputs.get();
 		if (Robot.isRedAlliance.get()) inputs = inputs.getRedFlipped();
 
@@ -78,30 +85,48 @@ public class DriveCommand extends Command {
 				this.pathCommand.end(true);
 				this.pathCommand = null;
 			}
-			this.isAligning = false;
+			isAligning = false;
 			inputs.alignMode = AlignMode.None;
 		}
-		// inputs.alignMode = AlignMode.None;
 
 		if (inputs.alignMode == AlignMode.PointAlign) {
 			if (inputs.isNonZero())
 				return;
 
-			if (this.isAligning) {
+			if (isAligning) {
 				this.drive.stopModules();
 				return;
 			}
 
 			if (this.pathCommand == null) {
 				// Generate path
-				Pose2d scorePose = this.drive.getClosestScorePoint();
-				Pose2d approachPose = this.drive.getClosestApproachPose();
+				Pose2d[] pathPoses = this.drive.getClosestScorePoints();
 
-				this.pathCommand = Commands.sequence(
-						AutoBuilder.pathfindToPose(
-								approachPose, Constants.Drive.CONSTRAINTS, 1.5),
-						AutoBuilder.pathfindToPose(
-								scorePose, Constants.Drive.CONSTRAINTS, 0.0));
+				Pose2d robotPose = this.drive.getPose();
+
+				List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
+						new Pose2d(robotPose.getTranslation(), robotPose.getRotation().minus(Rotation2d.k180deg)),
+						new Pose2d(pathPoses[0].getTranslation(), Rotation2d.k180deg),
+						new Pose2d(pathPoses[1].getTranslation(), Rotation2d.k180deg),
+						pathPoses[2]);
+				List<RotationTarget> rotationTargets = new ArrayList<>();
+				rotationTargets.add(new RotationTarget(1.0, Rotation2d.kZero));
+				rotationTargets.add(new RotationTarget(2.0, Rotation2d.kZero));
+
+				PathPlannerPath path = new PathPlannerPath(
+					waypoints,
+					rotationTargets,
+					Collections.emptyList(),
+					Collections.emptyList(),
+					Collections.emptyList(),
+					Constants.Drive.CONSTRAINTS,
+					new IdealStartingState(0.0, this.drive.getPose().getRotation()),
+					new GoalEndState(0.0, pathPoses[2].getRotation().plus(Rotation2d.k180deg)),
+					false);
+
+				path.preventFlipping = true;
+
+				this.pathCommand = AutoBuilder.followPath(path);
 				this.pathCommand.initialize();
 			}
 
@@ -112,11 +137,11 @@ public class DriveCommand extends Command {
 				this.pathCommand.end(true);
 				this.pathCommand = null;
 				
-				this.isAligning = true;
+				isAligning = true;
 				this.drive.stopModules();
 			}
 		} else if (inputs.alignMode == AlignMode.None) {
-			this.isAligning = false;
+			isAligning = false;
 
 			if (this.pathCommand != null) {
            		this.pathCommand.end(true);
@@ -138,10 +163,10 @@ public class DriveCommand extends Command {
 								.withRotationalRate(speeds.omegaRadiansPerSecond));
 			}
 		} else if (inputs.alignMode == AlignMode.ZoneAlign && inputs.isRotateZero()) {
-			if (this.isAligning) {
-				this.drive.stopModules();
-				return;
-			}
+			// if (isAligning) {
+			// 	this.drive.stopModules();
+			// 	return;
+			// }
 
 			Rotation2d targetAngle = MathHelpers.getAngleFromHub(this.drive.getPose());
 			ChassisSpeeds speeds = this.getSpeeds();
@@ -188,7 +213,7 @@ public class DriveCommand extends Command {
 
 		double xSpeed = r * Math.cos(theta) * Constants.Drive.MAX_VELOCITY;
 		double ySpeed = r * Math.sin(theta) * Constants.Drive.MAX_VELOCITY;
-		double rSpeed = rot * Constants.Drive.MAX_ANGULAR_VELOCITY;
+		double rSpeed = rot * 4.5;
 
 		return new ChassisSpeeds(xSpeed, ySpeed, rSpeed);
 	}

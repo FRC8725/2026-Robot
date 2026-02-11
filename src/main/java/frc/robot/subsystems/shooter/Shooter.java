@@ -7,9 +7,11 @@ import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Unit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.lib.math.MathHelpers;
@@ -47,6 +49,7 @@ public class Shooter extends SubsystemBase {
         Off(0.0),
         Rest(100.0),
         Auto(3500.0),
+        Home(4000.0),
         SlowShoot(2000.0);
 
         // RPM
@@ -60,6 +63,7 @@ public class Shooter extends SubsystemBase {
     public enum HoodState {
         Default(0.0),
         AutoAim(0.0),
+        Home(25.0),
         Return(0.0);
 
         // Degree
@@ -147,6 +151,9 @@ public class Shooter extends SubsystemBase {
      */
     @AutoLogOutput(key = "Shooter/HoodDesiredPosition")
     public double getDesiredPosition() {
+        if (this.atTrenchZone())
+            return 0.0;
+        
         if (this.hoodState != HoodState.AutoAim)
             return this.hoodState.angle;
 
@@ -177,6 +184,13 @@ public class Shooter extends SubsystemBase {
     public boolean hoodAtSetpoint() {
         return Math.abs(Units.radiansToDegrees(this.hood.getPosition()) - this.getDesiredPosition())
                 < Constants.Shooter.HOOD_TOLERANCE;
+    }
+
+    @AutoLogOutput(key = "Shooter/atTrenchZone")
+    public boolean atTrenchZone() {
+        Pose2d robot = Drive.getInstance().getPose();
+        return MathHelpers.atInterval(robot, Constants.Field.TRENCH_X, 1.0)
+                && (robot.getY() < 0.847 || robot.getY() > 6.353312);
     }
 
     @AutoLogOutput(key = "Component/Shooter")

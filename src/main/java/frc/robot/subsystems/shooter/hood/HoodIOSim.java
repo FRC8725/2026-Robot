@@ -16,8 +16,8 @@ public class HoodIOSim implements HoodIO {
     private final SingleJointedArmSim sim = new SingleJointedArmSim(
             DCMotor.getKrakenX60(1),
             Constants.Shooter.HOOD_GEAR_RATIO,
-            SingleJointedArmSim.estimateMOI(0.2, 0.5),
-            0.2,
+            SingleJointedArmSim.estimateMOI(0.3, 3.0),
+            0.3,
             0.0,
             Units.degreesToRadians(22.0),
             false,
@@ -71,6 +71,6 @@ public class HoodIOSim implements HoodIO {
 
     @Override
     public double getPosition() {
-        return this.hood.getPosition().getValueAsDouble();
+        return Units.rotationsToRadians(this.hood.getPosition().getValueAsDouble());
     }
 }

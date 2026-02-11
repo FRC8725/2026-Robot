@@ -156,28 +156,16 @@ public class Drive extends SubsystemBase {
         Logger.recordOutput("Drive/latencyPeriodicSec", Timer.getFPGATimestamp() - timestamp);
     }
 
-    public Pose2d getClosestScorePoint() {
-        Pose2d leftPoint = MathHelpers.mirrorIfRed(Constants.Field.LEFT_POINT);
-        Pose2d rightPoint = MathHelpers.mirrorIfRed(Constants.Field.RIGHT_POINT);
+    public Pose2d[] getClosestScorePoints() {
+        Pose2d leftPoint = MathHelpers.mirrorIfRed(Constants.Field.LEFT_APPROACH_POSE);
+        Pose2d rightPoint = MathHelpers.mirrorIfRed(Constants.Field.RIGHT_APPROACH_POSE);
 
-        double leftDistance = this.getPose().getTranslation()
+        double left = this.getPose().getTranslation()
                 .getDistance(leftPoint.getTranslation());
-        double rightDistance = this.getPose().getTranslation()
+        double right = this.getPose().getTranslation()
                 .getDistance(rightPoint.getTranslation());
 
-        return leftDistance < rightDistance ? leftPoint : rightPoint;
-    }
-
-    public Pose2d getClosestApproachPose() {
-        Pose2d leftPose = MathHelpers.mirrorIfRed(Constants.Field.LEFT_APPROACH_POSE);
-        Pose2d rightPose = MathHelpers.mirrorIfRed(Constants.Field.RIGHT_APPROACH_POSE);
-
-        double leftDistance  = this.getPose().getTranslation()
-                .getDistance(leftPose.getTranslation());
-        double rightDistance = this.getPose().getTranslation()
-                .getDistance(rightPose.getTranslation());
-
-        return leftDistance < rightDistance ? leftPose : rightPose;
+        return left < right ? Constants.Field.LEFT_POINT_POSE_ARRAY : Constants. Field.RIGHT_POINT_POSE_ARRAY;
     }
 
     public boolean withinTolerance(Translation2d t) {

@@ -49,7 +49,7 @@ public final class Constants {
     public final class Drive {
         public static final double ROBOT_WEIGHT_POUNDS = 150.0;
         public static final double BUMPER_LENGTH_INCHES = 34.417;
-        public static final double MAX_SPEED = 2.0; // m/s
+        public static final double MAX_SPEED = 2.5; // m/s
         public static final double MAX_ANGULAR_RATE = Math.PI; // 1 rotation per second
         public static final double STEER_JOYSTICK_DEADBAND = 0.05;
         public static final CommandSwerveDrivetrain drivetrain =
@@ -58,7 +58,7 @@ public final class Constants {
                         : TunerConstants.createDrivetrain();
         
 		// Phycical Limit
-        public static final double MAX_MOTOR_RPM = 3000.0;
+        public static final double MAX_MOTOR_RPM = 3300.0;
         public static final double MAX_VELOCITY = (MAX_MOTOR_RPM / 60.0) / TunerConstants.kDriveGearRatio * 2.0 * Units.inchesToMeters(1.897) * Math.PI;
         public static final double MAX_ANGULAR_VELOCITY = (MAX_VELOCITY - 500.0) / (Units.inchesToMeters(12.75) * Math.sqrt(2.0)); // TODO: Research HOW
 
@@ -72,10 +72,10 @@ public final class Constants {
         public static final double ALIGNMENT_TOLERANCE = 0.02;
 
         public static final PathConstraints CONSTRAINTS = new PathConstraints(
-			3.0,
+			1.5,
 			2.5,
-			3 * Math.PI,
-			2 * Math.PI);
+			Math.PI,
+			2.0 * Math.PI);
     }
     
     public final class Intake {
@@ -96,7 +96,9 @@ public final class Constants {
                 .withCurrentLimits(
                         new CurrentLimitsConfigs()
                                 .withSupplyCurrentLimitEnable(true)
-                                .withSupplyCurrentLimit(40.0))
+                                .withSupplyCurrentLimit(40.0)
+                                .withStatorCurrentLimitEnable(true)
+                                .withStatorCurrentLimit(60.0))
                 .withMotionMagic(
                         new MotionMagicConfigs()
                                 .withMotionMagicCruiseVelocity(1.5)
@@ -105,7 +107,7 @@ public final class Constants {
                 .withMotorOutput(
                         new MotorOutputConfigs()
                                 .withInverted(InvertedValue.CounterClockwise_Positive)
-                                .withNeutralMode(NeutralModeValue.Brake))
+                                .withNeutralMode(NeutralModeValue.Coast))
                 .withFeedback(
                         new FeedbackConfigs()
                                 .withSensorToMechanismRatio(MECHANISM_GEAR_RATIO))
@@ -134,9 +136,9 @@ public final class Constants {
                 .withCurrentLimits(
 						new CurrentLimitsConfigs()
 								.withSupplyCurrentLimitEnable(true)
-								.withSupplyCurrentLimit(60.0)
+								.withSupplyCurrentLimit(40.0)
 								.withStatorCurrentLimitEnable(true)
-								.withStatorCurrentLimit(80.0))
+								.withStatorCurrentLimit(60.0))
 				.withMotorOutput(
 						new MotorOutputConfigs()
 								.withInverted(InvertedValue.Clockwise_Positive)
@@ -148,9 +150,9 @@ public final class Constants {
 				.withCurrentLimits(
 						new CurrentLimitsConfigs()
 								.withStatorCurrentLimitEnable(true)
-                				.withStatorCurrentLimit(70.0)
+                				.withStatorCurrentLimit(50.0)
                 				.withSupplyCurrentLimitEnable(true)
-                				.withSupplyCurrentLimit(50.0))
+                				.withSupplyCurrentLimit(30.0))
 				.withMotorOutput(
 						new MotorOutputConfigs()
 								.withInverted(InvertedValue.CounterClockwise_Positive)
@@ -229,20 +231,39 @@ public final class Constants {
         // Alliance Line
         public static final double ALLIANCE_LINE_X = Units.inchesToMeters(156.61);
 
-        // Align Point
-        public static final Pose2d LEFT_POINT =
-                new Pose2d(
-						3.2558109760284424, 7.160459518432617,
-						new Rotation2d(1.9936496233117944));
-		public static final Pose2d LEFT_APPROACH_POSE = 
-				new Pose2d(4.9, 7.6, Rotation2d.kZero);
+		public static final double TRENCH_X = Units.inchesToMeters(182.11);
 
-        public static final Pose2d RIGHT_POINT =
-				new Pose2d(
-						3.2558109760284424, 0.908866481567383,
-						new Rotation2d(-1.9936496233117944));
+        // Align Point
+        // LEFT
+		public static final Rotation2d LEFT_APPROACH_ROTATION = Rotation2d.fromDegrees(13.64342939);
+		public static final Rotation2d LEFT_SCORE_ROTATION = Rotation2d.fromDegrees(180.0 - 62.46564449);
+
+        public static final Pose2d LEFT_APPROACH_POSE =
+                new Pose2d(5.7, 7.436104, Rotation2d.k180deg);
+		public static final Pose2d LEFT_APPROACH_POSE_NEXT = 
+				new Pose2d(3.8, 7.436104, Rotation2d.fromDegrees(13.64342939));
+        public static final Pose2d LEFT_SCORE_POINT = 
+                new Pose2d(3.2, 6.769326, LEFT_SCORE_ROTATION.minus(Rotation2d.k180deg));
+        public static final Pose2d[] LEFT_POINT_POSE_ARRAY = {
+                LEFT_APPROACH_POSE,
+                LEFT_APPROACH_POSE_NEXT,
+                LEFT_SCORE_POINT};
+
+        // RIGHT
+		public static final Rotation2d RIGHT_APPROACH_ROTATION = Rotation2d.fromDegrees(-13.64342939);
+		public static final Rotation2d RIGHT_SCORE_ROTATION = Rotation2d.fromDegrees(62.46564449 - 180.0);
+
         public static final Pose2d RIGHT_APPROACH_POSE = 
-                new Pose2d(4.9, 0.469326, Rotation2d.kZero);
+                new Pose2d(5.7, 0.633222, Rotation2d.k180deg);
+        public static final Pose2d RIGHT_APPROACH_POSE_NEXT = 
+                new Pose2d(3.8, 0.633222, Rotation2d.fromDegrees(-13.64342939));
+        public static final Pose2d RIGHT_SCORE_POINT = 
+                new Pose2d(3.2, 1.3, RIGHT_SCORE_ROTATION.minus(Rotation2d.k180deg));
+		
+        public static final Pose2d[] RIGHT_POINT_POSE_ARRAY = {
+            RIGHT_APPROACH_POSE,
+			RIGHT_APPROACH_POSE_NEXT,
+            RIGHT_SCORE_POINT};
 
         // HUB tanslation
         public static final Translation2d HUB_CENTER = new Translation2d(

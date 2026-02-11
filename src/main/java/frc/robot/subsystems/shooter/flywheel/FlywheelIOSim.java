@@ -3,6 +3,7 @@ package frc.robot.subsystems.shooter.flywheel;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.sim.ChassisReference;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -39,7 +40,7 @@ public class FlywheelIOSim implements FlywheelIO {
         this.sim.setInputVoltage(this.simState.getMotorVoltage());
 
         inputs.positionRads += this.sim.getAngularVelocityRadPerSec() * 0.02;
-        inputs.velocityRPS = this.sim.getAngularVelocityRPM() / 60.0;
+        inputs.velocityRPS = -this.sim.getAngularVelocityRPM() / 60.0;
         inputs.appliedVolts = this.simState.getMotorVoltage();
         inputs.supplyCurrent = this.sim.getCurrentDrawAmps();
         inputs.connected = true;
