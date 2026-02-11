@@ -126,7 +126,7 @@ public class SuperStructure extends SubsystemBase {
         new Transition(State.Start, State.Rest, () -> this.inputs.wantIntake),
         new Transition(State.Start, State.Rest, () -> RobotState.isAutonomous()),
 
-        new Transition(State.Rest, State.PreShoot, () -> this.inputs.wantScore && ((this.inputs.alignMode == AlignMode.PointAlign && DriveCommand.isAligning) || (this.inputs.alignMode == AlignMode.ZoneAlign) || RobotState.isAutonomous())),
+        new Transition(State.Rest, State.PreShoot, () -> this.inputs.wantScore && this.inputs.alignMode != AlignMode.None && DriveCommand.isAlignFinished),
         new Transition(State.PreShoot, State.Rest, () -> !this.inputs.wantScore),
         new Transition(State.PreShoot, State.Shoot, () -> Shooter.getInstance().flywheelAtSetpoint() && Shooter.getInstance().hoodAtSetpoint()),
         new Transition(State.Shoot, State.Rest, () -> !this.inputs.wantScore),

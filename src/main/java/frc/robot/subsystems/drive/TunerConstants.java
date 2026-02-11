@@ -61,7 +61,7 @@ public class TunerConstants {
                 // stator current limit to help avoid brownouts without impacting performance.
                 .withSupplyCurrentLimit(Amps.of(40.0))
                 .withStatorCurrentLimitEnable(true)
-                .withStatorCurrentLimit(Amps.of(60))
+                .withStatorCurrentLimit(Amps.of(60.0))
                 .withStatorCurrentLimitEnable(true)
         );
     private static final CANcoderConfiguration encoderInitialConfigs = new CANcoderConfiguration();

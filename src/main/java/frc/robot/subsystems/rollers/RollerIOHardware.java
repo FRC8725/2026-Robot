@@ -31,7 +31,7 @@ public class RollerIOHardware implements RollerIO {
         TalonFXConfiguration config = new TalonFXConfiguration();
         config.CurrentLimits
                 .withSupplyCurrentLimitEnable(true)
-                .withSupplyCurrentLimit(30.0)
+                .withSupplyCurrentLimit(40.0)
                 .withStatorCurrentLimitEnable(true)
                 .withStatorCurrentLimit(40.0);
         config.MotorOutput

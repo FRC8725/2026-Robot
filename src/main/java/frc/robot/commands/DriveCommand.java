@@ -36,7 +36,7 @@ public class DriveCommand extends Command {
     private final FuelTracking fuelTracking;
 	private Command pathCommand = null;
     private boolean isTraking = false;
-	public static boolean isAligning = false;
+	public static boolean isAlignFinished = false;
 
 	private final SlewRateLimiter xLimiter = new SlewRateLimiter(4.5);
 	private final SlewRateLimiter yLimiter = new SlewRateLimiter(4.5);
@@ -76,7 +76,7 @@ public class DriveCommand extends Command {
 
     @Override
     public void execute() {
-		SmartDashboard.putBoolean("IsAligning", isAligning);
+		SmartDashboard.putBoolean("IsAligning", isAlignFinished);
         Joysticks.DriveInputs inputs = this.driveInputs.get();
 		if (Robot.isRedAlliance.get()) inputs = inputs.getRedFlipped();
 
@@ -85,7 +85,7 @@ public class DriveCommand extends Command {
 				this.pathCommand.end(true);
 				this.pathCommand = null;
 			}
-			isAligning = false;
+			isAlignFinished = false;
 			inputs.alignMode = AlignMode.None;
 		}
 
@@ -93,7 +93,7 @@ public class DriveCommand extends Command {
 			if (inputs.isNonZero())
 				return;
 
-			if (isAligning) {
+			if (isAlignFinished) {
 				this.drive.stopModules();
 				return;
 			}
@@ -137,11 +137,11 @@ public class DriveCommand extends Command {
 				this.pathCommand.end(true);
 				this.pathCommand = null;
 				
-				isAligning = true;
+				isAlignFinished = true;
 				this.drive.stopModules();
 			}
 		} else if (inputs.alignMode == AlignMode.None) {
-			isAligning = false;
+			isAlignFinished = false;
 
 			if (this.pathCommand != null) {
            		this.pathCommand.end(true);
@@ -163,13 +163,14 @@ public class DriveCommand extends Command {
 								.withRotationalRate(speeds.omegaRadiansPerSecond));
 			}
 		} else if (inputs.alignMode == AlignMode.ZoneAlign && inputs.isRotateZero()) {
-			// if (isAligning) {
-			// 	this.drive.stopModules();
-			// 	return;
-			// }
-
 			Rotation2d targetAngle = MathHelpers.getAngleFromHub(this.drive.getPose());
+
+			if (this.drive.withinTolerance(targetAngle)) 
+				isAlignFinished = true;
+			
+
 			ChassisSpeeds speeds = this.getSpeeds();
+
 			this.drive.setControl(
 					this.driveWithHeading
 							.withVelocityX(speeds.vxMetersPerSecond)

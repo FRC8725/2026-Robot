@@ -27,7 +27,6 @@ public class Intake extends SubsystemBase {
     private LifterState lifterState = LifterState.Up;
     private RollerState rollerState = RollerState.Off;
 
-    private double lastTime = 0.0;
     private final double distance = 0.1;
 
     public enum LifterState {
@@ -139,7 +138,6 @@ public class Intake extends SubsystemBase {
     @AutoLogOutput(key = "Component/IntakeLifter")
     public Pose3d getSimulationPose() {
         double length = this.lifter.getPosition();
-        // double length = Constants.Intake.LIFTER_DISTANCE;
 
         return new Pose3d(
                 length * Math.cos(Units.degreesToRadians(17.0)),

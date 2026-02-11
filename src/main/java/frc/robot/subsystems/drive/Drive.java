@@ -172,6 +172,9 @@ public class Drive extends SubsystemBase {
         return this.getPose().getTranslation().getDistance(t) < Constants.Drive.ALIGNMENT_TOLERANCE;
     }
 
+    public boolean withinTolerance(Rotation2d r) {
+        return Math.abs(this.getPose().getRotation().getDegrees() - r.getDegrees()) < Constants.Drive.ALIGNMENT_ANGLE_TOLERANCE;
+    }
 
     public ChassisSpeeds getRobotChassisSpeeds() {
         return this.inputs.Speeds;

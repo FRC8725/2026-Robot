@@ -116,3 +116,7 @@ v1.2
 5. Add shoot home function
 6. Optimize closest point
 7. Optimize current limit
+
+v1.2.1
+1. Adjust shooter current limit
+2. Optimize code style

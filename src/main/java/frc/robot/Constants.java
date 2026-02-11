@@ -70,6 +70,7 @@ public final class Constants {
         // Tolerance
         public static final double STRATING_TOLERANCE = 0.15;
         public static final double ALIGNMENT_TOLERANCE = 0.02;
+        public static final double ALIGNMENT_ANGLE_TOLERANCE = 3.0;
 
         public static final PathConstraints CONSTRAINTS = new PathConstraints(
 			1.5,
@@ -136,9 +137,9 @@ public final class Constants {
                 .withCurrentLimits(
 						new CurrentLimitsConfigs()
 								.withSupplyCurrentLimitEnable(true)
-								.withSupplyCurrentLimit(40.0)
+								.withSupplyCurrentLimit(60.0)
 								.withStatorCurrentLimitEnable(true)
-								.withStatorCurrentLimit(60.0))
+								.withStatorCurrentLimit(80.0))
 				.withMotorOutput(
 						new MotorOutputConfigs()
 								.withInverted(InvertedValue.Clockwise_Positive)
@@ -150,9 +151,9 @@ public final class Constants {
 				.withCurrentLimits(
 						new CurrentLimitsConfigs()
 								.withStatorCurrentLimitEnable(true)
-                				.withStatorCurrentLimit(50.0)
+                				.withStatorCurrentLimit(60.0)
                 				.withSupplyCurrentLimitEnable(true)
-                				.withSupplyCurrentLimit(30.0))
+                				.withSupplyCurrentLimit(40.0))
 				.withMotorOutput(
 						new MotorOutputConfigs()
 								.withInverted(InvertedValue.CounterClockwise_Positive)

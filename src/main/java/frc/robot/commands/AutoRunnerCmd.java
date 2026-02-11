@@ -16,7 +16,6 @@ import choreo.trajectory.SwerveSample;
 import choreo.trajectory.Trajectory;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -32,10 +31,8 @@ public class AutoRunnerCmd extends Command {
 	private final Drive drive;
 	private final Timer timer = new Timer();
 	private final List<Event> events;
-	private SuperStructure.StructureInput postAlignInputs = null;
 	private final Trajectory<SwerveSample> trajectory;
 	private Event currentWaitEvent = null;
-	private boolean waitingForAlign = false;
 	private Pose2d lastPose = null;
 	private Command pathCommand = null;
 	private int eventI = 0;
@@ -91,7 +88,6 @@ public class AutoRunnerCmd extends Command {
     	}
 	}
 
-	// TODO auto
 	private final List<Event> eventTypes = List.of(
 		new Event(
 			"wantIntake",
@@ -117,7 +113,6 @@ public class AutoRunnerCmd extends Command {
 
 	private Event eventFromEventMarker(EventMarker eventMarker) {
 		for (Event type : this.eventTypes) {
-			// if (type.requireAlignment) assert type.waitCondition != null;
 			if (type.name.equals(eventMarker.event)) 
 				return type.copyWithTimestamp(eventMarker.timestamp);
 		}
