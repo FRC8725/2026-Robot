@@ -19,7 +19,7 @@ public class HoodIOSim implements HoodIO {
             SingleJointedArmSim.estimateMOI(0.3, 3.0),
             0.3,
             0.0,
-            Units.degreesToRadians(22.0),
+            Units.degreesToRadians(30.0),
             false,
             0.0);
 

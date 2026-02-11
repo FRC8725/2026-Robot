@@ -9,6 +9,7 @@ import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.seasonspecific.rebuilt2026.RebuiltFuelOnFly;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -19,13 +20,13 @@ import frc.robot.subsystems.shooter.Shooter;
 
 public class Simulation extends SubsystemBase {
     private final RobotContainer container;
-    private final IntakeSimulation intakeSimulation;
+    private final IntakeSimulation leftIntake;
     private double lastShotTime = 0.0;
-    private final double SHOOT_DELAY = 0.1;
+    private boolean isRightShooterNext = false;
 
     public Simulation(RobotContainer container) {
         this.container = container;
-        this.intakeSimulation = IntakeSimulation.OverTheBumperIntake(
+        this.leftIntake = IntakeSimulation.OverTheBumperIntake(
                 "Fuel",
                 container.getDriveSubsystem().getMapleSimDrivetrain().mapleSimDrive,
                 Meters.of(0.63062),
@@ -33,35 +34,45 @@ public class Simulation extends SubsystemBase {
                 IntakeSimulation.IntakeSide.FRONT,
             30);
         
-        this.intakeSimulation.addGamePiecesToIntake(8);
+        this.leftIntake.addGamePiecesToIntake(8);
     }
 
     public void handleIntakeSimulation() {
         if (Intake.getInstance().getEffectiveLifterState() == Intake.LifterState.Down
                 && Intake.getInstance().getEffectiveRollerState() == Intake.RollerState.In)
-            this.intakeSimulation.startIntake();
+            this.leftIntake.startIntake();
         else
-            this.intakeSimulation.stopIntake();
+            this.leftIntake.stopIntake();
     }
 
     public void proccessShooter() {
         double currentTime = Timer.getFPGATimestamp();
+        double requiredDelay = this.isRightShooterNext ? 0.05 : 0.1;
 
-        if (this.intakeSimulation.getGamePiecesAmount() != 0
-                && SuperStructure.getInstance().state == State.Shoot
-                && (currentTime - this.lastShotTime > SHOOT_DELAY)) {
+        if (this.leftIntake.getGamePiecesAmount() != 0
+                && (SuperStructure.getInstance().state == State.Shoot 
+                        || SuperStructure.getInstance().state == State.ShootHome)
+                && (currentTime - this.lastShotTime > requiredDelay)) {
             this.lastShotTime = currentTime;
-            this.intakeSimulation.obtainGamePieceFromIntake();
+            this.leftIntake.obtainGamePieceFromIntake();
+            
+            double flywheel = Shooter.getInstance().getDesiredVelocity();
+            double velocity = (1.5 * flywheel - 450.0) / 600.0;
+
+            double yOffset = this.isRightShooterNext ? 0.17145 : -0.17145;
             
             SimulatedArena.getInstance().addGamePieceProjectile(
                     new RebuiltFuelOnFly(
                             this.container.getDriveSubsystem().getPose().getTranslation(),
-                            new Translation2d(-0.18415, 0.0),
+                            new Translation2d(-0.18415, yOffset),
                             this.container.getDriveSubsystem().getRobotChassisSpeeds(),
                             this.container.getDriveSubsystem().getPose().getRotation(),
                             Meters.of(0.4446524),
-                            MetersPerSecond.of(6.5),
-                            Degrees.of(20.0 + Units.radiansToDegrees(Shooter.getInstance().getPosition()) + 90.0)));
+                            MetersPerSecond.of(velocity),
+                            Degrees.of(20.0 + Units.radiansToDegrees(Shooter.getInstance().getPosition()) + 90.0))
+                        .withTargetTolerance(new Translation3d(0.1, 0.1, 0.2)));
+
+            this.isRightShooterNext = !this.isRightShooterNext;
         }
     }
 

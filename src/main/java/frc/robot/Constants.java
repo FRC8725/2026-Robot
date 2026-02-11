@@ -49,8 +49,8 @@ public final class Constants {
     public final class Drive {
         public static final double ROBOT_WEIGHT_POUNDS = 150.0;
         public static final double BUMPER_LENGTH_INCHES = 34.417;
-        public static final double MAX_SPEED = 2.5; // m/s
-        public static final double MAX_ANGULAR_RATE = Math.PI; // 1 rotation per second
+        public static final double MAX_SPEED = 3.0; // m/s
+        public static final double MAX_ANGULAR_RATE = 4.5; // 1 rotation per second
         public static final double STEER_JOYSTICK_DEADBAND = 0.05;
         public static final CommandSwerveDrivetrain drivetrain =
                 RobotBase.isSimulation()
@@ -73,7 +73,7 @@ public final class Constants {
         public static final double ALIGNMENT_ANGLE_TOLERANCE = 3.0;
 
         public static final PathConstraints CONSTRAINTS = new PathConstraints(
-			1.5,
+			2.0,
 			2.5,
 			Math.PI,
 			2.0 * Math.PI);

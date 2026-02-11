@@ -120,3 +120,7 @@ v1.2
 v1.2.1
 1. Adjust shooter current limit
 2. Optimize code style
+
+v1.2.2
+1. Adjuest drive velocity
+2. Add double-shoot simulation system

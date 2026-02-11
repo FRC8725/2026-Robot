@@ -15,7 +15,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotState;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Joysticks;
@@ -46,8 +45,7 @@ public class DriveCommand extends Command {
             new SwerveRequest.FieldCentric()
                     .withDeadband(Constants.Drive.MAX_SPEED * 0.05)
                     .withRotationalDeadband(
-                            4.2
-                                    * 0.05)
+                            Constants.Drive.MAX_ANGULAR_RATE * 0.05)
                     .withDriveRequestType(DriveRequestType.Velocity);
     private final SwerveRequest.FieldCentricFacingAngle driveWithHeading =
             new SwerveRequest.FieldCentricFacingAngle()
@@ -76,7 +74,6 @@ public class DriveCommand extends Command {
 
     @Override
     public void execute() {
-		SmartDashboard.putBoolean("IsAligning", isAlignFinished);
         Joysticks.DriveInputs inputs = this.driveInputs.get();
 		if (Robot.isRedAlliance.get()) inputs = inputs.getRedFlipped();
 
@@ -209,12 +206,9 @@ public class DriveCommand extends Command {
 		r = this.deadZone(r, this.driveInputs.get().deadZone);
 		rot = this.deadZone(rot, this.driveInputs.get().deadZone);
 
-		// r = r * r;
-		// rot = rot * rot * Math.signum(rot);
-
 		double xSpeed = r * Math.cos(theta) * Constants.Drive.MAX_VELOCITY;
 		double ySpeed = r * Math.sin(theta) * Constants.Drive.MAX_VELOCITY;
-		double rSpeed = rot * 4.5;
+		double rSpeed = rot * Constants.Drive.MAX_ANGULAR_RATE;
 
 		return new ChassisSpeeds(xSpeed, ySpeed, rSpeed);
 	}
