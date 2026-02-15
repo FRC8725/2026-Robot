@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.lib.math.MathHelpers;
 import frc.robot.subsystems.SuperStructure;
-import frc.robot.subsystems.SuperStructure.State;
 import frc.robot.subsystems.intake.lifter.LifterIO;
 import frc.robot.subsystems.intake.lifter.LifterSubsystem;
 import frc.robot.subsystems.rollers.RollerIO;
@@ -32,8 +31,9 @@ public class Intake extends SubsystemBase {
     public enum LifterState {
         Up(0.05),
         // Up(0.262),
-        Down(0.27),
+        Down(0.29),
         Zero(0.03),
+        Slide(0.29),
         OperateControl(0.0);
 
         // Units: rotation
@@ -70,7 +70,7 @@ public class Intake extends SubsystemBase {
     }
 
     public void setZeroPosition() {
-        this.lifter.setZeroPosition();
+        // this.lifter.setZeroPosition();
         this.isZeroed = true;
     }
 
@@ -86,28 +86,24 @@ public class Intake extends SubsystemBase {
         this.lifter.periodic();
         this.roller.periodic();
 
-        double angle = this.getEffectiveLifterState().angle - 
-                (SuperStructure.getInstance().state == State.PreShoot || SuperStructure.getInstance().state == State.Shoot
-                        || SuperStructure.getInstance().state == State.PreShootHome || SuperStructure.getInstance().state == State.ShootHome
-                ? Math.abs(Math.sin(2.0 * SuperStructure.getInstance().stateTime.get()) * distance)
-                : 0.0);
-
-        if (MathHelpers.inAutoTimer(3.0))
-            angle = LifterState.Zero.angle;
-        
         this.lifter.setControl(
-                this.request.withPosition(angle));
+                this.request.withPosition(this.getEffectiveLifterLength()));
         this.roller.setVolts(this.getEffectiveRollerState().volts);
     }
 
     @AutoLogOutput(key = "Intake/LifterState")
-    public LifterState getEffectiveLifterState() {
-        if (this.lifterState != LifterState.OperateControl)
-            return this.lifterState;
+    public double getEffectiveLifterLength() {
+        if (MathHelpers.inAutoTimer(4.0))
+            return LifterState.Zero.angle;
+        else if (this.lifterState == LifterState.Slide)
+            return this.lifterState.angle -
+                    Math.abs(Math.sin(2.0 * SuperStructure.getInstance().stateTime.get()) * distance);
+        else if (this.lifterState != LifterState.OperateControl)
+            return this.lifterState.angle;
         else if (SuperStructure.getInstance().inputs.wantIntake)
-            return LifterState.Down;
+            return LifterState.Down.angle;
         else 
-            return LifterState.Down;
+            return LifterState.Down.angle;
     }
 
     @AutoLogOutput(key = "Intake/RollerState")
@@ -123,7 +119,7 @@ public class Intake extends SubsystemBase {
     @AutoLogOutput(key = "Intake/atSetpoint")
     public boolean atSetpoint() {
         return Math.abs(
-                this.lifter.getPosition() - this.getEffectiveLifterState().angle)
+                this.lifter.getPosition() - this.getEffectiveLifterLength())
                         < Constants.Intake.LIFTER_ANGLE_TOLERANCE;
     }
 

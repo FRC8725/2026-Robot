@@ -102,14 +102,14 @@ public class DriveCommand extends Command {
 				Pose2d robotPose = this.drive.getPose();
 
 				List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
-						new Pose2d(robotPose.getTranslation(), robotPose.getRotation().minus(Rotation2d.k180deg)),
-						new Pose2d(pathPoses[0].getTranslation(), Rotation2d.k180deg),
-						new Pose2d(pathPoses[1].getTranslation(), Rotation2d.k180deg),
+						new Pose2d(robotPose.getTranslation(),
+								MathHelpers.mirrorIfRed(robotPose.getRotation().minus(Rotation2d.k180deg))),
+						new Pose2d(pathPoses[0].getTranslation(), MathHelpers.mirrorIfRed(Rotation2d.k180deg)),
+						new Pose2d(pathPoses[1].getTranslation(), MathHelpers.mirrorIfRed(Rotation2d.k180deg)),
 						pathPoses[2]);
 				List<RotationTarget> rotationTargets = new ArrayList<>();
-				rotationTargets.add(new RotationTarget(1.0, Rotation2d.kZero));
-				rotationTargets.add(new RotationTarget(2.0, Rotation2d.kZero));
-
+				rotationTargets.add(new RotationTarget(1.0, MathHelpers.mirrorIfRed(Rotation2d.kZero)));
+				rotationTargets.add(new RotationTarget(2.0, MathHelpers.mirrorIfRed(Rotation2d.kZero)));
 				PathPlannerPath path = new PathPlannerPath(
 					waypoints,
 					rotationTargets,
@@ -118,7 +118,7 @@ public class DriveCommand extends Command {
 					Collections.emptyList(),
 					Constants.Drive.CONSTRAINTS,
 					new IdealStartingState(0.0, this.drive.getPose().getRotation()),
-					new GoalEndState(0.0, pathPoses[2].getRotation().plus(Rotation2d.k180deg)),
+					new GoalEndState(0.0, MathHelpers.negativeRotation(pathPoses[2].getRotation().plus(Rotation2d.k180deg))),
 					false);
 
 				path.preventFlipping = true;
@@ -165,7 +165,6 @@ public class DriveCommand extends Command {
 			if (this.drive.withinTolerance(targetAngle)) 
 				isAlignFinished = true;
 			
-
 			ChassisSpeeds speeds = this.getSpeeds();
 
 			this.drive.setControl(

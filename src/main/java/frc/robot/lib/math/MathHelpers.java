@@ -1,5 +1,7 @@
 package frc.robot.lib.math;
 
+import java.util.Arrays;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -26,12 +28,26 @@ public class MathHelpers {
             : t;
     }
 
+    public static Pose2d[] mirrorIfRed(Pose2d[] t) {
+        return Arrays.stream(t)
+                .map(pose -> mirrorIfRed(pose))
+                .toArray(Pose2d[]::new);
+    }
+
+    public static Rotation2d mirrorIfRed(Rotation2d r) {
+        return Robot.isRedAlliance.get() ? r.plus(Rotation2d.k180deg) : r;
+    }
+
+    public static Rotation2d negativeRotation(Rotation2d r) {
+        return Robot.isRedAlliance.get() ? Rotation2d.fromRadians(r.getRadians()) : r;
+    }
+
     public static boolean epsilonEqal(double a, double b, double epsilon) {
         return Math.abs(a - b) < epsilon;
     }
 
     public static Rotation2d getAngleFromHub(Pose2d pose) {
-        Translation2d hub = Constants.Field.HUB_CENTER;
+        Translation2d hub = mirrorIfRed(Constants.Field.HUB_CENTER);
         return new Rotation2d(pose.getX() - hub.getX(), pose.getY() - hub.getY());
     }
 

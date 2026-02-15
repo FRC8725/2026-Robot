@@ -30,7 +30,9 @@ public class Shooter extends SubsystemBase {
     private final Feeder feeder;
     private final MotionMagicVoltage request = new MotionMagicVoltage(0.0);
     private final ShootCaculator shootCaculator = new ShootCaculator();
-    public double offset = 0.0;
+    @AutoLogOutput(key = "Shooter/Test_Hood_Position")
+    public double hoodPosition = 0.0;
+    @AutoLogOutput(key = "Shooter/Test_Flywheel_Velocity")
     public double velocityOffset = 0.0;
     private final Supplier<Boolean> up;
     private final Supplier<Boolean> down;
@@ -47,7 +49,7 @@ public class Shooter extends SubsystemBase {
     public enum FlywheelState {
         Off(0.0),
         Rest(100.0),
-        Auto(3500.0),
+        Auto(3150.0),
         Home(4000.0),
         SlowShoot(2000.0);
 
@@ -124,13 +126,13 @@ public class Shooter extends SubsystemBase {
         this.hood.periodic();
         this.feeder.periodic();
 
-        if (up.get()) offset += 0.1;
-        if (down.get()) offset -= 0.1;
+        if (up.get()) hoodPosition += 0.1;
+        if (down.get()) hoodPosition -= 0.1;
 
-        if (fup.get()) velocityOffset += 100;
-        if (fdown.get()) velocityOffset -= 100;
+        if (fup.get()) velocityOffset += 50;
+        if (fdown.get()) velocityOffset -= 50;
 
-        Logger.recordOutput("Shooter/HUB_DISTANCE", MathHelpers.mirrorIfRed(Constants.Field.HUB_CENTER).getDistance(Drive.getInstance().getPose().getTranslation()));
+        Logger.recordOutput("HUB_DISTANCE", MathHelpers.mirrorIfRed(Constants.Field.HUB_CENTER).getDistance(Drive.getInstance().getPose().getTranslation()));
 
         this.flywheel.setVelocity(this.getDesiredVelocity());
         this.hood.setControl(
@@ -156,6 +158,7 @@ public class Shooter extends SubsystemBase {
         if (this.hoodState != HoodState.AutoAim)
             return this.hoodState.angle;
 
+        // return hoodPosition;
         double distance = MathHelpers.mirrorIfRed(Constants.Field.HUB_CENTER).getDistance(
                 Drive.getInstance().getPose().getTranslation());
 
@@ -167,6 +170,7 @@ public class Shooter extends SubsystemBase {
         if (this.flywheelState != FlywheelState.Auto)
             return this.flywheelState.speed;
 
+        // return this.velocityOffset;
         double distance = MathHelpers.mirrorIfRed(Constants.Field.HUB_CENTER).getDistance(
                 Drive.getInstance().getPose().getTranslation());
         

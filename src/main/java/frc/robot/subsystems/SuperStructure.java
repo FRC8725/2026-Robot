@@ -51,31 +51,46 @@ public class SuperStructure extends SubsystemBase {
             Shooter.FlywheelState.Home,
             Shooter.HoodState.Home,
             Shooter.FeederState.Off,
-            Intake.LifterState.Down,
+            Intake.LifterState.Slide,
             Intake.RollerState.SlowIn,
             Hopper.HopperState.Off),
         ShootHome(
             Shooter.FlywheelState.Home,
             Shooter.HoodState.Home,
             Shooter.FeederState.Push,
-            Intake.LifterState.Down,
+            Intake.LifterState.Slide,
             Intake.RollerState.SlowIn,
             Hopper.HopperState.Convey),
         PreShoot(
             Shooter.FlywheelState.Auto,
             Shooter.HoodState.AutoAim,
             Shooter.FeederState.Off,
-            Intake.LifterState.Down,
+            Intake.LifterState.Slide,
             Intake.RollerState.SlowIn,
             Hopper.HopperState.Off),
         Shoot(
             Shooter.FlywheelState.Auto,
             Shooter.HoodState.AutoAim,
             Shooter.FeederState.Push,
-            Intake.LifterState.Down,
+            Intake.LifterState.Slide,
             Intake.RollerState.SlowIn,
             Hopper.HopperState.Convey),
         
+        // Autonoumous
+        ZeroIntakeAuto(
+            Shooter.FlywheelState.Rest,
+            Shooter.HoodState.Default,
+            Shooter.FeederState.Off,
+            Intake.LifterState.Zero,
+            Intake.RollerState.Off,
+            Hopper.HopperState.Off),
+        SlideIntake(
+            Shooter.FlywheelState.Rest,
+            Shooter.HoodState.Default,
+            Shooter.FeederState.Off,
+            Intake.LifterState.Slide,
+            Intake.RollerState.Off,
+            Hopper.HopperState.Off),
         ;
 
         public final Shooter.FlywheelState flywheelState;
@@ -119,6 +134,8 @@ public class SuperStructure extends SubsystemBase {
         public boolean wantScore = false;
         public boolean wantTrack = false;
         public boolean wantShootHome = false;
+        public boolean zeroIntake = false;
+        public boolean slideIntake = false;
         public AlignMode alignMode = AlignMode.None;
     }
 
@@ -130,6 +147,14 @@ public class SuperStructure extends SubsystemBase {
         new Transition(State.PreShoot, State.Rest, () -> !this.inputs.wantScore),
         new Transition(State.PreShoot, State.Shoot, () -> Shooter.getInstance().flywheelAtSetpoint() && Shooter.getInstance().hoodAtSetpoint()),
         new Transition(State.Shoot, State.Rest, () -> !this.inputs.wantScore),
+
+        // Autonoumous
+        new Transition(State.Rest, State.PreShoot, () -> RobotState.isAutonomous() && this.inputs.wantScore),
+        new Transition(State.Rest, State.ZeroIntakeAuto, () -> this.inputs.zeroIntake),
+        new Transition(State.ZeroIntakeAuto, State.Rest, () -> !this.inputs.zeroIntake),
+        new Transition(State.Rest, State.SlideIntake, () -> this.inputs.slideIntake),
+        new Transition(State.SlideIntake, State.Rest, () -> !this.inputs.slideIntake),
+        // new Transition(State.Shoot, State.ZeroIntakeAuto, () -> this.inputs.zeroIntake),
 
         new Transition(State.Rest, State.PreShootHome, () -> this.inputs.wantShootHome && !Robot.isInAllianceZone.get()),
         new Transition(State.PreShootHome, State.Rest, () -> !this.inputs.wantShootHome || Robot.isInAllianceZone.get()),

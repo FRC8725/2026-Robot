@@ -165,7 +165,10 @@ public class Drive extends SubsystemBase {
         double right = this.getPose().getTranslation()
                 .getDistance(rightPoint.getTranslation());
 
-        return left < right ? Constants.Field.LEFT_POINT_POSE_ARRAY : Constants. Field.RIGHT_POINT_POSE_ARRAY;
+        return MathHelpers.mirrorIfRed(
+                left < right
+                        ? Constants.Field.LEFT_POINT_POSE_ARRAY
+                        : Constants.Field.RIGHT_POINT_POSE_ARRAY);
     }
 
     public boolean withinTolerance(Translation2d t) {

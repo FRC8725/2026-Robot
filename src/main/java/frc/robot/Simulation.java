@@ -38,7 +38,7 @@ public class Simulation extends SubsystemBase {
     }
 
     public void handleIntakeSimulation() {
-        if (Intake.getInstance().getEffectiveLifterState() == Intake.LifterState.Down
+        if (Intake.getInstance().getEffectiveLifterLength() == Intake.LifterState.Down.angle
                 && Intake.getInstance().getEffectiveRollerState() == Intake.RollerState.In)
             this.leftIntake.startIntake();
         else

@@ -96,6 +96,12 @@ public class AutoRunnerCmd extends Command {
 			"stopIntake",
 			new SuperStructure.StructureInput() {{ wantIntake = false; }}),
 		new Event(
+			"zeroIntake",
+			new SuperStructure.StructureInput() {{ zeroIntake = true; }}),
+		new Event(
+			"slideIntake",
+			new SuperStructure.StructureInput() {{ slideIntake = true; }}),
+		new Event(
 			"zoneAlign",
 			new SuperStructure.StructureInput() {{ wantScore = true; }},
 			() -> SuperStructure.getInstance().stateTime.hasElapsed(3.0),

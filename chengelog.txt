@@ -124,3 +124,12 @@ v1.2.1
 v1.2.2
 1. Adjuest drive velocity
 2. Add double-shoot simulation system
+
+v1.2.3
+1. Fix zonealign hub center bug
+2. Fix pointalign red alliance reverse bug
+3. Test Comp path
+4. Test distance velocity & distance angle map
+5. Add slideIntake and zeroIntake state
+6. Fix rotation mirror bug
+7. Fix ShootCuculator bug
