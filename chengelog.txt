@@ -133,3 +133,9 @@ v1.2.3
 5. Add slideIntake and zeroIntake state
 6. Fix rotation mirror bug
 7. Fix ShootCuculator bug
+
+v1.2.4
+1. Optimize Comp path to acheive 25p fuels auto
+2. Up Pointalignn acceleration
+3. Fix auto preshoot state bug
+4. Fix Comp path start point to comply the rules

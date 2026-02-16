@@ -47,7 +47,7 @@ public class Intake extends SubsystemBase {
     public enum RollerState {
         Off(0.0),
         Rest(1.0),
-        SlowIn(3.0),
+        SlowIn(4.0),
         In(6.0),
         OperateControl(0.0);
 
@@ -97,7 +97,7 @@ public class Intake extends SubsystemBase {
             return LifterState.Zero.angle;
         else if (this.lifterState == LifterState.Slide)
             return this.lifterState.angle -
-                    Math.abs(Math.sin(2.0 * SuperStructure.getInstance().stateTime.get()) * distance);
+                    Math.abs(Math.sin(3.0 * SuperStructure.getInstance().stateTime.get()) * distance);
         else if (this.lifterState != LifterState.OperateControl)
             return this.lifterState.angle;
         else if (SuperStructure.getInstance().inputs.wantIntake)

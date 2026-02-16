@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.Joysticks.AlignMode;
+import frc.robot.commands.AutoRunnerCmd;
 import frc.robot.commands.DriveCommand;
 import frc.robot.subsystems.hopper.Hopper;
 import frc.robot.subsystems.intake.Intake;
@@ -89,7 +90,7 @@ public class SuperStructure extends SubsystemBase {
             Shooter.HoodState.Default,
             Shooter.FeederState.Off,
             Intake.LifterState.Slide,
-            Intake.RollerState.Off,
+            Intake.RollerState.SlowIn,
             Hopper.HopperState.Off),
         ;
 
@@ -149,7 +150,7 @@ public class SuperStructure extends SubsystemBase {
         new Transition(State.Shoot, State.Rest, () -> !this.inputs.wantScore),
 
         // Autonoumous
-        new Transition(State.Rest, State.PreShoot, () -> RobotState.isAutonomous() && this.inputs.wantScore),
+        new Transition(State.Rest, State.PreShoot, () -> RobotState.isAutonomous() && this.inputs.wantScore && AutoRunnerCmd.isAlignFinished),
         new Transition(State.Rest, State.ZeroIntakeAuto, () -> this.inputs.zeroIntake),
         new Transition(State.ZeroIntakeAuto, State.Rest, () -> !this.inputs.zeroIntake),
         new Transition(State.Rest, State.SlideIntake, () -> this.inputs.slideIntake),

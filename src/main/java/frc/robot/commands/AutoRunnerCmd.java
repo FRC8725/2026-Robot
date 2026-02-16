@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
@@ -24,6 +25,7 @@ import frc.robot.Robot;
 import frc.robot.Joysticks.AlignMode;
 import frc.robot.lib.math.MathHelpers;
 import frc.robot.subsystems.SuperStructure;
+import frc.robot.subsystems.SuperStructure.State;
 import frc.robot.subsystems.drive.Drive;
 
 public class AutoRunnerCmd extends Command {
@@ -36,6 +38,7 @@ public class AutoRunnerCmd extends Command {
 	private Pose2d lastPose = null;
 	private Command pathCommand = null;
 	private int eventI = 0;
+	public static boolean isAlignFinished = false;
 	private final SwerveRequest.FieldCentricFacingAngle driveWithHeading =
             new SwerveRequest.FieldCentricFacingAngle()
                     .withDeadband(0.05)
@@ -46,7 +49,8 @@ public class AutoRunnerCmd extends Command {
 		this.superStructure = superStructure;
 		this.drive = drive;
 		this.trajectory = trajectory;
-		this.addRequirements(this.superStructure);
+		this.driveWithHeading.HeadingController = Constants.Drive.FACING_HUB_PID;
+		this.addRequirements(this.superStructure, this.drive);
 
 		this.events = this.trajectory.events().stream()
 				.sorted(Comparator.comparingDouble(e -> e.timestamp))
@@ -104,7 +108,7 @@ public class AutoRunnerCmd extends Command {
 		new Event(
 			"zoneAlign",
 			new SuperStructure.StructureInput() {{ wantScore = true; }},
-			() -> SuperStructure.getInstance().stateTime.hasElapsed(3.0),
+			() -> SuperStructure.getInstance().stateTime.hasElapsed(2.5) && SuperStructure.getInstance().state == State.Shoot,
 			AlignMode.ZoneAlign),
 		new Event(
 			"trackFuel",
@@ -114,7 +118,7 @@ public class AutoRunnerCmd extends Command {
 		new Event(
 			"pointAlign",
 			new SuperStructure.StructureInput() {{ wantScore = true; }},
-			() -> true, // TODO auto
+			() -> true,
 			AlignMode.PointAlign));
 
 	private Event eventFromEventMarker(EventMarker eventMarker) {
@@ -156,8 +160,18 @@ public class AutoRunnerCmd extends Command {
 					this.drive.stopModules();
 			}
 				
-			if (this.currentWaitEvent.waitCondition != null && this.currentWaitEvent.waitCondition.get()
-					&& (this.pathCommand == null || this.pathCommand.isFinished())) {
+			if (this.currentWaitEvent.alignMode == AlignMode.PointAlign) {
+				isAlignFinished = this.pathCommand == null;
+			} else if (this.currentWaitEvent.alignMode == AlignMode.ZoneAlign) {
+				Rotation2d targetAngle = MathHelpers.getAngleFromHub(this.drive.getPose());
+				isAlignFinished = this.drive.withinTolerance(targetAngle);
+			}  else {
+				isAlignFinished = true;
+			}
+
+			if (this.currentWaitEvent.waitCondition != null
+					&& this.currentWaitEvent.waitCondition.get()
+					&& isAlignFinished) {
 				this.stopAlignment();
 				this.superStructure.emptyInputs();
 				this.currentWaitEvent = null;
@@ -213,6 +227,7 @@ public class AutoRunnerCmd extends Command {
 		Logger.recordOutput("AutoRunner/Time", this.timer.get());
 		Logger.recordOutput("AutoRunner/TrajTotalTime", this.trajectory.getTotalTime());
 		Logger.recordOutput("AutoRunner/CurrentWaitEvent", this.currentWaitEvent == null ? "NULL" : this.currentWaitEvent.name);
+		Logger.recordOutput("AutoRunner/isAlignFinished", isAlignFinished);
 	}
 
 	private void runAlignment(AlignMode mode) {
@@ -231,10 +246,10 @@ public class AutoRunnerCmd extends Command {
 			} else if (mode == AlignMode.ZoneAlign) {
 				Rotation2d targetAngle = MathHelpers.getAngleFromHub(this.drive.getPose());
 				this.drive.setControl(
-					this.driveWithHeading
-							.withVelocityX(0.0)
-							.withVelocityY(0.0)
-							.withTargetDirection(targetAngle));
+						this.driveWithHeading
+								.withVelocityX(0.0)
+								.withVelocityY(0.0)
+								.withTargetDirection(targetAngle));				
 			}
 
 			if (this.pathCommand != null)

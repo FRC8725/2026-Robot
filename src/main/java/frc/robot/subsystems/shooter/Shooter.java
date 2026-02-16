@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.lib.math.MathHelpers;
@@ -192,7 +193,7 @@ public class Shooter extends SubsystemBase {
     @AutoLogOutput(key = "Shooter/atTrenchZone")
     public boolean atTrenchZone() {
         Pose2d robot = Drive.getInstance().getPose();
-        return MathHelpers.atInterval(robot, Constants.Field.TRENCH_X, 1.0)
+        return MathHelpers.atInterval(robot, Constants.Field.TRENCH_X, (RobotState.isAutonomous() ? 0.5 : 1.0))
                 && (robot.getY() < 0.847 || robot.getY() > 6.353312);
     }
 

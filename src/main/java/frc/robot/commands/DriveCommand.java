@@ -61,7 +61,7 @@ public class DriveCommand extends Command {
         this.addRequirements(this.drive);
 		this.fuelTracking = new FuelTracking(driveSubsystem, vision);
 
-        this.driveWithHeading.HeadingController.setPID(5.0, 0.0, 0.0);
+        this.driveWithHeading.HeadingController = Constants.Drive.FACING_HUB_PID;
 
         if (RobotBase.isSimulation()) {
             this.driveNoHeading.DriveRequestType = DriveRequestType.OpenLoopVoltage;
@@ -98,15 +98,21 @@ public class DriveCommand extends Command {
 			if (this.pathCommand == null) {
 				// Generate path
 				Pose2d[] pathPoses = this.drive.getClosestScorePoints();
-
 				Pose2d robotPose = this.drive.getPose();
 
 				List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
-						new Pose2d(robotPose.getTranslation(),
-								MathHelpers.mirrorIfRed(robotPose.getRotation().minus(Rotation2d.k180deg))),
-						new Pose2d(pathPoses[0].getTranslation(), MathHelpers.mirrorIfRed(Rotation2d.k180deg)),
-						new Pose2d(pathPoses[1].getTranslation(), MathHelpers.mirrorIfRed(Rotation2d.k180deg)),
-						pathPoses[2]);
+						new Pose2d(
+								robotPose.getTranslation(), 
+								pathPoses[0].getTranslation().minus(robotPose.getTranslation()).getAngle()),
+						new Pose2d(
+								pathPoses[0].getTranslation(), 
+								Rotation2d.k180deg),
+						new Pose2d(
+								pathPoses[1].getTranslation(), 
+								Rotation2d.k180deg),
+						new Pose2d(
+								pathPoses[2].getTranslation(),
+								pathPoses[2].getTranslation().minus(pathPoses[1].getTranslation()).getAngle()));
 				List<RotationTarget> rotationTargets = new ArrayList<>();
 				rotationTargets.add(new RotationTarget(1.0, MathHelpers.mirrorIfRed(Rotation2d.kZero)));
 				rotationTargets.add(new RotationTarget(2.0, MathHelpers.mirrorIfRed(Rotation2d.kZero)));
@@ -117,8 +123,8 @@ public class DriveCommand extends Command {
 					Collections.emptyList(),
 					Collections.emptyList(),
 					Constants.Drive.CONSTRAINTS,
-					new IdealStartingState(0.0, this.drive.getPose().getRotation()),
-					new GoalEndState(0.0, MathHelpers.negativeRotation(pathPoses[2].getRotation().plus(Rotation2d.k180deg))),
+					new IdealStartingState(0.0, robotPose.getRotation()),
+					new GoalEndState(0.0, pathPoses[2].getRotation()),
 					false);
 
 				path.preventFlipping = true;

@@ -14,6 +14,7 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.swerve.utility.PhoenixPIDController;
 import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -72,9 +73,11 @@ public final class Constants {
         public static final double ALIGNMENT_TOLERANCE = 0.02;
         public static final double ALIGNMENT_ANGLE_TOLERANCE = 3.0;
 
+        public static final PhoenixPIDController FACING_HUB_PID =
+                new PhoenixPIDController(5.0, 0.0, 0.0);
         public static final PathConstraints CONSTRAINTS = new PathConstraints(
 			2.0,
-			2.5,
+			4.0,
 			Math.PI,
 			2.0 * Math.PI);
     }
@@ -244,7 +247,7 @@ public final class Constants {
 		public static final Pose2d LEFT_APPROACH_POSE_NEXT = 
 				new Pose2d(3.8, 7.436104, Rotation2d.fromDegrees(13.64342939));
         public static final Pose2d LEFT_SCORE_POINT = 
-                new Pose2d(3.2, 6.769326, LEFT_SCORE_ROTATION.minus(Rotation2d.k180deg));
+                new Pose2d(3.2, 6.769326, LEFT_SCORE_ROTATION);
         public static final Pose2d[] LEFT_POINT_POSE_ARRAY = {
                 LEFT_APPROACH_POSE,
                 LEFT_APPROACH_POSE_NEXT,
@@ -259,7 +262,7 @@ public final class Constants {
         public static final Pose2d RIGHT_APPROACH_POSE_NEXT = 
                 new Pose2d(3.8, 0.633222, Rotation2d.fromDegrees(-13.64342939));
         public static final Pose2d RIGHT_SCORE_POINT = 
-                new Pose2d(3.2, 1.3, RIGHT_SCORE_ROTATION.minus(Rotation2d.k180deg));
+                new Pose2d(3.2, 1.3, RIGHT_SCORE_ROTATION);
 		
         public static final Pose2d[] RIGHT_POINT_POSE_ARRAY = {
             RIGHT_APPROACH_POSE,
@@ -282,7 +285,11 @@ public final class Constants {
             new Pair<>(3.27, 3.8000000000000016), // 3.515625
             new Pair<>(3.39, 4.300000000000001), // 4.21875
             new Pair<>(3.46, 7.999999999999988), // 7.822266
-            new Pair<>(3.615, 8.399999999999986) // 8.261719
+            new Pair<>(3.615, 8.399999999999986), // 8.261719
+            new Pair<>(3.66, 9.699999999999982),
+            new Pair<>(3.798, 13.199999999999969),
+            new Pair<>(3.89, 14.899999999999963),
+            new Pair<>(4.01, 18.699999999999996)
         );
 
 	// Distance & Velocity
