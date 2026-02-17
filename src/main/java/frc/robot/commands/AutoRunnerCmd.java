@@ -32,6 +32,7 @@ public class AutoRunnerCmd extends Command {
 	private final SuperStructure superStructure;
 	private final Drive drive;
 	private final Timer timer = new Timer();
+	private final Timer waitTimer = new Timer();
 	private final List<Event> events;
 	private final Trajectory<SwerveSample> trajectory;
 	private Event currentWaitEvent = null;
@@ -111,6 +112,16 @@ public class AutoRunnerCmd extends Command {
 			() -> SuperStructure.getInstance().stateTime.hasElapsed(2.5) && SuperStructure.getInstance().state == State.Shoot,
 			AlignMode.ZoneAlign),
 		new Event(
+			"zoneAlignMore",
+			new SuperStructure.StructureInput() {{ wantScore = true; }},
+			() -> SuperStructure.getInstance().stateTime.hasElapsed(3.5) && SuperStructure.getInstance().state == State.Shoot,
+			AlignMode.ZoneAlign),
+		new Event(
+			"outpose",
+			new SuperStructure.StructureInput() {{}},
+			() -> this.waitTimer.hasElapsed(2.0),
+			AlignMode.None),
+		new Event(
 			"trackFuel",
 			new SuperStructure.StructureInput() {{ wantTrack = true; }},
 			() -> false,
@@ -176,6 +187,7 @@ public class AutoRunnerCmd extends Command {
 				this.superStructure.emptyInputs();
 				this.currentWaitEvent = null;
 
+				this.waitTimer.stop();
 				this.timer.start();
 			}
 
@@ -192,6 +204,7 @@ public class AutoRunnerCmd extends Command {
 			if (ev.waitCondition != null) {
 				this.currentWaitEvent = ev;
 				// this.waitingForAlign = ev.requireAlignment;
+				this.waitTimer.restart();
 				this.drive.stopModules();
 				this.timer.stop();
 			}
@@ -224,6 +237,7 @@ public class AutoRunnerCmd extends Command {
 
 	private void logOuputs() {
 		Logger.recordOutput("AutoRunner/IsTimerRunning", this.timer.isRunning());
+		Logger.recordOutput("AutoRunner/WaitTimer", this.waitTimer.get());
 		Logger.recordOutput("AutoRunner/Time", this.timer.get());
 		Logger.recordOutput("AutoRunner/TrajTotalTime", this.trajectory.getTotalTime());
 		Logger.recordOutput("AutoRunner/CurrentWaitEvent", this.currentWaitEvent == null ? "NULL" : this.currentWaitEvent.name);

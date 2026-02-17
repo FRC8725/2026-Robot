@@ -139,3 +139,10 @@ v1.2.4
 2. Up Pointalignn acceleration
 3. Fix auto preshoot state bug
 4. Fix Comp path start point to comply the rules
+
+v1.2.5
+1. Optimize intake roller voltage
+2. Add comp2 to outpose path
+3. Optimize zone align pid config
+4. Optimize Hopper roller and center voltage
+5. Optimize when Autonoumous flywheel state

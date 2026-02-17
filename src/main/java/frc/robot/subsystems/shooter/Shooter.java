@@ -168,12 +168,16 @@ public class Shooter extends SubsystemBase {
 
     @AutoLogOutput(key = "Shooter/FlywheelDesiredVelocity") // Rotate per minute
     public double getDesiredVelocity() {
+        double distance = MathHelpers.mirrorIfRed(Constants.Field.HUB_CENTER).getDistance(
+                Drive.getInstance().getPose().getTranslation());
+
+        if (RobotState.isAutonomous())
+            return this.shootCaculator.getFlywheelVelocity(distance);
         if (this.flywheelState != FlywheelState.Auto)
             return this.flywheelState.speed;
 
         // return this.velocityOffset;
-        double distance = MathHelpers.mirrorIfRed(Constants.Field.HUB_CENTER).getDistance(
-                Drive.getInstance().getPose().getTranslation());
+        
         
         return this.shootCaculator.getFlywheelVelocity(distance);
     }

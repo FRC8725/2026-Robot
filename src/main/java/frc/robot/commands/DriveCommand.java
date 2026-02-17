@@ -62,6 +62,7 @@ public class DriveCommand extends Command {
 		this.fuelTracking = new FuelTracking(driveSubsystem, vision);
 
         this.driveWithHeading.HeadingController = Constants.Drive.FACING_HUB_PID;
+		this.driveWithHeading.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
 
         if (RobotBase.isSimulation()) {
             this.driveNoHeading.DriveRequestType = DriveRequestType.OpenLoopVoltage;

@@ -26,7 +26,7 @@ public class Intake extends SubsystemBase {
     private LifterState lifterState = LifterState.Up;
     private RollerState rollerState = RollerState.Off;
 
-    private final double distance = 0.1;
+    private final double distance = 0.15;
 
     public enum LifterState {
         Up(0.05),
@@ -47,8 +47,8 @@ public class Intake extends SubsystemBase {
     public enum RollerState {
         Off(0.0),
         Rest(1.0),
-        SlowIn(4.0),
-        In(6.0),
+        SlowIn(5.0),
+        In(7.0),
         OperateControl(0.0);
 
         public final double volts;
@@ -93,11 +93,11 @@ public class Intake extends SubsystemBase {
 
     @AutoLogOutput(key = "Intake/LifterState")
     public double getEffectiveLifterLength() {
-        if (MathHelpers.inAutoTimer(4.0))
+        if (MathHelpers.inAutoTimer(0.5))
             return LifterState.Zero.angle;
-        else if (this.lifterState == LifterState.Slide)
+        if (this.lifterState == LifterState.Slide)
             return this.lifterState.angle -
-                    Math.abs(Math.sin(3.0 * SuperStructure.getInstance().stateTime.get()) * distance);
+                    Math.abs(Math.sin(4.0 * SuperStructure.getInstance().stateTime.get()) * distance);
         else if (this.lifterState != LifterState.OperateControl)
             return this.lifterState.angle;
         else if (SuperStructure.getInstance().inputs.wantIntake)

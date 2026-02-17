@@ -26,7 +26,7 @@ public class Hopper extends SubsystemBase {
  
     public enum HopperState {
         Off(0.0, 0.0),
-        Convey(4.0, 4.0);
+        Convey(5.0, 6.0);
 
         public final double rollerVolts;
         public final double centerVolts;
