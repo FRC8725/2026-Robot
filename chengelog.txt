@@ -146,3 +146,7 @@ v1.2.5
 3. Optimize zone align pid config
 4. Optimize Hopper roller and center voltage
 5. Optimize when Autonoumous flywheel state
+
+v1.2.6
+1. Optimize dive with heading pid
+2. Add shoot on move function

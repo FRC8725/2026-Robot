@@ -71,10 +71,10 @@ public final class Constants {
         // Tolerance
         public static final double STRATING_TOLERANCE = 0.15;
         public static final double ALIGNMENT_TOLERANCE = 0.02;
-        public static final double ALIGNMENT_ANGLE_TOLERANCE = 3.0;
+        public static final double ALIGNMENT_ANGLE_TOLERANCE = 4.0;
 
         public static final PhoenixPIDController FACING_HUB_PID =
-                new PhoenixPIDController(5.0, 0.0, 0.0);
+                new PhoenixPIDController(13.0, 0.0, 0.0);
         public static final PathConstraints CONSTRAINTS = new PathConstraints(
 			2.0,
 			4.0,
@@ -276,38 +276,40 @@ public final class Constants {
 
 	// Distance & Angle 
 	public static final List<Pair<Double, Double>> SHOOTER_ANGLE_MAP = List.of(
-			new Pair<>(2.63, 0.999999992), // 0.878906
-            new Pair<>(2.73, 1.4), // 1.230469
-            new Pair<>(2.85, 2.0000000000000004), // 1.933594
-            new Pair<>(2.95, 2.500000000000001), // 2.460938
-            new Pair<>(3.075, 2.7), // 2.636719
-            new Pair<>(3.17, 3.2000000000000015), // 3.164062
-            new Pair<>(3.27, 3.8000000000000016), // 3.515625
-            new Pair<>(3.39, 4.6), // 4.21875
-            new Pair<>(3.46, 7.999999999999988), // 7.822266
-            new Pair<>(3.615, 8.399999999999986), // 8.261719
-            new Pair<>(3.66, 9.699999999999982),
-            new Pair<>(3.798, 13.199999999999969),
-            new Pair<>(3.89, 14.899999999999963),
-            new Pair<>(4.01, 18.699999999999996)
-        );
+			new Pair<>(1.581, 0.0),
+			new Pair<>(1.904, 2.400000000000001),
+			new Pair<>(2.215, 4.200000000000001),
+			new Pair<>(2.51, 5.1999999999999975),
+			new Pair<>(2.8, 7.899999999999988),
+			new Pair<>(3.145, 10.29999999999998),
+			new Pair<>(3.46, 12.89999999999997),
+			new Pair<>(3.735, 13.899999999999967),
+			new Pair<>(4.01, 14.099999999999966),
+			new Pair<>(4.29, 14.299999999999965));
 
 	// Distance & Velocity
 	public static final List<Pair<Double, Double>> SHOOTER_VELOCITY_MAP = List.of(
-			new Pair<>(1.454, 2650.0),
-            new Pair<>(1.5005, 2700.0),
-            new Pair<>(1.55, 2750.0),
-            new Pair<>(1.599, 2800.0),
-            new Pair<>(1.661, 2820.0),
-            new Pair<>(1.7025, 2850.0),
-            new Pair<>(1.755, 2900.0),
-            new Pair<>(1.815, 2940.0),
-            new Pair<>(1.85, 2940.0),
-            new Pair<>(1.925, 2940.0),
-            new Pair<>(2.015, 3000.0),
-            new Pair<>(2.135, 3000.0),
-            new Pair<>(2.24, 3050.0),
-            new Pair<>(2.35, 3050.0),
-            new Pair<>(2.42, 3100.0),
-            new Pair<>(2.54, 3150.0));
+			new Pair<>(1.581, 2500.0),
+			new Pair<>(1.904, 2600.0),
+			new Pair<>(2.215, 2700.0),
+			new Pair<>(2.51, 2750.0),
+			new Pair<>(2.8, 2800.0),
+			new Pair<>(3.145, 2900.0),
+			new Pair<>(3.46, 3000.0),
+			new Pair<>(3.735, 3200.0),
+			new Pair<>(4.01, 3250.0),
+			new Pair<>(4.29, 3350.0));
+
+	// Distance & time
+	public static final List<Pair<Double, Double>> SHOOTER_TIMER_MAP = List.of(
+			new Pair<>(1.581, 0.88),
+			new Pair<>(1.904, 0.92),
+			new Pair<>(2.215, 0.97),
+			new Pair<>(2.51, 0.77),
+			new Pair<>(2.8, 1.04),
+			new Pair<>(3.145, 1.02),
+			new Pair<>(3.46, 1.11),
+			new Pair<>(3.375, 1.1),
+			new Pair<>(4.01, 1.14),
+			new Pair<>(4.29, 1.11));
 }

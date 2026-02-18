@@ -15,12 +15,14 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Joysticks;
 import frc.robot.Robot;
 import frc.robot.Joysticks.AlignMode;
 import frc.robot.lib.math.MathHelpers;
+import frc.robot.lib.util.ShootCaculator;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.vision.object.ObjectVision;
 
@@ -167,8 +169,10 @@ public class DriveCommand extends Command {
 								.withRotationalRate(speeds.omegaRadiansPerSecond));
 			}
 		} else if (inputs.alignMode == AlignMode.ZoneAlign && inputs.isRotateZero()) {
-			Rotation2d targetAngle = MathHelpers.getAngleFromHub(this.drive.getPose());
+			Rotation2d targetAngle = ShootCaculator.getInstance().getParameters().driveAngle();
 
+			SmartDashboard.putNumber("Measure", this.drive.getPose().getRotation().getDegrees());
+			SmartDashboard.putNumber("Target", targetAngle.getDegrees());
 			if (this.drive.withinTolerance(targetAngle)) 
 				isAlignFinished = true;
 			

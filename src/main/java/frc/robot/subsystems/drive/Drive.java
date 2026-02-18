@@ -183,6 +183,11 @@ public class Drive extends SubsystemBase {
         return this.inputs.Speeds;
     }
 
+    public ChassisSpeeds getFieldChassisSpeeds() {
+        return ChassisSpeeds.fromRobotRelativeSpeeds(
+                this.getRobotChassisSpeeds(), this.inputs.Pose.getRotation());
+    }
+
     public Pose2d getPose() {
         return this.inputs.Pose;
     }
