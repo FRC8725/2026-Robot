@@ -155,3 +155,6 @@ v1.2.7
 1. Recalibration two limelights
 2. Test Comp, Comp2, Comp3 path
 3. Adjust Hopper voltage
+
+v1.2.8
+1. Add led system

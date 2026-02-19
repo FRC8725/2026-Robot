@@ -20,6 +20,7 @@ import frc.robot.subsystems.intake.lifter.LifterIOHardware;
 import frc.robot.subsystems.intake.lifter.LifterIOSim;
 import frc.robot.subsystems.intake.roller.IntakeRollerHardware;
 import frc.robot.subsystems.intake.roller.IntakeRollerSim;
+import frc.robot.subsystems.leds.Leds;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.feeder.FeederIOHardware;
 import frc.robot.subsystems.shooter.feeder.FeederIOSim;
@@ -51,6 +52,7 @@ public class RobotContainer {
 	private final Vision vision = this.buildVisionSubsystem();
 	private final ObjectVision objectVision = new ObjectVision();
 	private final Simulation simulation = this.buildSimulation();
+	private final Leds leds = new Leds();
 
 	public Drive buildDriveSubsystem() {
 		if (RobotBase.isSimulation()) {
