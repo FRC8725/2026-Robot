@@ -13,17 +13,14 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 import frc.robot.lib.math.MathHelpers;
 import frc.robot.subsystems.drive.Drive;
-import frc.robot.subsystems.shooter.Shooter;
 
 public class ShootCaculator {
     private static ShootCaculator SHOOT_CACULATOR;
     private final double MIN_DISTANCE = 1.581;
     private final double MAX_DISTANCE = 4.29;
-    private final double DEFAULT_VELOCITY = Shooter.FlywheelState.Auto.speed;
 
     private final LinearFilter hoodAngleFilter =
             LinearFilter.movingAverage((int) (0.1 / Constants.ROBOT_PERIODIC));

@@ -19,7 +19,8 @@ public class Joysticks {
     public enum AlignMode {
         None,
         ZoneAlign,
-        PointAlign
+        PointAlign,
+        ShootMove
     }
 
     public static class DriveInputs {

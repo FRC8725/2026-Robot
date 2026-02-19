@@ -150,3 +150,8 @@ v1.2.5
 v1.2.6
 1. Optimize dive with heading pid
 2. Add shoot on move function
+
+v1.2.7
+1. Recalibration two limelights
+2. Test Comp, Comp2, Comp3 path
+3. Adjust Hopper voltage

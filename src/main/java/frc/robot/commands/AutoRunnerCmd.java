@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
@@ -109,17 +108,17 @@ public class AutoRunnerCmd extends Command {
 		new Event(
 			"zoneAlign",
 			new SuperStructure.StructureInput() {{ wantScore = true; }},
-			() -> SuperStructure.getInstance().stateTime.hasElapsed(2.5) && SuperStructure.getInstance().state == State.Shoot,
+			() -> SuperStructure.getInstance().stateTime.hasElapsed(3.0) && SuperStructure.getInstance().state == State.Shoot,
 			AlignMode.ZoneAlign),
 		new Event(
 			"zoneAlignMore",
 			new SuperStructure.StructureInput() {{ wantScore = true; }},
-			() -> SuperStructure.getInstance().stateTime.hasElapsed(3.5) && SuperStructure.getInstance().state == State.Shoot,
+			() -> SuperStructure.getInstance().stateTime.hasElapsed(4.0) && SuperStructure.getInstance().state == State.Shoot,
 			AlignMode.ZoneAlign),
 		new Event(
 			"outpose",
 			new SuperStructure.StructureInput() {{}},
-			() -> this.waitTimer.hasElapsed(2.0),
+			() -> this.waitTimer.hasElapsed(0.8725),
 			AlignMode.None),
 		new Event(
 			"trackFuel",
@@ -130,7 +129,13 @@ public class AutoRunnerCmd extends Command {
 			"pointAlign",
 			new SuperStructure.StructureInput() {{ wantScore = true; }},
 			() -> true,
-			AlignMode.PointAlign));
+			AlignMode.PointAlign),
+		new Event( 
+			"home",
+			new SuperStructure.StructureInput() {{ wantShootHome = true; }},
+			() -> this.waitTimer.hasElapsed(3.0),
+			AlignMode.None
+		));
 
 	private Event eventFromEventMarker(EventMarker eventMarker) {
 		for (Event type : this.eventTypes) {
@@ -205,6 +210,7 @@ public class AutoRunnerCmd extends Command {
 				this.currentWaitEvent = ev;
 				// this.waitingForAlign = ev.requireAlignment;
 				this.waitTimer.restart();
+				
 				this.drive.stopModules();
 				this.timer.stop();
 			}

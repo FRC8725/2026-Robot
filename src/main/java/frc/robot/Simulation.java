@@ -20,13 +20,13 @@ import frc.robot.subsystems.shooter.Shooter;
 
 public class Simulation extends SubsystemBase {
     private final RobotContainer container;
-    private final IntakeSimulation leftIntake;
+    private final IntakeSimulation intake;
     private double lastShotTime = 0.0;
     private boolean isRightShooterNext = false;
 
     public Simulation(RobotContainer container) {
         this.container = container;
-        this.leftIntake = IntakeSimulation.OverTheBumperIntake(
+        this.intake = IntakeSimulation.OverTheBumperIntake(
                 "Fuel",
                 container.getDriveSubsystem().getMapleSimDrivetrain().mapleSimDrive,
                 Meters.of(0.63062),
@@ -34,27 +34,27 @@ public class Simulation extends SubsystemBase {
                 IntakeSimulation.IntakeSide.FRONT,
             30);
         
-        this.leftIntake.addGamePiecesToIntake(8);
+        this.intake.addGamePiecesToIntake(8);
     }
 
     public void handleIntakeSimulation() {
         if (Intake.getInstance().getEffectiveLifterLength() == Intake.LifterState.Down.angle
                 && Intake.getInstance().getEffectiveRollerState() == Intake.RollerState.In)
-            this.leftIntake.startIntake();
+            this.intake.startIntake();
         else
-            this.leftIntake.stopIntake();
+            this.intake.stopIntake();
     }
 
     public void proccessShooter() {
         double currentTime = Timer.getFPGATimestamp();
         double requiredDelay = this.isRightShooterNext ? 0.05 : 0.1;
 
-        if (this.leftIntake.getGamePiecesAmount() != 0
+        if (this.intake.getGamePiecesAmount() != 0
                 && (SuperStructure.getInstance().state == State.Shoot 
                         || SuperStructure.getInstance().state == State.ShootHome)
                 && (currentTime - this.lastShotTime > requiredDelay)) {
             this.lastShotTime = currentTime;
-            this.leftIntake.obtainGamePieceFromIntake();
+            this.intake.obtainGamePieceFromIntake();
             
             double flywheel = Shooter.getInstance().getDesiredVelocity();
             double velocity = (1.5 * flywheel - 450.0) / 600.0;

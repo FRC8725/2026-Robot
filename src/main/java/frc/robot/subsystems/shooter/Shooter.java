@@ -51,7 +51,7 @@ public class Shooter extends SubsystemBase {
         Off(0.0),
         Rest(100.0),
         Auto(3150.0),
-        Home(4000.0),
+        Home(3500.0),
         SlowShoot(2000.0);
 
         // RPM

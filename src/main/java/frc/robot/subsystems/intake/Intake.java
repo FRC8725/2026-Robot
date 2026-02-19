@@ -26,7 +26,7 @@ public class Intake extends SubsystemBase {
     private LifterState lifterState = LifterState.Up;
     private RollerState rollerState = RollerState.Off;
 
-    private final double distance = 0.12;
+    private final double distance = 0.1;
 
     public enum LifterState {
         Up(0.05),
