@@ -158,3 +158,9 @@ v1.2.7
 
 v1.2.8
 1. Add led system
+
+v1.2.9
+1. Test led system
+2. Update elastic layout
+3. Add advantage scope layout
+4. Add hub caculate time system

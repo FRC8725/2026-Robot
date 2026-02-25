@@ -9,6 +9,7 @@ public enum LedHelper {
     Black(new Color(0, 0, 0)),
     Orange(new Color(255, 7, 30)),
     Blue(new Color(79, 240, 90)),
+    BlueAlliance(new Color( 0, 255, 0)),
     DarkBlue(new Color(13, 255, 53)),
     Aque(new Color(81, 247, 252));
 
