@@ -50,8 +50,8 @@ public final class Constants {
     public final class Drive {
         public static final double ROBOT_WEIGHT_POUNDS = 150.0;
         public static final double BUMPER_LENGTH_INCHES = 34.417;
-        public static final double MAX_SPEED = 3.0; // m/s
-        public static final double MAX_ANGULAR_RATE = 4.5; // 1 rotation per second
+        public static final double MAX_SPEED = 3.3; // m/s
+        public static final double MAX_ANGULAR_RATE = 4.6																																																																														; // 1 rotation per second
         public static final double STEER_JOYSTICK_DEADBAND = 0.05;
         public static final CommandSwerveDrivetrain drivetrain =
                 RobotBase.isSimulation()
@@ -74,7 +74,7 @@ public final class Constants {
         public static final double ALIGNMENT_ANGLE_TOLERANCE = 4.0;
 
         public static final PhoenixPIDController FACING_HUB_PID =
-                new PhoenixPIDController(13.0, 0.0, 0.0);
+                new PhoenixPIDController(7.0, 0.0, 0.0);
         public static final PathConstraints CONSTRAINTS = new PathConstraints(
 			2.0,
 			4.0,
@@ -289,16 +289,16 @@ public final class Constants {
 
 	// Distance & Velocity
 	public static final List<Pair<Double, Double>> SHOOTER_VELOCITY_MAP = List.of(
-			new Pair<>(1.581, 2500.0),
-			new Pair<>(1.904, 2600.0),
-			new Pair<>(2.215, 2700.0),
-			new Pair<>(2.51, 2750.0),
-			new Pair<>(2.8, 2800.0),
-			new Pair<>(3.145, 2900.0),
-			new Pair<>(3.46, 3000.0),
-			new Pair<>(3.735, 3200.0),
-			new Pair<>(4.01, 3250.0),
-			new Pair<>(4.29, 3350.0));
+			new Pair<>(1.581, 2550.0),
+			new Pair<>(1.904, 2650.0),
+			new Pair<>(2.215, 2750.0),
+			new Pair<>(2.51, 2800.0),
+			new Pair<>(2.8, 2870.0),
+			new Pair<>(3.145, 2950.0),
+			new Pair<>(3.46, 3050.0),
+			new Pair<>(3.735, 3220.0),
+			new Pair<>(4.01, 3270.0),
+			new Pair<>(4.29, 3370.0));
 
 	// Distance & time
 	public static final List<Pair<Double, Double>> SHOOTER_TIMER_MAP = List.of(

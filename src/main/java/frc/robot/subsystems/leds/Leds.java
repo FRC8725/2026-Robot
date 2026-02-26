@@ -1,20 +1,11 @@
 package frc.robot.subsystems.leds;
 
-import static edu.wpi.first.units.Units.Meters;
-import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.Percent;
-import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Seconds;
 
-import java.util.Map;
-
-import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.LEDPattern;
-import edu.wpi.first.wpilibj.LEDPattern.GradientType;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.lib.helpers.LedHelper;
@@ -34,13 +25,13 @@ public class Leds extends SubsystemBase {
     }
 
     public void defaultMode() {
-        LEDPattern base = LEDPattern.gradient(GradientType.kDiscontinuous, LedHelper.Aque.color);
+        LEDPattern base = LEDPattern.solid(LedHelper.Aque.color);
         LEDPattern pattern = base.breathe(Seconds.of(1.5));
         pattern.applyTo(this.buffer);   
     }
 
     public void flashRed() {
-        LEDPattern base = LEDPattern.gradient(GradientType.kContinuous, LedHelper.Red.color);
+        LEDPattern base = LEDPattern.solid(LedHelper.Red.color);
         LEDPattern pattern = base.blink(Seconds.of(0.08));
         pattern.applyTo(this.buffer);
     }
@@ -56,7 +47,7 @@ public class Leds extends SubsystemBase {
     }
 
     public void flashGreen() {
-        LEDPattern base = LEDPattern.gradient(GradientType.kContinuous, LedHelper.Green.color);
+        LEDPattern base = LEDPattern.solid(LedHelper.Green.color);
         LEDPattern pattern = base.blink(Seconds.of(0.08));
         pattern.applyTo(this.buffer);
     }
@@ -75,6 +66,7 @@ public class Leds extends SubsystemBase {
         } else {
             this.defaultMode();
         }
+        // this.defaultMode();
 
         this.led.setData(this.buffer);
     }

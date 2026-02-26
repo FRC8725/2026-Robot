@@ -164,3 +164,8 @@ v1.2.9
 2. Update elastic layout
 3. Add advantage scope layout
 4. Add hub caculate time system
+
+v1.3
+1. Up drive velocity
+2. Fix led gradient bug
+3. Optimize heading pid

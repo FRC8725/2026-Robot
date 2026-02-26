@@ -3,6 +3,7 @@ package frc.robot.lib.helpers;
 import org.littletonrobotics.junction.AutoLogOutput;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import frc.robot.Robot;
 
 public class FieldTimer {
     @AutoLogOutput(key = "Field/MatchTime")
@@ -33,17 +34,17 @@ public class FieldTimer {
         }
 
         if (matchTime > 130) {
-            return matchTime - 130; // Transition shift (藍方預設 active)
+            return matchTime - 130; // Transition shift
         } else if (matchTime > 105) {
             return reverse ? (matchTime - 105) : 0.0; // Shift 1
         } else if (matchTime > 80) {
-            return !reverse ? (matchTime - 80) : 0.0; // Shift 2 (狀態與 Shift 1 相反)
+            return !reverse ? (matchTime - 80) : 0.0; // Shift 2
         } else if (matchTime > 55) {
-            return reverse ? (matchTime - 55) : 0.0;  // Shift 3 (狀態與 Shift 1 相同)
+            return reverse ? (matchTime - 55) : 0.0;  // Shift 3
         } else if (matchTime > 30) {
-            return !reverse ? (matchTime - 30) : 0.0; // Shift 4 (狀態與 Shift 1 相反)
+            return !reverse ? (matchTime - 30) : 0.0; // Shift 4
         } else {
-            return matchTime; // End game (<=30秒預設 active，回傳最後的剩餘時間)
+            return matchTime; // End game
         }
     }
 
@@ -70,17 +71,17 @@ public class FieldTimer {
         }
 
         if (matchTime > 130) {
-            return matchTime - 130; // Transition shift (藍方預設 active)
+            return matchTime - 130; // Transition shift
         } else if (matchTime > 105) {
             return !reverse ? (matchTime - 105) : 0.0; // Shift 1
         } else if (matchTime > 80) {
-            return reverse ? (matchTime - 80) : 0.0; // Shift 2 (狀態與 Shift 1 相反)
+            return reverse ? (matchTime - 80) : 0.0; // Shift 
         } else if (matchTime > 55) {
-            return !reverse ? (matchTime - 55) : 0.0;  // Shift 3 (狀態與 Shift 1 相同)
+            return !reverse ? (matchTime - 55) : 0.0;  // Shift 3
         } else if (matchTime > 30) {
-            return reverse ? (matchTime - 30) : 0.0; // Shift 4 (狀態與 Shift 1 相反)
+            return reverse ? (matchTime - 30) : 0.0; // Shift 4
         } else {
-            return matchTime; // End game (<=30秒預設 active，回傳最後的剩餘時間)
+            return matchTime; // End game
         }
     }
 }

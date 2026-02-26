@@ -171,8 +171,6 @@ public class DriveCommand extends Command {
 		} else if (inputs.alignMode == AlignMode.ZoneAlign && inputs.isRotateZero()) {
 			Rotation2d targetAngle = ShootCaculator.getInstance().getParameters().driveAngle();
 
-			SmartDashboard.putNumber("Measure", this.drive.getPose().getRotation().getDegrees());
-			SmartDashboard.putNumber("Target", targetAngle.getDegrees());
 			if (this.drive.withinTolerance(targetAngle)) 
 				isAlignFinished = true;
 			
