@@ -38,6 +38,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.AutoRunnerCmd;
+import frc.robot.lib.helpers.Elastic;
 import frc.robot.lib.helpers.FieldTimer;
 import frc.robot.lib.math.MathHelpers;
 import frc.robot.subsystems.SuperStructure;
@@ -184,6 +185,7 @@ public class Robot extends LoggedRobot {
 		if (this.trajectory == null)
 			return;
 
+		Elastic.selectTab("Autonomous");
 		this.autonomousCommand = SuperStructure.getInstance().makeZeroAllSubsystemsCommand()
 				.andThen(
 						new AutoRunnerCmd(
@@ -213,6 +215,7 @@ public class Robot extends LoggedRobot {
 		if (!this.didRunAuto)
 			this.robotContainer.getDriveSubsystem()
 					.resetYaw(isRedAlliance.get() ? Rotation2d.kPi : Rotation2d.kZero);
+		Elastic.selectTab("Teleoperated");
 		this.robotContainer.initializeTeleoperate();
 	}
 

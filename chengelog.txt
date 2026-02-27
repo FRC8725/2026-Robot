@@ -169,3 +169,7 @@ v1.3
 1. Up drive velocity
 2. Fix led gradient bug
 3. Optimize heading pid
+
+V1.3.1
+1. Rename trajectray
+2. Update elastic layout

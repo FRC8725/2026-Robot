@@ -3,7 +3,6 @@ package frc.robot.lib.helpers;
 import org.littletonrobotics.junction.AutoLogOutput;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import frc.robot.Robot;
 
 public class FieldTimer {
     @AutoLogOutput(key = "Field/MatchTime")
@@ -83,5 +82,15 @@ public class FieldTimer {
         } else {
             return matchTime; // End game
         }
+    }
+
+    @AutoLogOutput(key = "Field/GameData")
+    public String getGameData() {
+        String gameData = DriverStation.getGameSpecificMessage();
+
+        if (gameData.isEmpty())
+            return "NULL";
+
+        return String.valueOf(gameData.charAt(0));
     }
 }
