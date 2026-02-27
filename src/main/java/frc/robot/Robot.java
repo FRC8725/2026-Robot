@@ -26,7 +26,6 @@ import choreo.trajectory.Trajectory;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobotBase;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -48,7 +47,6 @@ public class Robot extends LoggedRobot {
 	private static final double loopOverrunWarningTimeout = 0.2;
 	private Command autonomousCommand;
 	private final RobotContainer robotContainer;
-	private final DigitalInput input = new DigitalInput(0);
 	private final FieldTimer fieldTimer = new FieldTimer();
 	public static double autoStartTime = 0.0;
 
@@ -62,10 +60,6 @@ public class Robot extends LoggedRobot {
 	private final SendableChooser<Trajectory<SwerveSample>> chooser = new SendableChooser<>();
 	private Trajectory<SwerveSample> trajectory = null;
 	private boolean didRunAuto = false;
-
-	private boolean wasCoastModeEnabled = false;
-	private boolean wasEnabled = false;
-	private boolean wasEnabledThenDisabled = false;
 
 	public Robot() {
 		super(Constants.ROBOT_PERIODIC);
@@ -134,7 +128,7 @@ public class Robot extends LoggedRobot {
 		this.chooser.onChange(t -> {
 			this.trajectory = t;
 			if (this.trajectory == null) return;
-			Logger.recordOutput("AutoRunner/Trajectory", this.trajectory.getPoses());
+			Logger.recordOutput("AutoRunner/Trajectory", MathHelpers.mirrorIfRed(this.trajectory.getPoses()));
 			this.initializeAutonomousCommand();
 		});
 		SmartDashboard.putData("Chooser", this.chooser);
@@ -158,28 +152,13 @@ public class Robot extends LoggedRobot {
 	}
 
 	@Override
-	public void disabledInit() {
-		if (this.wasEnabled)
-			this.wasEnabledThenDisabled = true;
-		this.wasEnabled = false;
-	}
+	public void disabledInit() {}
 
 	@Override
-	public void disabledPeriodic() {
-		boolean pressed = !this.input.get();
-
-		if (!this.wasCoastModeEnabled && pressed) {
-			this.wasCoastModeEnabled = true;
-		} else if (this.wasCoastModeEnabled && !pressed) {
-			this.wasCoastModeEnabled = false;
-		}
-	}
+	public void disabledPeriodic() {}
 
 	@Override
-	public void disabledExit() {
-		this.wasEnabled = true;
-		this.wasEnabledThenDisabled = false;
-	}
+	public void disabledExit() {}
 
 	public void initializeAutonomousCommand() {
 		if (this.trajectory == null)

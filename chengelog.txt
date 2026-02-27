@@ -173,3 +173,6 @@ v1.3
 V1.3.1
 1. Rename trajectray
 2. Update elastic layout
+
+v1.3.2
+1. Fix trajectray getPoses no mirror if red bug
