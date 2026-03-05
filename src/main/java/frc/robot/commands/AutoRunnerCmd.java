@@ -16,6 +16,7 @@ import choreo.trajectory.SwerveSample;
 import choreo.trajectory.Trajectory;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -23,6 +24,7 @@ import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.Joysticks.AlignMode;
 import frc.robot.lib.math.MathHelpers;
+import frc.robot.lib.util.ShootCaculator;
 import frc.robot.subsystems.SuperStructure;
 import frc.robot.subsystems.SuperStructure.State;
 import frc.robot.subsystems.drive.Drive;
@@ -50,6 +52,7 @@ public class AutoRunnerCmd extends Command {
 		this.drive = drive;
 		this.trajectory = trajectory;
 		this.driveWithHeading.HeadingController = Constants.Drive.FACING_HUB_PID;
+		this.driveWithHeading.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
 		this.addRequirements(this.superStructure, this.drive);
 
 		this.events = this.trajectory.events().stream()
@@ -121,11 +124,6 @@ public class AutoRunnerCmd extends Command {
 			() -> this.waitTimer.hasElapsed(0.8725),
 			AlignMode.None),
 		new Event(
-			"trackFuel",
-			new SuperStructure.StructureInput() {{ wantTrack = true; }},
-			() -> false,
-			AlignMode.None),
-		new Event(
 			"pointAlign",
 			new SuperStructure.StructureInput() {{ wantScore = true; }},
 			() -> true,
@@ -135,6 +133,12 @@ public class AutoRunnerCmd extends Command {
 			new SuperStructure.StructureInput() {{ wantShootHome = true; }},
 			() -> this.waitTimer.hasElapsed(3.0),
 			AlignMode.None
+		),
+		new Event(
+			"shootonmove",
+			new SuperStructure.StructureInput() {{ wantScore = true; }},
+			() -> this.waitTimer.hasElapsed(2.5),
+			AlignMode.ShootMove
 		));
 
 	private Event eventFromEventMarker(EventMarker eventMarker) {
@@ -211,8 +215,10 @@ public class AutoRunnerCmd extends Command {
 				// this.waitingForAlign = ev.requireAlignment;
 				this.waitTimer.restart();
 				
-				this.drive.stopModules();
-				this.timer.stop();
+				if (ev.alignMode != AlignMode.ShootMove){
+					this.drive.stopModules();
+					this.timer.stop();
+				}
 			}
 		}
 
@@ -270,6 +276,18 @@ public class AutoRunnerCmd extends Command {
 								.withVelocityX(0.0)
 								.withVelocityY(0.0)
 								.withTargetDirection(targetAngle));				
+			} else if (mode == AlignMode.ShootMove) {
+				SwerveSample sample = this.trajectory.sampleAt(this.timer.get(), Robot.isRedAlliance.get())
+                        .orElse(this.trajectory.getFinalSample(Robot.isRedAlliance.get()).get());
+                
+				ChassisSpeeds speeds = this.drive.getFollowSample(sample);
+				Rotation2d rotation2d = ShootCaculator.getInstance().getParameters().driveAngle();
+
+                this.drive.setControl(
+						this.driveWithHeading
+								.withVelocityX(speeds.vxMetersPerSecond)
+								.withVelocityY(speeds.vyMetersPerSecond)
+								.withTargetDirection(rotation2d));
 			}
 
 			if (this.pathCommand != null)

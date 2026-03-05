@@ -135,6 +135,18 @@ public class Drive extends SubsystemBase {
         this.setControl(this.choreoAutoRequest.withSpeeds(speeds));
     }
 
+    public ChassisSpeeds getFollowSample(SwerveSample sample) {
+        Pose2d pose = this.inputs.Pose;
+
+        ChassisSpeeds speeds = new ChassisSpeeds(
+                sample.vx + this.xController.calculate(pose.getX(), sample.x),
+                sample.vy + this.yController.calculate(pose.getY(), sample.y),
+                sample.omega + this.headingController.calculate(
+                        pose.getRotation().getRadians(), sample.heading));
+
+        return speeds;
+    }
+
     public void stopModules() {
         this.setControl(this.stopRequest);
     }

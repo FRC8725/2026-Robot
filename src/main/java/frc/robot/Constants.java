@@ -289,16 +289,16 @@ public final class Constants {
 
 	// Distance & Velocity
 	public static final List<Pair<Double, Double>> SHOOTER_VELOCITY_MAP = List.of(
-			new Pair<>(1.581, 2500.0),
-			new Pair<>(1.904, 2600.0),
-			new Pair<>(2.215, 2700.0),
-			new Pair<>(2.51, 2750.0),
-			new Pair<>(2.8, 2800.0),
-			new Pair<>(3.145, 2900.0),
-			new Pair<>(3.46, 3000.0),
-			new Pair<>(3.735, 3200.0),
-			new Pair<>(4.01, 3250.0),
-			new Pair<>(4.29, 3350.0));
+			new Pair<>(1.581, 2525.0),
+			new Pair<>(1.904, 2626.0),
+			new Pair<>(2.215, 2727.0),
+			new Pair<>(2.51, 2777.0),
+			new Pair<>(2.8, 2828.0),
+			new Pair<>(3.145, 2929.0),
+			new Pair<>(3.46, 3030.0),
+			new Pair<>(3.735, 3264.0),
+			new Pair<>(4.01, 3282.0),
+			new Pair<>(4.29, 3413.0));
 
 	// Distance & time
 	public static final List<Pair<Double, Double>> SHOOTER_TIMER_MAP = List.of(

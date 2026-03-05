@@ -128,7 +128,7 @@ public class Robot extends LoggedRobot {
 		this.chooser.onChange(t -> {
 			this.trajectory = t;
 			if (this.trajectory == null) return;
-			Logger.recordOutput("AutoRunner/Trajectory", MathHelpers.mirrorIfRed(this.trajectory.getPoses()));
+			Logger.recordOutput("AutoRunner/Trajectory", MathHelpers.mirrorRelative(this.trajectory.getPoses()));
 			this.initializeAutonomousCommand();
 		});
 		SmartDashboard.putData("Chooser", this.chooser);

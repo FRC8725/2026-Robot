@@ -159,11 +159,11 @@ public class Shooter extends SubsystemBase {
         if (this.hoodState != HoodState.AutoAim)
             return this.hoodState.angle;
 
-        // return hoodPosition;
-        double distance = MathHelpers.mirrorIfRed(Constants.Field.HUB_CENTER).getDistance(
-                Drive.getInstance().getPose().getTranslation());
+        return hoodPosition;
+        // double distance = MathHelpers.mirrorIfRed(Constants.Field.HUB_CENTER).getDistance(
+        //         Drive.getInstance().getPose().getTranslation());
 
-        return this.shootCaculator.getHoodAngle(distance);
+        // return this.shootCaculator.getHoodAngle(distance);
     }
 
     @AutoLogOutput(key = "Shooter/FlywheelDesiredVelocity") // Rotate per minute
@@ -171,15 +171,15 @@ public class Shooter extends SubsystemBase {
         double distance = MathHelpers.mirrorIfRed(Constants.Field.HUB_CENTER).getDistance(
                 Drive.getInstance().getPose().getTranslation());
 
-        if (RobotState.isAutonomous())
-            return this.shootCaculator.getFlywheelVelocity(distance);
+        // if (RobotState.isAutonomous())
+        //     return this.shootCaculator.getFlywheelVelocity(distance);
         if (this.flywheelState != FlywheelState.Auto)
             return this.flywheelState.speed;
 
-        // return this.velocityOffset;
+        return this.velocityOffset;
         
         
-        return this.shootCaculator.getFlywheelVelocity(distance);
+        // return this.shootCaculator.getFlywheelVelocity(distance);
     }
 
     @AutoLogOutput(key = "Shooter/FlywheelAtSetpoint")

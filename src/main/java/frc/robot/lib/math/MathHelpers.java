@@ -28,6 +28,15 @@ public class MathHelpers {
             : t;
     }
 
+    public static Pose2d mirrorRelative(Pose2d t) {
+        return Robot.isRedAlliance.get()
+            ? new Pose2d(
+                    Constants.Field.FIELD_X_SIZE - t.getX(),
+                    Constants.Field.FIELD_Y_SIZE - t.getY(),
+                    t.getRotation().rotateBy(Rotation2d.k180deg))
+            : t;
+    }
+
     public static Pose2d[] mirrorIfRed(Pose2d[] t) {
         return Arrays.stream(t)
                 .map(pose -> mirrorIfRed(pose))
@@ -36,6 +45,12 @@ public class MathHelpers {
 
     public static Rotation2d mirrorIfRed(Rotation2d r) {
         return Robot.isRedAlliance.get() ? r.plus(Rotation2d.k180deg) : r;
+    }
+
+    public static Pose2d[] mirrorRelative(Pose2d[] t) {
+        return Arrays.stream(t)
+                .map(pose -> mirrorRelative(pose))
+                .toArray(Pose2d[]::new);
     }
 
     public static Rotation2d negativeRotation(Rotation2d r) {

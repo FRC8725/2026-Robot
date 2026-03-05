@@ -178,3 +178,7 @@ v1.3.2
 1. Fix trajectray getPoses no mirror if red bug
 2. Update advantage kit Lib
 3. Update poton lib
+
+v1.3.3
+1. Rename some path and add some path
+2. Add shootonmove eventmark
