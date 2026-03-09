@@ -119,6 +119,11 @@ public class AutoRunnerCmd extends Command {
 			() -> SuperStructure.getInstance().stateTime.hasElapsed(4.0) && SuperStructure.getInstance().state == State.Shoot,
 			AlignMode.ZoneAlign),
 		new Event(
+			"zoneAlignEnd",
+			new SuperStructure.StructureInput() {{ wantScore = true; }},
+			() -> SuperStructure.getInstance().stateTime.hasElapsed(6.0) && SuperStructure.getInstance().state == State.Shoot,
+			AlignMode.ZoneAlign),
+		new Event(
 			"outpose",
 			new SuperStructure.StructureInput() {{}},
 			() -> this.waitTimer.hasElapsed(0.8725),

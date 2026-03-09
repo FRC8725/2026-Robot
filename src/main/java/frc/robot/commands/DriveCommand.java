@@ -22,6 +22,7 @@ import frc.robot.Robot;
 import frc.robot.Joysticks.AlignMode;
 import frc.robot.lib.math.MathHelpers;
 import frc.robot.lib.util.ShootCaculator;
+import frc.robot.subsystems.SuperStructure;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.vision.object.ObjectVision;
 
@@ -213,8 +214,14 @@ public class DriveCommand extends Command {
 		r = this.deadZone(r, this.driveInputs.get().deadZone);
 		rot = this.deadZone(rot, this.driveInputs.get().deadZone);
 
-		double xSpeed = r * Math.cos(theta) * Constants.Drive.MAX_VELOCITY;
-		double ySpeed = r * Math.sin(theta) * Constants.Drive.MAX_VELOCITY;
+		double xSpeed = r * Math.cos(theta) * (
+				SuperStructure.getInstance().inputs.wantIntake && !RobotState.isAutonomous()
+				? Constants.Drive.SLOW_VELOCITY
+				: Constants.Drive.MAX_VELOCITY);
+		double ySpeed = r * Math.sin(theta) * (
+				SuperStructure.getInstance().inputs.wantIntake && !RobotState.isAutonomous()
+				? Constants.Drive.SLOW_VELOCITY
+				: Constants.Drive.MAX_VELOCITY);
 		double rSpeed = rot * Constants.Drive.MAX_ANGULAR_RATE;
 
 		return new ChassisSpeeds(xSpeed, ySpeed, rSpeed);

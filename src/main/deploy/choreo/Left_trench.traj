@@ -496,7 +496,7 @@
  "events":[
    {"name":"wantIntake", "from":{"target":2, "targetTimestamp":1.03849, "offset":{"exp":"0 s", "val":0.0}}, "event":null},
    {"name":"zoneAlign", "from":{"target":10, "targetTimestamp":6.58369, "offset":{"exp":"0 s", "val":0.0}}, "event":null},
-   {"name":"zoneAlignMore", "from":{"target":13, "targetTimestamp":11.49728, "offset":{"exp":"0 s", "val":0.0}}, "event":null},
+   {"name":"zoneAlignEnd", "from":{"target":13, "targetTimestamp":11.49728, "offset":{"exp":"0 s", "val":0.0}}, "event":null},
    {"name":"wantIntake", "from":{"target":10, "targetTimestamp":6.58369, "offset":{"exp":"0.6 s", "val":0.6}}, "event":null},
    {"name":"slideIntake", "from":{"target":12, "targetTimestamp":10.37297, "offset":{"exp":"0.45 s", "val":0.45}}, "event":null},
    {"name":"zeroIntake", "from":{"target":0, "targetTimestamp":0.0, "offset":{"exp":"0 s", "val":0.0}}, "event":null}]

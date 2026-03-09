@@ -50,8 +50,8 @@ public final class Constants {
     public final class Drive {
         public static final double ROBOT_WEIGHT_POUNDS = 150.0;
         public static final double BUMPER_LENGTH_INCHES = 34.417;
-        public static final double MAX_SPEED = 3.3; // m/s
-        public static final double MAX_ANGULAR_RATE = 4.6																																																																														; // 1 rotation per second
+        public static final double MAX_SPEED = 3.5; // m/s
+        public static final double MAX_ANGULAR_RATE = 4.8;																																																																														; // 1 rotation per second
         public static final double STEER_JOYSTICK_DEADBAND = 0.05;
         public static final CommandSwerveDrivetrain drivetrain =
                 RobotBase.isSimulation()
@@ -59,8 +59,10 @@ public final class Constants {
                         : TunerConstants.createDrivetrain();
         
 		// Phycical Limit
-        public static final double MAX_MOTOR_RPM = 3300.0;
+        public static final double MAX_MOTOR_RPM = 4000.0;
+		public static final double SLOW_RPM = 2200.0;
         public static final double MAX_VELOCITY = (MAX_MOTOR_RPM / 60.0) / TunerConstants.kDriveGearRatio * 2.0 * Units.inchesToMeters(1.897) * Math.PI;
+		public static final double SLOW_VELOCITY = (SLOW_RPM / 60.0) / TunerConstants.kDriveGearRatio * 2.0 * Units.inchesToMeters(1.897) * Math.PI;
         public static final double MAX_ANGULAR_VELOCITY = (MAX_VELOCITY - 500.0) / (Units.inchesToMeters(12.75) * Math.sqrt(2.0)); // TODO: Research HOW
 
         // Align weight
@@ -289,16 +291,16 @@ public final class Constants {
 
 	// Distance & Velocity
 	public static final List<Pair<Double, Double>> SHOOTER_VELOCITY_MAP = List.of(
-			new Pair<>(1.581, 2525.0),
-			new Pair<>(1.904, 2626.0),
-			new Pair<>(2.215, 2727.0),
-			new Pair<>(2.51, 2777.0),
-			new Pair<>(2.8, 2828.0),
-			new Pair<>(3.145, 2929.0),
-			new Pair<>(3.46, 3030.0),
-			new Pair<>(3.735, 3264.0),
-			new Pair<>(4.01, 3282.0),
-			new Pair<>(4.29, 3413.0));
+			new Pair<>(1.581, 2550.0),
+			new Pair<>(1.904, 2652.0),
+			new Pair<>(2.215, 2754.0),
+			new Pair<>(2.51, 2804.0),
+			new Pair<>(2.8, 2856.0),
+			new Pair<>(3.145, 2958.0),
+			new Pair<>(3.46, 3060.0),
+			new Pair<>(3.735, 3296.0),
+			new Pair<>(4.01, 3314.0),
+			new Pair<>(4.29, 3447.0));
 
 	// Distance & time
 	public static final List<Pair<Double, Double>> SHOOTER_TIMER_MAP = List.of(

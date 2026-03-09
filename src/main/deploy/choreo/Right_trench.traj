@@ -445,6 +445,6 @@
    {"name":"slideIntake", "from":{"target":8, "targetTimestamp":5.18602, "offset":{"exp":"0.5 s", "val":0.5}}, "event":null},
    {"name":"outpose", "from":{"target":11, "targetTimestamp":8.13893, "offset":{"exp":"0 s", "val":0.0}}, "event":null},
    {"name":"slideIntake", "from":{"target":11, "targetTimestamp":8.13893, "offset":{"exp":"0.5 s", "val":0.5}}, "event":null},
-   {"name":"zoneAlignMore", "from":{"target":12, "targetTimestamp":9.72169, "offset":{"exp":"0 s", "val":0.0}}, "event":null},
+   {"name":"zoneAlignEnd", "from":{"target":12, "targetTimestamp":9.72169, "offset":{"exp":"0 s", "val":0.0}}, "event":null},
    {"name":"zoneAlign", "from":{"target":10, "targetTimestamp":6.55528, "offset":{"exp":"0 s", "val":0.0}}, "event":null}]
 }

@@ -11,8 +11,8 @@
             "title": "BlueHubTime",
             "x": 1024.0,
             "y": 0.0,
-            "width": 640.0,
-            "height": 384.0,
+            "width": 512.0,
+            "height": 512.0,
             "type": "Match Time",
             "properties": {
               "topic": "/AdvantageKit/RealOutputs/Field/BlueHubTime",
@@ -25,10 +25,10 @@
           },
           {
             "title": "RedHubTime",
-            "x": 1024.0,
-            "y": 384.0,
-            "width": 640.0,
-            "height": 384.0,
+            "x": 512.0,
+            "y": 0.0,
+            "width": 512.0,
+            "height": 512.0,
             "type": "Match Time",
             "properties": {
               "topic": "/AdvantageKit/RealOutputs/Field/RedHubTime",
@@ -43,8 +43,8 @@
             "title": "MatchTime",
             "x": 0.0,
             "y": 0.0,
-            "width": 768.0,
-            "height": 640.0,
+            "width": 384.0,
+            "height": 384.0,
             "type": "Match Time",
             "properties": {
               "topic": "/AdvantageKit/RealOutputs/Field/MatchTime",
@@ -57,10 +57,10 @@
           },
           {
             "title": "GameData",
-            "x": 768.0,
+            "x": 384.0,
             "y": 0.0,
-            "width": 256.0,
-            "height": 256.0,
+            "width": 128.0,
+            "height": 128.0,
             "type": "Large Text Display",
             "properties": {
               "topic": "/AdvantageKit/RealOutputs/Field/GameData",
@@ -87,6 +87,22 @@
               "topic": "/SmartDashboard/Chooser",
               "period": 0.02,
               "sort_options": false
+            }
+          },
+          {
+            "title": "MatchTime",
+            "x": 640.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "Match Time",
+            "properties": {
+              "topic": "/AdvantageKit/RealOutputs/Field/MatchTime",
+              "period": 0.02,
+              "data_type": "double",
+              "time_display_mode": "Seconds Only",
+              "red_start_time": 0,
+              "yellow_start_time": 0
             }
           }
         ]

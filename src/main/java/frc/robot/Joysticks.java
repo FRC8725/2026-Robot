@@ -28,6 +28,7 @@ public class Joysticks {
         public double leftX;
         public double rightX;
         public double deadZone;
+        public double rotateDeadZone;
         public boolean oriented;
         public AlignMode alignMode;
         public boolean wantTrack;
@@ -39,7 +40,7 @@ public class Joysticks {
         }
 
         public boolean isRotateZero() {
-            return Math.abs(rightX) < deadZone;
+            return Math.abs(rightX) < rotateDeadZone;
         }
 
         public DriveInputs getRedFlipped() {
@@ -48,6 +49,7 @@ public class Joysticks {
             flipped.leftY = this.leftY;
             flipped.rightX = this.rightX;
             flipped.deadZone = deadZone;
+            flipped.rotateDeadZone = rotateDeadZone;
             flipped.oriented = oriented;
             flipped.alignMode = alignMode;
             flipped.wantTrack = wantTrack;
@@ -62,6 +64,7 @@ public class Joysticks {
         input.rightX = this.driver.getRightX();
         input.oriented = this.driver.getLeftBumperButton();
         input.deadZone = 0.03;
+        input.rotateDeadZone = 0.05;
         input.wantTrack = this.driver.getAButton();
 
         boolean wantScore = this.getInput().wantScore;
