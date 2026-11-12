@@ -22,7 +22,7 @@ public class SuperStructureCmd extends Command {
 	public void end(boolean interrupted) {
 		SuperStructure.getInstance().emptyInputs();
 	}
-
+	
 	@Override
 	public boolean isFinished() {
 		return false;

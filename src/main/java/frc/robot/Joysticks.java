@@ -15,7 +15,6 @@ public class Joysticks {
 
     private AlignMode launchAlignMode = AlignMode.None;
 
-
     public enum AlignMode {
         None,
         ZoneAlign,
@@ -35,8 +34,8 @@ public class Joysticks {
 
         public boolean isNonZero() {
             return Math.abs(leftX) > deadZone ||
-                Math.abs(leftY) > deadZone ||
-                Math.abs(rightX) > deadZone;
+                    Math.abs(leftY) > deadZone ||
+                    Math.abs(rightX) > deadZone;
         }
 
         public boolean isRotateZero() {
@@ -67,20 +66,8 @@ public class Joysticks {
         input.rotateDeadZone = 0.05;
         input.wantTrack = this.driver.getAButton();
 
-        boolean wantScore = this.getInput().wantScore;
-
-        if (wantScore) {
-            if (this.launchAlignMode == AlignMode.None) {
-                this.launchAlignMode = Robot.isInAllianceZone.get()
-                        ? AlignMode.ZoneAlign
-                        : AlignMode.PointAlign;
-            }
-        } else {
-            this.launchAlignMode = AlignMode.None;
-        }
-
         input.alignMode = this.launchAlignMode;
-        
+
         return input;
     }
 
@@ -88,11 +75,7 @@ public class Joysticks {
         SuperStructure.StructureInput input = new SuperStructure.StructureInput();
 
         input.wantIntake = this.driver.getRightTriggerAxis() > 0.3;
-        input.wantScore = this.driver.getRightBumperButton();
-        input.wantShootHome = this.driver.getLeftBumperButton();
-        input.alignMode = this.launchAlignMode;
-        SmartDashboard.putString("AlignMode", input.alignMode.toString());
-        
+
         return input;
     }
 }
